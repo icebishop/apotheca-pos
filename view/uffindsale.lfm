@@ -1,0 +1,41 @@
+object FormFindSale: TFormFindSale
+  Left = 630
+  Height = 276
+  Top = 373
+  Width = 280
+  Caption = 'Find Sale'
+  ClientHeight = 276
+  ClientWidth = 280
+  LCLVersion = '0.9.28.2'
+  object StringGrid1: TStringGrid
+    Left = 8
+    Height = 224
+    Top = 8
+    Width = 264
+    ColCount = 2
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSelect, goSmoothScroll]
+    TabOrder = 0
+    ColWidths = (
+      116
+      118
+    )
+  end
+  object BitBtn1: TBitBtn
+    Left = 120
+    Height = 30
+    Top = 240
+    Width = 75
+    Caption = 'Ok'
+    Enabled = False
+    TabOrder = 1
+  end
+  object BitBtn2: TBitBtn
+    Left = 197
+    Height = 30
+    Top = 240
+    Width = 75
+    Caption = 'Cancel'
+    TabOrder = 2
+  end
+end

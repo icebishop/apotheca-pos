@@ -1,0 +1,986 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="12"/>
+    <General>
+      <Flags>
+        <CompatibilityMode Value="True"/>
+      </Flags>
+      <Title Value="apotheca"/>
+      <UseXPManifest Value="True"/>
+      <Icon Value="0"/>
+    </General>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages/es"/>
+    </i18n>
+    <VersionInfo>
+      <UseVersionInfo Value="True"/>
+      <AutoIncrementBuild Value="True"/>
+      <BuildNr Value="401"/>
+      <Language Value="040A"/>
+      <StringTable ProductVersion="0.0.0.0"/>
+    </VersionInfo>
+    <BuildModes Count="1">
+      <Item1 Name="default" Default="True"/>
+    </BuildModes>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T &apos;Lazarus Run Output&apos; -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+      <FormatVersion Value="2"/>
+      <Modes Count="1">
+        <Mode0 Name="default">
+          <local>
+            <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T &apos;Lazarus Run Output&apos; -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+          </local>
+        </Mode0>
+      </Modes>
+    </RunParams>
+    <RequiredPackages Count="2">
+      <Item1>
+        <PackageName Value="SQLDBLaz"/>
+        <MinVersion Major="1" Release="1" Valid="True"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
+    </RequiredPackages>
+    <Units Count="88">
+      <Unit0>
+        <Filename Value="apotheca.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <TopLine Value="26"/>
+        <CursorPos X="45" Y="3"/>
+        <UsageCount Value="206"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="view/apothecamain.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FormPrincipal"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ApothecaMain"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="60"/>
+        <CursorPos X="33" Y="269"/>
+        <UsageCount Value="206"/>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="view/ufpurchase.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Formpurchase"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="UFPurchase"/>
+        <EditorIndex Value="12"/>
+        <TopLine Value="202"/>
+        <CursorPos X="96" Y="220"/>
+        <UsageCount Value="204"/>
+        <Loaded Value="True"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="model/uproduct.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UProduct"/>
+        <EditorIndex Value="11"/>
+        <TopLine Value="70"/>
+        <CursorPos Y="95"/>
+        <UsageCount Value="201"/>
+        <Loaded Value="True"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="model/uitem.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UItem"/>
+        <TopLine Value="28"/>
+        <CursorPos X="13" Y="41"/>
+        <UsageCount Value="200"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="view/uffindproduct.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FormFindProduct"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="UFFindProduct"/>
+        <EditorIndex Value="10"/>
+        <TopLine Value="140"/>
+        <CursorPos Y="146"/>
+        <UsageCount Value="200"/>
+        <Loaded Value="True"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="infrastructure/udatamodule.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="DataModule1"/>
+        <ResourceBaseClass Value="DataModule"/>
+        <UnitName Value="UDataModule"/>
+        <CursorPos X="91" Y="5"/>
+        <UsageCount Value="200"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="repository/udataproduct.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UDataProduct"/>
+        <EditorIndex Value="8"/>
+        <TopLine Value="158"/>
+        <CursorPos X="4" Y="168"/>
+        <UsageCount Value="200"/>
+        <Loaded Value="True"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="view/ufproduct.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FormProduct"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="UFProduct"/>
+        <EditorIndex Value="17"/>
+        <TopLine Value="109"/>
+        <CursorPos X="92" Y="111"/>
+        <UsageCount Value="202"/>
+        <Loaded Value="True"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="model/uperson.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UPerson"/>
+        <TopLine Value="63"/>
+        <CursorPos X="34" Y="76"/>
+        <UsageCount Value="200"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="model/ucustomer.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UCustomer"/>
+        <CursorPos X="44" Y="13"/>
+        <UsageCount Value="200"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="model/usupplier.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="USupplier"/>
+        <CursorPos X="14" Y="11"/>
+        <UsageCount Value="200"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="repository/udatacustomer.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UDataCustomer"/>
+        <TopLine Value="94"/>
+        <CursorPos Y="110"/>
+        <UsageCount Value="200"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="view/uffindcustomer.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FormFindCustomer"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="UFFindCustomer"/>
+        <TopLine Value="77"/>
+        <CursorPos X="48" Y="94"/>
+        <UsageCount Value="200"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="repository/udata.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UData"/>
+        <TopLine Value="35"/>
+        <CursorPos Y="58"/>
+        <UsageCount Value="201"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="repository/udatasupplier.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UDataSupplier"/>
+        <TopLine Value="81"/>
+        <CursorPos X="43" Y="9"/>
+        <UsageCount Value="200"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="view/uffindsupplier.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FormFindSupplier"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="UFFindSupplier"/>
+        <TopLine Value="37"/>
+        <CursorPos X="21" Y="49"/>
+        <UsageCount Value="200"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="repository/udataperson.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UDataPerson"/>
+        <TopLine Value="97"/>
+        <CursorPos Y="115"/>
+        <UsageCount Value="199"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="view/ufsupplier.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FormSupplier"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="UFSupplier"/>
+        <CursorPos X="45" Y="3"/>
+        <UsageCount Value="198"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="view/ufcustomer.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FormCustomer"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="UFCustomer"/>
+        <TopLine Value="64"/>
+        <CursorPos X="63" Y="76"/>
+        <UsageCount Value="196"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="infrastructure/uresourcestring.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UResourceString"/>
+        <EditorIndex Value="18"/>
+        <TopLine Value="84"/>
+        <CursorPos X="34" Y="109"/>
+        <UsageCount Value="194"/>
+        <Loaded Value="True"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="model/utransaction.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UTransaction"/>
+        <TopLine Value="43"/>
+        <CursorPos X="17" Y="68"/>
+        <UsageCount Value="191"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="model/uoperationtype.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UOperationType"/>
+        <TopLine Value="38"/>
+        <CursorPos Y="73"/>
+        <UsageCount Value="191"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="model/uin.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UIn"/>
+        <EditorIndex Value="13"/>
+        <TopLine Value="13"/>
+        <CursorPos X="29" Y="35"/>
+        <UsageCount Value="190"/>
+        <Loaded Value="True"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="model/upurchase.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UPurchase"/>
+        <CursorPos X="57" Y="10"/>
+        <UsageCount Value="190"/>
+      </Unit24>
+      <Unit25>
+        <Filename Value="model/ubalance.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UBalance"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="62"/>
+        <CursorPos Y="80"/>
+        <UsageCount Value="183"/>
+        <Loaded Value="True"/>
+      </Unit25>
+      <Unit26>
+        <Filename Value="repository/udatabalance.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UDataBalance"/>
+        <EditorIndex Value="16"/>
+        <TopLine Value="74"/>
+        <CursorPos X="9" Y="86"/>
+        <UsageCount Value="181"/>
+        <Loaded Value="True"/>
+      </Unit26>
+      <Unit27>
+        <Filename Value="../../../../usr/lib/lazarus/0.9.28.2/lcl/include/control.inc"/>
+        <TopLine Value="2634"/>
+        <CursorPos Y="2646"/>
+        <UsageCount Value="11"/>
+      </Unit27>
+      <Unit28>
+        <Filename Value="../../../../usr/lib/lazarus/0.9.28.2/lcl/include/buttoncontrol.inc"/>
+        <TopLine Value="8"/>
+        <CursorPos Y="27"/>
+        <UsageCount Value="9"/>
+      </Unit28>
+      <Unit29>
+        <Filename Value="../../../../usr/lib/lazarus/0.9.28.2/lcl/include/buttons.inc"/>
+        <TopLine Value="146"/>
+        <CursorPos Y="165"/>
+        <UsageCount Value="9"/>
+      </Unit29>
+      <Unit30>
+        <Filename Value="../../../../usr/lib/lazarus/0.9.28.2/lcl/include/bitbtn.inc"/>
+        <TopLine Value="39"/>
+        <CursorPos Y="58"/>
+        <UsageCount Value="9"/>
+      </Unit30>
+      <Unit31>
+        <Filename Value="../../../../usr/lib/lazarus/0.9.28.2/lcl/include/menuitem.inc"/>
+        <TopLine Value="250"/>
+        <CursorPos Y="269"/>
+        <UsageCount Value="4"/>
+      </Unit31>
+      <Unit32>
+        <Filename Value="invcar.lpi"/>
+        <SyntaxHighlighter Value="XML"/>
+        <UsageCount Value="9"/>
+      </Unit32>
+      <Unit33>
+        <Filename Value="repository/udatain.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UDataIn"/>
+        <CursorPos Y="20"/>
+        <UsageCount Value="166"/>
+      </Unit33>
+      <Unit34>
+        <Filename Value="repository/udataitem.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UDataItem"/>
+        <CursorPos Y="20"/>
+        <UsageCount Value="166"/>
+      </Unit34>
+      <Unit35>
+        <Filename Value="repository/udatatransaction.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UDataTransaction"/>
+        <EditorIndex Value="15"/>
+        <TopLine Value="102"/>
+        <CursorPos X="68" Y="109"/>
+        <UsageCount Value="165"/>
+        <Loaded Value="True"/>
+      </Unit35>
+      <Unit36>
+        <Filename Value="view/ufsale.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FormSale"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="UFSale"/>
+        <EditorIndex Value="9"/>
+        <TopLine Value="210"/>
+        <CursorPos X="76" Y="220"/>
+        <UsageCount Value="160"/>
+        <Loaded Value="True"/>
+      </Unit36>
+      <Unit37>
+        <Filename Value="model/usale.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="USale"/>
+        <TopLine Value="14"/>
+        <CursorPos Y="36"/>
+        <UsageCount Value="160"/>
+      </Unit37>
+      <Unit38>
+        <Filename Value="model/uout.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UOut"/>
+        <TopLine Value="19"/>
+        <CursorPos X="37" Y="25"/>
+        <UsageCount Value="160"/>
+      </Unit38>
+      <Unit39>
+        <Filename Value="repository/udataout.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UDataOut"/>
+        <CursorPos X="5" Y="24"/>
+        <UsageCount Value="159"/>
+      </Unit39>
+      <Unit40>
+        <Filename Value="../../../../usr/lib/lazarus/0.9.28.2/lcl/grids.pas"/>
+        <UnitName Value="Grids"/>
+        <TopLine Value="8320"/>
+        <CursorPos Y="8332"/>
+        <UsageCount Value="8"/>
+      </Unit40>
+      <Unit41>
+        <Filename Value="../../../../usr/lib/lazarus/0.9.28.2/lcl/include/customform.inc"/>
+        <TopLine Value="755"/>
+        <CursorPos X="61" Y="773"/>
+        <UsageCount Value="9"/>
+      </Unit41>
+      <Unit42>
+        <Filename Value="model/uwallet.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UWallet"/>
+        <UsageCount Value="157"/>
+      </Unit42>
+      <Unit43>
+        <Filename Value="repository/udataoperationtype.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UDataOperationType"/>
+        <TopLine Value="25"/>
+        <CursorPos Y="41"/>
+        <UsageCount Value="155"/>
+      </Unit43>
+      <Unit44>
+        <Filename Value="repository/udatawallet.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UDataWallet"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="19"/>
+        <CursorPos X="18" Y="33"/>
+        <UsageCount Value="152"/>
+        <Loaded Value="True"/>
+      </Unit44>
+      <Unit45>
+        <Filename Value="model/upay.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UPay"/>
+        <EditorIndex Value="7"/>
+        <UsageCount Value="151"/>
+        <Loaded Value="True"/>
+      </Unit45>
+      <Unit46>
+        <Filename Value="repository/udatapay.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UDataPay"/>
+        <EditorIndex Value="6"/>
+        <TopLine Value="115"/>
+        <CursorPos X="108" Y="121"/>
+        <UsageCount Value="151"/>
+        <Loaded Value="True"/>
+      </Unit46>
+      <Unit47>
+        <Filename Value="view/ufpay.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FormPay"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="UFPay"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="79"/>
+        <CursorPos X="32" Y="104"/>
+        <UsageCount Value="144"/>
+        <Loaded Value="True"/>
+      </Unit47>
+      <Unit48>
+        <Filename Value="view/uffindpay.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FormFindPay"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="UFFindpay"/>
+        <TopLine Value="100"/>
+        <CursorPos X="67" Y="109"/>
+        <UsageCount Value="138"/>
+      </Unit48>
+      <Unit49>
+        <Filename Value="service/ubalancebuilder.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UBalanceBuilder"/>
+        <EditorIndex Value="14"/>
+        <TopLine Value="105"/>
+        <CursorPos Y="118"/>
+        <UsageCount Value="131"/>
+        <Loaded Value="True"/>
+      </Unit49>
+      <Unit50>
+        <Filename Value="view/uffindtransacion.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FormFindTransaction"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="UFFindTransacion"/>
+        <TopLine Value="95"/>
+        <CursorPos X="16" Y="107"/>
+        <UsageCount Value="125"/>
+      </Unit50>
+      <Unit51>
+        <Filename Value="view/uffindsale.pas"/>
+        <ComponentName Value="FormFindSale"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="UFFindSale"/>
+        <TopLine Value="76"/>
+        <CursorPos X="64" Y="98"/>
+        <UsageCount Value="15"/>
+      </Unit51>
+      <Unit52>
+        <Filename Value="view/uftransaction.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FormTransaction"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="UFTransaction"/>
+        <TopLine Value="57"/>
+        <CursorPos X="12" Y="59"/>
+        <UsageCount Value="106"/>
+      </Unit52>
+      <Unit53>
+        <Filename Value="view/uftransaction.lfm"/>
+        <SyntaxHighlighter Value="LFM"/>
+        <UsageCount Value="6"/>
+      </Unit53>
+      <Unit54>
+        <Filename Value="service/uvalidator.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UValidator"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="27"/>
+        <CursorPos X="10" Y="40"/>
+        <UsageCount Value="100"/>
+        <Loaded Value="True"/>
+      </Unit54>
+      <Unit55>
+        <Filename Value="service/uitemvalidator.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UItemValidator"/>
+        <TopLine Value="99"/>
+        <CursorPos Y="114"/>
+        <UsageCount Value="99"/>
+      </Unit55>
+      <Unit56>
+        <Filename Value="service/utransactionvalidator.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UTransactionValidator"/>
+        <TopLine Value="75"/>
+        <CursorPos X="25" Y="93"/>
+        <UsageCount Value="99"/>
+      </Unit56>
+      <Unit57>
+        <Filename Value="service/uproductvalidator.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UProductValidator"/>
+        <CursorPos X="49" Y="8"/>
+        <UsageCount Value="95"/>
+      </Unit57>
+      <Unit58>
+        <Filename Value="service/upersonvalidator.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UPersonValidator"/>
+        <CursorPos X="45" Y="3"/>
+        <UsageCount Value="90"/>
+      </Unit58>
+      <Unit59>
+        <Filename Value="view/uffindpay.lrs"/>
+        <CursorPos X="17" Y="3"/>
+        <UsageCount Value="5"/>
+      </Unit59>
+      <Unit60>
+        <Filename Value="service/upayvalidator.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UPayValidator"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="43"/>
+        <CursorPos Y="56"/>
+        <UsageCount Value="88"/>
+        <Loaded Value="True"/>
+      </Unit60>
+      <Unit61>
+        <Filename Value="../../../../usr/lib/lazarus/0.9.28.2/lcl/include/wincontrol.inc"/>
+        <TopLine Value="5948"/>
+        <CursorPos Y="5960"/>
+        <UsageCount Value="5"/>
+      </Unit61>
+      <Unit62>
+        <Filename Value="../../../../usr/lib/lazarus/0.9.28.2/lcl/interfaces/gtk2/gtk2wscontrols.pp"/>
+        <UnitName Value="Gtk2WSControls"/>
+        <TopLine Value="277"/>
+        <CursorPos Y="289"/>
+        <UsageCount Value="5"/>
+      </Unit62>
+      <Unit63>
+        <Filename Value="../../../../usr/lib/lazarus/0.9.28.2/lcl/lclproc.pas"/>
+        <UnitName Value="LCLProc"/>
+        <TopLine Value="4463"/>
+        <CursorPos X="51" Y="1503"/>
+        <UsageCount Value="10"/>
+      </Unit63>
+      <Unit64>
+        <Filename Value="../../../../usr/lib/lazarus/0.9.28.2/lcl/dynamicarray.pas"/>
+        <UnitName Value="DynamicArray"/>
+        <TopLine Value="57"/>
+        <CursorPos Y="69"/>
+        <UsageCount Value="8"/>
+      </Unit64>
+      <Unit65>
+        <Filename Value="../../../../usr/lib/lazarus/0.9.28.2/examples/hello.pp"/>
+        <UnitName Value="Hello_world"/>
+        <TopLine Value="8"/>
+        <CursorPos X="40" Y="21"/>
+        <UsageCount Value="8"/>
+      </Unit65>
+      <Unit66>
+        <Filename Value="apotheca.lrs"/>
+        <TopLine Value="52"/>
+        <CursorPos Y="65"/>
+        <UsageCount Value="9"/>
+      </Unit66>
+      <Unit67>
+        <Filename Value="/usr/lib/lazarus/0.9.28.2/lcl/include/control.inc"/>
+        <TopLine Value="249"/>
+        <CursorPos Y="262"/>
+        <UsageCount Value="9"/>
+      </Unit67>
+      <Unit68>
+        <Filename Value="/usr/lib/lazarus/0.9.28.2/lcl/grids.pas"/>
+        <UnitName Value="Grids"/>
+        <TopLine Value="7631"/>
+        <CursorPos Y="7644"/>
+        <UsageCount Value="11"/>
+      </Unit68>
+      <Unit69>
+        <Filename Value="/usr/lib/lazarus/0.9.28.2/lcl/include/wincontrol.inc"/>
+        <TopLine Value="6190"/>
+        <CursorPos Y="6203"/>
+        <UsageCount Value="9"/>
+      </Unit69>
+      <Unit70>
+        <Filename Value="/usr/lib/lazarus/0.9.28.2/lcl/include/application.inc"/>
+        <TopLine Value="201"/>
+        <CursorPos Y="214"/>
+        <UsageCount Value="9"/>
+      </Unit70>
+      <Unit71>
+        <Filename Value="/usr/lib/lazarus/0.9.30.2/lcl/interfaces/gtk2/gtk2widgetset.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="1365"/>
+        <CursorPos Y="1378"/>
+        <UsageCount Value="10"/>
+      </Unit71>
+      <Unit72>
+        <Filename Value="service/ureportengine.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UReportEngine"/>
+        <UsageCount Value="20"/>
+      </Unit72>
+      <Unit73>
+        <Filename Value="view/ufreports.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FormReports"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="UFReports"/>
+        <UsageCount Value="20"/>
+      </Unit73>
+      <Unit74>
+        <Filename Value="view/ufinventoryadjustment.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FormInventoryAdjustment"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="UFInventoryAdjustment"/>
+        <UsageCount Value="20"/>
+      </Unit74>
+      <Unit75>
+        <Filename Value="service/utestsuite.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UTestSuite"/>
+        <UsageCount Value="20"/>
+      </Unit75>
+      <Unit76>
+        <Filename Value="service/ucartservice.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UCartService"/>
+        <UsageCount Value="20"/>
+      </Unit76>
+      <Unit77>
+        <Filename Value="service/usaleservice.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="USaleService"/>
+        <UsageCount Value="20"/>
+      </Unit77>
+      <Unit78>
+        <Filename Value="service/upurchaseservice.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UPurchaseService"/>
+        <UsageCount Value="20"/>
+      </Unit78>
+      <Unit79>
+        <Filename Value="view/uframepos.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FramePOS"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="UFramePOS"/>
+        <UsageCount Value="20"/>
+      </Unit79>
+      <Unit80>
+        <Filename Value="view/uframepurchase.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FramePurchase"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="UFramePurchase"/>
+        <UsageCount Value="20"/>
+      </Unit80>
+      <Unit81>
+        <Filename Value="view/uframeproducts.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FrameProducts"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="UFrameProducts"/>
+        <UsageCount Value="20"/>
+      </Unit81>
+      <Unit82>
+        <Filename Value="view/uframepeople.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FramePeople"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="UFramePeople"/>
+        <UsageCount Value="20"/>
+      </Unit82>
+      <Unit83>
+        <Filename Value="view/uframereports.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FrameReports"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="UFrameReports"/>
+        <UsageCount Value="20"/>
+      </Unit83>
+      <Unit84>
+        <Filename Value="service/ucreditservice.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UCreditService"/>
+        <UsageCount Value="20"/>
+      </Unit84>
+      <Unit85>
+        <Filename Value="model/udebtorinfo.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UDebtorInfo"/>
+        <UsageCount Value="20"/>
+      </Unit85>
+      <Unit86>
+        <Filename Value="model/ucreditsaleinfo.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UCreditSaleInfo"/>
+        <UsageCount Value="20"/>
+      </Unit86>
+      <Unit87>
+        <Filename Value="view/uframecredits.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FrameCredits"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="UFrameCredits"/>
+        <UsageCount Value="20"/>
+      </Unit87>
+    </Units>
+    <JumpHistory Count="30" HistoryIndex="29">
+      <Position1>
+        <Filename Value="service/ubalancebuilder.pas"/>
+        <Caret Line="73" TopLine="60"/>
+      </Position1>
+      <Position2>
+        <Filename Value="service/ubalancebuilder.pas"/>
+        <Caret Line="118" TopLine="105"/>
+      </Position2>
+      <Position3>
+        <Filename Value="repository/udatabalance.pas"/>
+        <Caret Line="87" TopLine="74"/>
+      </Position3>
+      <Position4>
+        <Filename Value="service/ubalancebuilder.pas"/>
+        <Caret Line="73" TopLine="60"/>
+      </Position4>
+      <Position5>
+        <Filename Value="service/ubalancebuilder.pas"/>
+        <Caret Line="118" TopLine="105"/>
+      </Position5>
+      <Position6>
+        <Filename Value="repository/udatabalance.pas"/>
+        <Caret Line="87" TopLine="74"/>
+      </Position6>
+      <Position7>
+        <Filename Value="service/ubalancebuilder.pas"/>
+        <Caret Line="73" TopLine="60"/>
+      </Position7>
+      <Position8>
+        <Filename Value="service/ubalancebuilder.pas"/>
+        <Caret Line="118" TopLine="105"/>
+      </Position8>
+      <Position9>
+        <Filename Value="view/ufpurchase.pas"/>
+        <Caret Line="241" Column="30" TopLine="230"/>
+      </Position9>
+      <Position10>
+        <Filename Value="view/ufpurchase.pas"/>
+        <Caret Line="244" Column="62" TopLine="230"/>
+      </Position10>
+      <Position11>
+        <Filename Value="view/ufpurchase.pas"/>
+        <Caret Line="221" Column="42" TopLine="209"/>
+      </Position11>
+      <Position12>
+        <Filename Value="view/ufpurchase.pas"/>
+        <Caret Line="244" Column="22" TopLine="235"/>
+      </Position12>
+      <Position13>
+        <Filename Value="repository/udatabalance.pas"/>
+        <Caret Line="93" Column="107" TopLine="74"/>
+      </Position13>
+      <Position14>
+        <Filename Value="repository/udatabalance.pas"/>
+        <Caret Line="88" Column="109" TopLine="74"/>
+      </Position14>
+      <Position15>
+        <Filename Value="view/ufpurchase.pas"/>
+        <Caret Line="244" Column="22" TopLine="235"/>
+      </Position15>
+      <Position16>
+        <Filename Value="view/ufpurchase.pas"/>
+        <Caret Line="215" TopLine="202"/>
+      </Position16>
+      <Position17>
+        <Filename Value="repository/udatabalance.pas"/>
+        <Caret Line="86" Column="36" TopLine="74"/>
+      </Position17>
+      <Position18>
+        <Filename Value="view/ufproduct.pas"/>
+        <Caret Line="172" Column="49" TopLine="159"/>
+      </Position18>
+      <Position19>
+        <Filename Value="view/ufproduct.pas"/>
+        <Caret Line="111" Column="92" TopLine="109"/>
+      </Position19>
+      <Position20>
+        <Filename Value="view/ufpurchase.pas"/>
+        <Caret Line="220" Column="96" TopLine="202"/>
+      </Position20>
+      <Position21>
+        <Filename Value="repository/udatabalance.pas"/>
+        <Caret Line="84" Column="107" TopLine="74"/>
+      </Position21>
+      <Position22>
+        <Filename Value="view/ufsale.pas"/>
+        <Caret Line="306" Column="13" TopLine="296"/>
+      </Position22>
+      <Position23>
+        <Filename Value="view/ufsale.pas"/>
+        <Caret Line="220" Column="76" TopLine="210"/>
+      </Position23>
+      <Position24>
+        <Filename Value="view/uffindproduct.pas"/>
+        <Caret Line="146" TopLine="140"/>
+      </Position24>
+      <Position25>
+        <Filename Value="view/apothecamain.pas"/>
+        <Caret Line="298" Column="15" TopLine="296"/>
+      </Position25>
+      <Position26>
+        <Filename Value="view/apothecamain.pas"/>
+        <Caret Line="294" Column="57"/>
+      </Position26>
+      <Position27>
+        <Filename Value="view/apothecamain.pas"/>
+        <Caret Line="269" Column="8" TopLine="256"/>
+      </Position27>
+      <Position28>
+        <Filename Value="service/uvalidator.pas"/>
+        <Caret Line="53" TopLine="40"/>
+      </Position28>
+      <Position29>
+        <Filename Value="view/apothecamain.pas"/>
+        <Caret Line="106" Column="65" TopLine="93"/>
+      </Position29>
+      <Position30>
+        <Filename Value="service/uvalidator.pas"/>
+        <Caret Line="40" Column="10" TopLine="27"/>
+      </Position30>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="11"/>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)"/>
+      <OtherUnitFiles Value="model;view;repository;service;infrastructure;languages;res"/>
+    </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <UseAnsiStrings Value="False"/>
+      </SyntaxOptions>
+    </Parsing>
+    <Linking>
+      <Debugging>
+        <DebugInfoType Value="dsDwarf3"/>
+      </Debugging>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+    <Other>
+      <CustomOptions Value="-Fl/usr/lib/gcc/x86_64-pc-linux-gnu/16"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <BreakPoints Count="5">
+      <Item1>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsGlobal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Source Value="service/ubalancebuilder.pas"/>
+        <Line Value="107"/>
+      </Item1>
+      <Item2>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsGlobal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Source Value="service/ubalancebuilder.pas"/>
+        <Line Value="118"/>
+      </Item2>
+      <Item3>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsGlobal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Source Value="service/ubalancebuilder.pas"/>
+        <Line Value="73"/>
+      </Item3>
+      <Item4>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsGlobal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Source Value="view/ufpurchase.pas"/>
+        <Line Value="241"/>
+      </Item4>
+      <Item5>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsGlobal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Source Value="view/ufpurchase.pas"/>
+        <Line Value="215"/>
+      </Item5>
+    </BreakPoints>
+    <Watches Count="7">
+      <Item1>
+        <Expression Value="product.name"/>
+      </Item1>
+      <Item2>
+        <Expression Value="procuct.id"/>
+      </Item2>
+      <Item3>
+        <Expression Value="product.getId()"/>
+      </Item3>
+      <Item4>
+        <Expression Value="item.balance.balance"/>
+      </Item4>
+      <Item5>
+        <Expression Value="item"/>
+        <Enabled Value="False"/>
+      </Item5>
+      <Item6>
+        <Expression Value="query.SQL"/>
+        <Enabled Value="False"/>
+      </Item6>
+      <Item7>
+        <Expression Value="Self.getQuery().SQL.Tex"/>
+        <Enabled Value="False"/>
+      </Item7>
+    </Watches>
+    <Exceptions Count="5">
+      <Item1>
+        <Name Value="EAbort"/>
+      </Item1>
+      <Item2>
+        <Name Value="ECodetoolError"/>
+      </Item2>
+      <Item3>
+        <Name Value="EFOpenError"/>
+      </Item3>
+      <Item4>
+        <Name Value="EReadError"/>
+      </Item4>
+      <Item5>
+        <Name Value="EInterfaceCritical"/>
+      </Item5>
+    </Exceptions>
+  </Debugging>
+</CONFIG>

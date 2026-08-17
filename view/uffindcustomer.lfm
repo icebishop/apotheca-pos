@@ -1,0 +1,67 @@
+object FormFindCustomer: TFormFindCustomer
+  Left = 594
+  Height = 232
+  Top = 442
+  Width = 271
+  ActiveControl = EditFind
+  Caption = 'Find Customers'
+  ClientHeight = 232
+  ClientWidth = 271
+  OnCreate = FormCreate
+  LCLVersion = '0.9.28.2'
+  object EditFind: TEdit
+    Left = 8
+    Height = 27
+    Top = 8
+    Width = 256
+    OnKeyUp = EditFindKeyUp
+    TabOrder = 0
+  end
+  object StringGridCustomer: TStringGrid
+    Left = 8
+    Height = 151
+    Top = 44
+    Width = 256
+    ColCount = 1
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSelect, goSmoothScroll]
+    TabOrder = 1
+    OnClick = StringGridCustomerClick
+    ColWidths = (
+      251
+    )
+    Cells = (
+      1
+      0
+      0
+      'Customer'
+    )
+  end
+  object BitBtnNew: TBitBtn
+    Left = 8
+    Height = 30
+    Top = 200
+    Width = 75
+    Caption = '&New'
+    OnClick = BitBtnNewClick
+    TabOrder = 2
+  end
+  object BitBtnOk: TBitBtn
+    Left = 112
+    Height = 30
+    Top = 200
+    Width = 75
+    Caption = '&Ok'
+    OnClick = BitBtnOkClick
+    TabOrder = 3
+  end
+  object BitBtnCancel: TBitBtn
+    Left = 189
+    Height = 30
+    Top = 200
+    Width = 75
+    Caption = '&Cancel'
+    OnClick = BitBtnCancelClick
+    TabOrder = 4
+  end
+end

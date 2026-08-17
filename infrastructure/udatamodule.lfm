@@ -1,0 +1,17 @@
+object DataModule1: TDataModule1
+  OnCreate = DataModuleCreate
+  OldCreateOrder = False
+  Height = 300
+  HorizontalOffset = 380
+  VerticalOffset = 387
+  Width = 400
+  object SQLite3Connection1: TSQLite3Connection
+    Connected = False
+    LoginPrompt = False
+    DatabaseName = 'db/invcar'
+    KeepConnection = False
+    Options = []
+    left = 128
+    top = 32
+  end
+end

@@ -1,0 +1,50 @@
+object FormFindPay: TFormFindPay
+  Left = 382
+  Height = 272
+  Top = 343
+  Width = 281
+  ActiveControl = StringGridPay
+  BorderIcons = []
+  BorderStyle = bsDialog
+  Caption = 'Find Pay'
+  ClientHeight = 272
+  ClientWidth = 281
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnShow = FormShow
+  LCLVersion = '0.9.28.2'
+  object StringGridPay: TStringGrid
+    Left = 8
+    Height = 224
+    Top = 8
+    Width = 264
+    ColCount = 2
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSelect, goSmoothScroll]
+    TabOrder = 0
+    OnDblClick = StringGridPayDblClick
+    ColWidths = (
+      116
+      118
+    )
+  end
+  object BitBtnOk: TBitBtn
+    Left = 120
+    Height = 30
+    Top = 240
+    Width = 75
+    Caption = '&Ok'
+    Enabled = False
+    OnClick = BitBtnOkClick
+    TabOrder = 1
+  end
+  object BitBtnCancel: TBitBtn
+    Left = 197
+    Height = 30
+    Top = 240
+    Width = 75
+    Caption = '&Cancel'
+    OnClick = BitBtnCancelClick
+    TabOrder = 2
+  end
+end

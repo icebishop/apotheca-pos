@@ -1,0 +1,30 @@
+object FormSplash: TFormSplash
+  Left = 0
+  Height = 768
+  Top = 0
+  Width = 1376
+  BorderStyle = bsNone
+  Caption = 'Apothêca'
+  ClientHeight = 768
+  ClientWidth = 1376
+  Color = clBlack
+  Position = poWorkAreaCenter
+  ShowInTaskBar = stNever
+  object ImageSplash: TImage
+    Left = 0
+    Height = 768
+    Top = 0
+    Width = 1376
+    Align = alClient
+    Center = True
+    Proportional = True
+    Stretch = True
+    StretchOutEnabled = False
+  end
+  object TimerClose: TTimer
+    Interval = 5000
+    OnTimer = OnTimerClose
+    Left = 688
+    Top = 384
+  end
+end

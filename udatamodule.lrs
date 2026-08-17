@@ -1,0 +1,8 @@
+LazarusResources.Add('TDataModule1','FORMDATA',[
+  'TPF0'#12'TDataModule1'#11'DataModule1'#8'OnCreate'#7#16'DataModuleCreate'#14
+  +'OldCreateOrder'#8#6'Height'#3','#1#16'HorizontalOffset'#3'|'#1#14'VerticalO'
+  +'ffset'#3#131#1#5'Width'#3#144#1#0#18'TSQLite3Connection'#18'SQLite3Connecti'
+  +'on1'#9'Connected'#8#11'LoginPrompt'#8#12'DatabaseName'#6'./home/ice/Escrito'
+  +'rio/apotheca/invcar/db/invcar'#14'KeepConnection'#8#7'Options'#11#0#4'left'
+  +#3#128#0#3'top'#2' '#0#0#0
+]);

@@ -1,0 +1,126 @@
+object FormInventoryAdjustment: TFormInventoryAdjustment
+  Left = 320
+  Height = 320
+  Top = 200
+  Width = 440
+  Caption = 'Stock Adjustment (Entry / Out)'
+  ClientHeight = 320
+  ClientWidth = 440
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  Position = poScreenCenter
+  object LabelAdjustmentType: TLabel
+    Left = 20
+    Height = 16
+    Top = 20
+    Width = 100
+    Caption = 'Adjustment Type:'
+    ParentColor = False
+  end
+  object ComboBoxAdjustmentType: TComboBox
+    Left = 140
+    Height = 24
+    Top = 16
+    Width = 270
+    ItemHeight = 16
+    TabOrder = 0
+  end
+  object LabelProduct: TLabel
+    Left = 20
+    Height = 16
+    Top = 60
+    Width = 50
+    Caption = 'Product:'
+    ParentColor = False
+  end
+  object ComboBoxProduct: TComboBox
+    Left = 140
+    Height = 24
+    Top = 56
+    Width = 270
+    ItemHeight = 16
+    OnChange = ComboBoxProductChange
+    TabOrder = 1
+  end
+  object LabelQuantity: TLabel
+    Left = 20
+    Height = 16
+    Top = 100
+    Width = 55
+    Caption = 'Quantity:'
+    ParentColor = False
+  end
+  object EditQuantity: TEdit
+    Left = 140
+    Height = 24
+    Top = 96
+    Width = 120
+    TabOrder = 2
+    Text = '1'
+  end
+  object LabelCost: TLabel
+    Left = 20
+    Height = 16
+    Top = 140
+    Width = 56
+    Caption = 'Unit Cost:'
+    ParentColor = False
+  end
+  object EditCost: TEdit
+    Left = 140
+    Height = 24
+    Top = 136
+    Width = 120
+    TabOrder = 3
+    Text = '0.00'
+  end
+  object LabelPrice: TLabel
+    Left = 20
+    Height = 16
+    Top = 180
+    Width = 58
+    Caption = 'Sale Price:'
+    ParentColor = False
+  end
+  object EditPrice: TEdit
+    Left = 140
+    Height = 24
+    Top = 176
+    Width = 120
+    TabOrder = 4
+    Text = '0.00'
+  end
+  object LabelNotes: TLabel
+    Left = 20
+    Height = 16
+    Top = 220
+    Width = 40
+    Caption = 'Notes:'
+    ParentColor = False
+  end
+  object EditNotes: TEdit
+    Left = 140
+    Height = 24
+    Top = 216
+    Width = 270
+    TabOrder = 5
+  end
+  object ButtonSave: TBitBtn
+    Left = 230
+    Height = 30
+    Top = 265
+    Width = 85
+    Caption = '&Save'
+    OnClick = ButtonSaveClick
+    TabOrder = 6
+  end
+  object ButtonCancel: TBitBtn
+    Left = 325
+    Height = 30
+    Top = 265
+    Width = 85
+    Caption = '&Cancel'
+    OnClick = ButtonCancelClick
+    TabOrder = 7
+  end
+end

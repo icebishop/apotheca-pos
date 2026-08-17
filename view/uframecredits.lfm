@@ -1,0 +1,214 @@
+object FrameCredits: TFrameCredits
+  Left = 0
+  Height = 600
+  Top = 0
+  Width = 750
+  ClientHeight = 600
+  ClientWidth = 750
+  TabOrder = 0
+  DesignLeft = 0
+  DesignTop = 0
+  object PanelTop: TPanel
+    Left = 0
+    Height = 260
+    Top = 0
+    Width = 750
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 260
+    ClientWidth = 750
+    TabOrder = 0
+    object LabelTitle: TLabel
+      Left = 8
+      Height = 24
+      Top = 8
+      Width = 80
+      Caption = 'Deudores'
+      Font.Height = -14
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object EditSearch: TEdit
+      Left = 8
+      Height = 27
+      Top = 36
+      Width = 300
+      Anchors = [akTop, akLeft, akRight]
+      OnChange = OnSearchChange
+      TabOrder = 0
+      TextHint = 'Buscar por nombre...'
+    end
+    object LabelSummaryTotal: TLabel
+      Left = 450
+      Height = 24
+      Top = 38
+      Width = 290
+      Anchors = [akTop, akRight]
+      Alignment = taRightJustify
+      Caption = 'Deuda Total: $0.00'
+      Font.Height = -14
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object GridDebtors: TStringGrid
+      Left = 8
+      Height = 185
+      Top = 68
+      Width = 734
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      ColCount = 4
+      FixedCols = 0
+      FixedRows = 1
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRowSelect, goSmoothScroll]
+      RowCount = 2
+      TabOrder = 1
+      OnClick = OnDebtorClick
+      OnSelection = OnDebtorSelected
+    end
+  end
+  object SplitterMain: TSplitter
+    Left = 0
+    Height = 5
+    Top = 260
+    Width = 750
+    Align = alTop
+    ResizeAnchor = akTop
+  end
+  object PanelBottom: TPanel
+    Left = 0
+    Height = 335
+    Top = 265
+    Width = 750
+    Align = alClient
+    BevelOuter = bvNone
+    ClientHeight = 335
+    ClientWidth = 750
+    TabOrder = 1
+    object TabControlDetail: TTabControl
+      Left = 0
+      Height = 335
+      Top = 0
+      Width = 750
+      OnChange = OnTabChange
+      Align = alClient
+      TabIndex = 0
+      Tabs.Strings = (
+        'Ventas Crédito'
+        'Pagos'
+      )
+      TabOrder = 0
+      object GridCreditSales: TStringGrid
+        Left = 2
+        Height = 309
+        Top = 24
+        Width = 746
+        Align = alClient
+        ColCount = 3
+        FixedCols = 0
+        FixedRows = 1
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRowSelect, goSmoothScroll]
+        RowCount = 2
+        TabOrder = 0
+        OnSelection = OnCreditSaleSelected
+      end
+      object PanelPayments: TPanel
+        Left = 2
+        Height = 309
+        Top = 24
+        Width = 746
+        Align = alClient
+        BevelOuter = bvNone
+        ClientHeight = 309
+        ClientWidth = 746
+        TabOrder = 1
+        Visible = False
+        object GridPayments: TStringGrid
+          Left = 0
+          Height = 250
+          Top = 0
+          Width = 746
+          Align = alTop
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          ColCount = 2
+          FixedCols = 0
+          FixedRows = 1
+          Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRowSelect, goSmoothScroll]
+          RowCount = 2
+          TabOrder = 0
+        end
+        object PanelPayEntry: TPanel
+          Left = 0
+          Height = 59
+          Top = 250
+          Width = 746
+          Align = alBottom
+          BevelOuter = bvNone
+          ClientHeight = 59
+          ClientWidth = 746
+          TabOrder = 1
+          object LabelPaymentTotal: TLabel
+            Left = 8
+            Height = 20
+            Top = 4
+            Width = 200
+            Caption = 'Total Pagos: $0.00'
+            Font.Height = -12
+            Font.Style = [fsBold]
+            ParentColor = False
+            ParentFont = False
+          end
+          object LabelPayAmount: TLabel
+            Left = 8
+            Height = 18
+            Top = 32
+            Width = 50
+            Caption = 'Monto:'
+            ParentColor = False
+          end
+          object EditPayAmount: TEdit
+            Left = 65
+            Height = 27
+            Top = 28
+            Width = 120
+            TabOrder = 0
+            TextHint = '0.00'
+          end
+          object LabelPayDate: TLabel
+            Left = 200
+            Height = 18
+            Top = 32
+            Width = 42
+            Caption = 'Fecha:'
+            ParentColor = False
+          end
+          object DateEditPay: TDateEdit
+            Left = 250
+            Height = 27
+            Top = 28
+            Width = 140
+            CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
+            OKCaption = 'OK'
+            CancelCaption = 'Cancel'
+            DefaultToday = True
+            DateOrder = doNone
+            ButtonWidth = 23
+            NumGlyphs = 0
+            TabOrder = 1
+          end
+          object BtnRegisterPayment: TBitBtn
+            Left = 420
+            Height = 30
+            Top = 26
+            Width = 160
+            Anchors = [akTop, akLeft]
+            Caption = 'Registrar Pago'
+            OnClick = OnRegisterPayment
+            TabOrder = 2
+          end
+        end
+      end
+    end
+  end
+end

@@ -1,0 +1,34 @@
+LazarusResources.Add('TFormPrincipal','FORMDATA',[
+  'TPF0'#14'TFormPrincipal'#13'FormPrincipal'#4'Left'#3#200#0#6'Height'#3#188#2
+  +#3'Top'#2'P'#5'Width'#3#0#4#7'Caption'#6#9'Apoth'#195#170'ca'#12'ClientHeigh'
+  +'t'#3#188#2#11'ClientWidth'#3#0#4#8'OnCreate'#7#10'FormCreate'#10'LCLVersion'
+  +#6#8'0.9.30.2'#0#6'TPanel'#12'PanelSidebar'#4'Left'#2#0#6'Height'#3#167#2#3
+  +'Top'#2#0#5'Width'#3#180#0#5'Align'#7#6'alLeft'#10'BevelOuter'#7#6'bvNone'#7
+  +'Caption'#6#0#12'ClientHeight'#3#167#2#11'ClientWidth'#3#180#0#5'Color'#4'@@'
+  +'@'#0#11'ParentColor'#8#8'TabOrder'#2#0#0#7'TBitBtn'#6'BtnPOS'#4'Left'#2#0#6
+  +'Height'#2'0'#3'Top'#2#0#5'Width'#3#180#0#5'Align'#7#5'alTop'#7'Caption'#6#6
+  +'Ventas'#10'Font.Color'#7#7'clWhite'#11'Font.Height'#2#241#7'OnClick'#7#11'B'
+  +'tnPOSClick'#10'ParentFont'#8#8'TabOrder'#2#0#0#0#7'TBitBtn'#10'BtnCredits'#4
+  +'Left'#2#0#6'Height'#2'0'#3'Top'#2'0'#5'Width'#3#180#0#5'Align'#7#5'alTop'#7
+  +'Caption'#6#9'Cr'#195#169'ditos'#10'Font.Color'#7#7'clWhite'#11'Font.Height'
+  +#2#241#7'OnClick'#7#15'BtnCreditsClick'#10'ParentFont'#8#8'TabOrder'#2#1#0#0
+  +#7'TBitBtn'#12'BtnPurchases'#4'Left'#2#0#6'Height'#2'0'#3'Top'#2'`'#5'Width'
+  +#3#180#0#5'Align'#7#5'alTop'#7'Caption'#6#7'Compras'#10'Font.Color'#7#7'clWh'
+  +'ite'#11'Font.Height'#2#241#7'OnClick'#7#17'BtnPurchasesClick'#10'ParentFont'
+  +#8#8'TabOrder'#2#2#0#0#7'TBitBtn'#11'BtnProducts'#4'Left'#2#0#6'Height'#2'0'
+  +#3'Top'#3#144#0#5'Width'#3#180#0#5'Align'#7#5'alTop'#7'Caption'#6#9'Producto'
+  +'s'#10'Font.Color'#7#7'clWhite'#11'Font.Height'#2#241#7'OnClick'#7#16'BtnPro'
+  +'ductsClick'#10'ParentFont'#8#8'TabOrder'#2#3#0#0#7'TBitBtn'#9'BtnPeople'#4
+  +'Left'#2#0#6'Height'#2'0'#3'Top'#3#192#0#5'Width'#3#180#0#5'Align'#7#5'alTop'
+  +#7'Caption'#6#8'Personas'#10'Font.Color'#7#7'clWhite'#11'Font.Height'#2#241#7
+  +'OnClick'#7#14'BtnPeopleClick'#10'ParentFont'#8#8'TabOrder'#2#4#0#0#7'TBitBt'
+  +'n'#10'BtnReports'#4'Left'#2#0#6'Height'#2'0'#3'Top'#3#240#0#5'Width'#3#180#0
+  +#5'Align'#7#5'alTop'#7'Caption'#6#8'Reportes'#10'Font.Color'#7#7'clWhite'#11
+  +'Font.Height'#2#241#7'OnClick'#7#15'BtnReportsClick'#10'ParentFont'#8#8'TabO'
+  +'rder'#2#5#0#0#0#6'TPanel'#12'PanelContent'#4'Left'#3#180#0#6'Height'#3#167#2
+  +#3'Top'#2#0#5'Width'#3'L'#3#5'Align'#7#8'alClient'#10'BevelOuter'#7#6'bvNone'
+  +#7'Caption'#6#0#12'ClientHeight'#3#167#2#11'ClientWidth'#3'L'#3#5'Color'#7#8
+  +'clWindow'#11'ParentColor'#8#8'TabOrder'#2#1#0#0#10'TStatusBar'#9'StatusBar'
+  +#4'Left'#2#0#6'Height'#2#21#3'Top'#3#167#2#5'Width'#3#0#4#6'Panels'#14#0#11
+  +'SimplePanel'#9#0#0#0
+]);

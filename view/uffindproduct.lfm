@@ -1,0 +1,68 @@
+object FormFindProduct: TFormFindProduct
+  Left = 462
+  Height = 235
+  Top = 459
+  Width = 270
+  ActiveControl = EditFind
+  Caption = 'Find Products'
+  ClientHeight = 235
+  ClientWidth = 270
+  OnCreate = FormCreate
+  OnShow = FormShow
+  LCLVersion = '0.9.28.2'
+  object StringGridProduct: TStringGrid
+    Left = 8
+    Height = 148
+    Top = 48
+    Width = 256
+    ColCount = 1
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSelect, goSmoothScroll]
+    TabOrder = 0
+    OnClick = StringGridProductClick
+    ColWidths = (
+      251
+    )
+    Cells = (
+      1
+      0
+      0
+      'Product'
+    )
+  end
+  object EditFind: TEdit
+    Left = 8
+    Height = 27
+    Top = 8
+    Width = 256
+    OnKeyUp = EditFindKeyUp
+    TabOrder = 1
+  end
+  object BitBtnNew: TBitBtn
+    Left = 8
+    Height = 30
+    Top = 200
+    Width = 75
+    Caption = '&New'
+    OnClick = BitBtnNewClick
+    TabOrder = 2
+  end
+  object BitBtnCancel: TBitBtn
+    Left = 189
+    Height = 30
+    Top = 200
+    Width = 75
+    Caption = '&Cancel'
+    OnClick = BitBtnCancelClick
+    TabOrder = 3
+  end
+  object BitBtnOk: TBitBtn
+    Left = 112
+    Height = 30
+    Top = 200
+    Width = 75
+    Caption = '&Ok'
+    OnClick = BitBtnOkClick
+    TabOrder = 4
+  end
+end

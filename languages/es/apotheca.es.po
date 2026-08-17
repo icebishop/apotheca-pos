@@ -1,0 +1,819 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: uresourcestring.rs_fmaindeletecustomer
+msgid "Delete Customer"
+msgstr "Eliminar Cliente"
+
+#: uresourcestring.rs_fmaindeletepay
+msgid "Delete Payment"
+msgstr "Eliminar Pago"
+
+#: uresourcestring.rs_fmaindeletepurchase
+msgid "Delete Purchase"
+msgstr "Eliminar Compra"
+
+#: uresourcestring.rs_fmaindeletesale
+msgid "Delete Sale"
+msgstr "Eliminar Venta"
+
+#: uresourcestring.rs_fmaindeletesupplier
+msgid "Delete Supplier"
+msgstr "Eliminar Proveedor"
+
+#: uresourcestring.rs_fmaineditcustomer
+msgid "Edit Customer"
+msgstr "Editar Cliente"
+
+#: uresourcestring.rs_fmaineditpay
+msgid "Edit Payment"
+msgstr "Editar Pago"
+
+#: uresourcestring.rs_fmaineditpurchase
+msgid "Edit Purchase"
+msgstr "Editar Compra"
+
+#: uresourcestring.rs_fmaineditsale
+msgid "Edit Sale"
+msgstr "Editar Venta"
+
+#: uresourcestring.rs_fmaineditsupplier
+msgid "Edit Supplier"
+msgstr "Editar Proveedor"
+
+#: uresourcestring.rs_fmainmenupay
+msgid "P&ayment"
+msgstr "P&ago"
+
+#: uresourcestring.rs_fmainmenusale
+msgid "&Sale"
+msgstr "&Venta"
+
+#: uresourcestring.rs_fmainnewcustomer
+msgid "New Customer"
+msgstr "Nuevo Cliente"
+
+#: uresourcestring.rs_fmainnewpa
+msgid "New Sale"
+msgstr "Nueva Venta"
+
+#: uresourcestring.rs_fmainnewpay
+msgid "New Payment"
+msgstr "Nuevo Pago"
+
+#: uresourcestring.rs_fmainnewpurchase
+msgid "New Purchase"
+msgstr "Nueva Compra"
+
+#: uresourcestring.rs_fmainnewsale
+msgctxt "uresourcestring.rs_fmainnewsale"
+msgid "New Sale"
+msgstr "Nueva Venta"
+
+#: uresourcestring.rs_fmainnewsupplier
+msgid "New Supplier"
+msgstr "Nuevo Proveedor"
+
+#: uresourcestring.rs_laddress
+msgid "Address"
+msgstr "Dirección"
+
+#: uresourcestring.rs_lcustomer
+msgid "Customer"
+msgstr "Cliente"
+
+#: uresourcestring.rs_lcustomers
+msgid "Customers"
+msgstr "Clientes"
+
+#: uresourcestring.rs_ldate
+msgid "Date"
+msgstr "Fecha"
+
+#: uresourcestring.rs_ldescription
+msgid "Description"
+msgstr "Descripción"
+
+#: uresourcestring.rs_lfindcustomers
+msgid "Find Customers"
+msgstr "Buscar Clientes"
+
+#: uresourcestring.rs_lfindpay
+msgid "Find Payments"
+msgstr "Buscar Pagos"
+
+#: uresourcestring.rs_lfindproducts
+msgid "Find Products"
+msgstr "Buscar Productos"
+
+#: uresourcestring.rs_lmaxstock
+msgid "Max Stock"
+msgstr "Existencia Max"
+
+#: uresourcestring.rs_lminstock
+msgid "Min Stock"
+msgstr "Existencia Min"
+
+#: uresourcestring.rs_lname
+msgid "Name"
+msgstr "Nombres"
+
+#: uresourcestring.rs_lproducts
+msgid "Products"
+msgstr "Productos"
+
+#: uresourcestring.rs_ltelephone
+msgid "Telephone"
+msgstr "Teléfono"
+
+#: uresourcestring.rs_lvalue
+msgid "Value"
+msgstr "Valor"
+
+#: uresourcestring.rs_lsales
+msgid "Sales"
+msgstr "Ventas"
+
+#: uresourcestring.rs_ltotal
+msgid "Total"
+msgstr "Total"
+
+#: uresourcestring.rs_msgcustomer
+msgctxt "uresourcestring.rs_msgcustomer"
+msgid "Customer"
+msgstr "Cliente"
+
+#: uresourcestring.rs_msgmorethan0
+msgid "%sValue must be greater than 0%s"
+msgstr "%sEl Valor debe ser mayor que 0%s"
+
+#: uresourcestring.rs_msgsupplier
+msgid "Supplier"
+msgstr "Proveedor"
+
+#: uresourcestring.rs_msgvalcbox
+msgid "Are you sure you want to perform this operation?"
+msgstr "Esta seguro de realizar la operación"
+
+#: uresourcestring.rs_msgvaldate
+msgid "%sYou must select a date"
+msgstr "%sDebe seleccionar una fecha"
+
+#: uresourcestring.rs_msgvalitems
+msgid "%sYou must include Products%s"
+msgstr "%sDebe incluir Productos%s"
+
+#: uresourcestring.rs_msgvallistitems
+msgid "The product list has the following errors: %s"
+msgstr "La lista de productos tiene los siguientes errores: %s"
+
+#: uresourcestring.rs_msgvalnumeric
+msgid "%sValue must be numeric%s"
+msgstr "%sEl Valor debe ser numérico%s"
+
+#: uresourcestring.rs_msgvalnumitem
+msgid "%sItem No%s"
+msgstr "%sItem No%s"
+
+#: uresourcestring.rs_msgvalpaycust
+msgid "%sPayment must have a customer%s"
+msgstr "%sEl Pago debe tener un cliente%s"
+
+#: uresourcestring.rs_msgvalpaydate
+msgid "%sPayment must have a date%s"
+msgstr "%sEl pago debe tener una fecha%s"
+
+#: uresourcestring.rs_msgvalpayvalue
+msgid "%sPayment must be greater than 0%s"
+msgstr "%sEl Pago debe ser mayor que 0%s"
+
+#: uresourcestring.rs_msgvalperaddress
+msgid "%s%s must have an address%s"
+msgstr "%sEl %s debe tener una dirección%s"
+
+#: uresourcestring.rs_msgvalpername
+msgid "%s%s must have a name%s"
+msgstr "%sEl %s debe tener un nombre%s"
+
+#: uresourcestring.rs_msgvalperson
+msgid "%sYou must select a Supplier/Customer"
+msgstr "%sDebe seleccionar un Proveedor/Cliente"
+
+#: uresourcestring.rs_fmain
+msgid "Apothêca"
+msgstr "Apothêca"
+
+#: uresourcestring.rs_fmainmenuopen
+msgid "&Open"
+msgstr "&Abrir"
+
+#: uresourcestring.rs_fmainmenunew
+msgid "&New"
+msgstr "&Nuevo"
+
+#: uresourcestring.rs_fmainmenufile
+msgid "&File"
+msgstr "&Archivo"
+
+#: uresourcestring.rs_fmainmenuclose
+msgid "&Close"
+msgstr "&Cerrar"
+
+#: uresourcestring.rs_fmainmenuedit
+msgid "&Edit"
+msgstr "&Editar"
+
+#: uresourcestring.rs_fmainmenumodify
+msgid "&Modify"
+msgstr "&Modificar"
+
+#: uresourcestring.rs_fmainmenudelete
+msgid "&Delete"
+msgstr "&Eliminar"
+
+#: uresourcestring.rs_fmainmenucustomer
+msgid "&Customer"
+msgstr "&Cliente"
+
+#: uresourcestring.rs_fmainmenusupplier
+msgid "&Supplier"
+msgstr "&Proveedor"
+
+#: uresourcestring.rs_fmainmenuproducto
+msgid "Pr&oduct"
+msgstr "Pr&oducto"
+
+#: uresourcestring.rs_fmainmenupurchase
+msgid "&Purchase"
+msgstr "&Compra"
+
+#: uresourcestring.rs_fmaintabcustomer
+msgid "&Customers"
+msgstr "&Clientes"
+
+#: uresourcestring.rs_fmaintabproduct
+msgid "&Products"
+msgstr "&Productos"
+
+#: uresourcestring.rs_fmainstringgrid100
+msgctxt "uresourcestring.rs_fmainstringgrid100"
+msgid "ID"
+msgstr "ID"
+
+#: uresourcestring.rs_fmainstringgrid110
+msgctxt "uresourcestring.rs_fmainstringgrid110"
+msgid "Name"
+msgstr "Nombre"
+
+#: uresourcestring.rs_fmainstringgrid120
+msgid "Last Purchase"
+msgstr "Ultima Compra"
+
+#: uresourcestring.rs_fmainstringgrid130
+msgid "Last Payment"
+msgstr "Ultimo Pago"
+
+#: uresourcestring.rs_fmainstringgrid140
+msgid "Paid"
+msgstr "Abonado"
+
+#: uresourcestring.rs_fmainstringgrid150
+msgid "Balance"
+msgstr "Saldo"
+
+#: uresourcestring.rs_fmainstringgrid200
+msgctxt "uresourcestring.rs_fmainstringgrid200"
+msgid "ID"
+msgstr "ID"
+
+#: uresourcestring.rs_fmainstringgrid210
+msgctxt "uresourcestring.rs_fmainstringgrid210"
+msgid "Name"
+msgstr "Nombre"
+
+#: uresourcestring.rs_fmainstringgrid220
+msgid "Unit Price"
+msgstr "Valor U"
+
+#: uresourcestring.rs_fmainstringgrid230
+msgid "Quantity"
+msgstr "Cantidad"
+
+#: uresourcestring.rs_fmainstringgrid240
+msgid "Cost"
+msgstr "Costo"
+
+#: uresourcestring.rs_fmainstringgrid250
+msgid "Price"
+msgstr "Precio"
+
+#: uresourcestring.rs_fmainstringgrid260
+msgid "Sale Price"
+msgstr "Precio Venta"
+
+#: uresourcestring.rs_fmainmenuhelp
+msgid "&Help"
+msgstr "&Ayuda"
+
+#: uresourcestring.rs_fmainmenuabout
+msgid "&About"
+msgstr "A&cerca de"
+
+#: uresourcestring.rs_fmainmenuhelpindex
+msgid "&Help Index"
+msgstr "&Indice de Ayuda"
+
+#: uresourcestring.rs_find
+msgid "&Find"
+msgstr "&Buscar"
+
+#: uresourcestring.rs_msgvalpertel
+msgid "%s%s must have a telephone number%s"
+msgstr "%sEl %s debe tener un numero telefónico%s"
+
+#: uresourcestring.rs_msgvalprodmaxstock
+msgid "%sMax stock must be greater than min stock"
+msgstr "%sEl stock máximo debe ser mayor que el stock mínimo"
+
+#: uresourcestring.rs_msgvalprodminstock
+msgid "%sProduct must have a minimum stock"
+msgstr "%sEl producto debe tener stock minimo"
+
+#: uresourcestring.rs_msgvalprodname
+msgid "%sProduct must have a Name"
+msgstr "%sEl Producto debe tener un Nombre"
+
+#: uresourcestring.rs_msgvalprodstock
+msgid "%sOnly %s units of product %s are available"
+msgstr "%s Solo Existen %s unidades del producto %s"
+
+#: uresourcestring.rs_msgwarning
+msgid "Warning"
+msgstr "Atención"
+
+#: uresourcestring.rs_ok
+msgid "&OK"
+msgstr "&Aceptar"
+
+#: uresourcestring.rs_cancel
+msgid "&Cancel"
+msgstr "&Cancelar"
+
+#: uresourcestring.rs_new
+msgctxt "uresourcestring.rs_new"
+msgid "&New"
+msgstr "&Nuevo"
+
+#: uresourcestring.rs_add
+msgid "&Add"
+msgstr "&Agregar"
+
+#: uresourcestring.rs_delete
+msgid "&Delete"
+msgstr "&Eliminar"
+
+#: uresourcestring.rs_objectnotsave
+msgid "Object was not saved"
+msgstr "El objeto no ha sido Guardado"
+
+#: uresourcestring.rs_objectsave
+msgid "Object was saved"
+msgstr "El objeto ha sido Guardado"
+
+#: uresourcestring.rs_message
+msgid "Message"
+msgstr "Mensaje"
+
+#: uresourcestring.rs_error
+msgid "Error"
+msgstr "Error"
+
+#: uresourcestring.rs_tabcustomer
+msgctxt "uresourcestring.rs_tabcustomer"
+msgid "Customers"
+msgstr "Clientes"
+
+#: uresourcestring.rs_tabproduct
+msgctxt "uresourcestring.rs_tabproduct"
+msgid "Products"
+msgstr "Productos"
+
+#: uresourcestring.rs_fmainstringgrid340
+msgid "Product"
+msgstr "Producto"
+
+#: uresourcestring.rs_ffindsupplier
+msgid "Find Supplier"
+msgstr "Buscar Proveedor"
+
+#: uresourcestring.rs_lsuppliers
+msgid "Suppliers"
+msgstr "Proveedores"
+
+#: uresourcestring.rs_lnumber
+msgid "Number"
+msgstr "Número"
+
+#: uresourcestring.rs_ldetail
+msgid "Detail"
+msgstr "Detalle"
+
+#: uresourcestring.rs_ffindtransaction
+msgid "Find Transaction"
+msgstr "Buscar Transacción"
+
+#: uresourcestring.rs_dialogpurchase
+msgctxt "uresourcestring.rs_dialogpurchase"
+msgid "Purchases"
+msgstr "Compras"
+
+#: uresourcestring.rs_itemvalidatorproduct
+msgid "%sProduct: %s"
+msgstr "%sProducto: %s"
+
+#: uresourcestring.rs_itemvalidatorproductselect
+msgid "%s You must select a product"
+msgstr "%s Debe Seleccionar un producto"
+
+#: uresourcestring.rs_itemvalidatorproductcost
+msgid "%s You must specify the product cost"
+msgstr "%s Debe indicar el costo del producto"
+
+#: uresourcestring.rs_itemvalidatorproductprice
+msgid "%s You must specify the product price"
+msgstr "%s Debe indicar el precio del producto"
+
+#: uresourcestring.rs_itemvalidatorproductstock
+msgid "%s You must specify the product quantity"
+msgstr "%s Debe indicar la cantidad del producto"
+
+#: uresourcestring.rs_nav_sales
+msgctxt "uresourcestring.rs_nav_sales"
+msgid "Sales"
+msgstr "Ventas"
+
+#: uresourcestring.rs_nav_credits
+msgid "Credits"
+msgstr "Créditos"
+
+#: uresourcestring.rs_nav_purchases
+msgctxt "uresourcestring.rs_nav_purchases"
+msgid "Purchases"
+msgstr "Compras"
+
+#: uresourcestring.rs_nav_products
+msgctxt "uresourcestring.rs_nav_products"
+msgid "Products"
+msgstr "Productos"
+
+#: uresourcestring.rs_nav_people
+msgid "People"
+msgstr "Personas"
+
+#: uresourcestring.rs_nav_reports
+msgid "Reports"
+msgstr "Reportes"
+
+#: uresourcestring.rs_pos_search_hint
+msgid "Search product..."
+msgstr "Buscar producto..."
+
+#: uresourcestring.rs_pos_customer_hint
+msgid "Customer..."
+msgstr "Cliente..."
+
+#: uresourcestring.rs_pos_select_customer
+msgid "Sel. Customer"
+msgstr "Sel. Cliente"
+
+#: uresourcestring.rs_pos_complete_sale
+msgid "Complete Sale"
+msgstr "Completar Venta"
+
+#: uresourcestring.rs_pos_total
+msgid "Total: $%s"
+msgstr "Total: $%s"
+
+#: uresourcestring.rs_pos_grid_product
+msgctxt "uresourcestring.rs_pos_grid_product"
+msgid "Product"
+msgstr "Producto"
+
+#: uresourcestring.rs_pos_grid_price
+msgid "Unit Price"
+msgstr "Precio U"
+
+#: uresourcestring.rs_pos_grid_qty
+msgctxt "uresourcestring.rs_pos_grid_qty"
+msgid "Quantity"
+msgstr "Cantidad"
+
+#: uresourcestring.rs_pos_grid_linetotal
+msgid "Line Total"
+msgstr "Total Línea"
+
+#: uresourcestring.rs_pos_cart_empty
+msgid "You must add at least one product to the cart"
+msgstr "Debe agregar al menos un producto al carrito"
+
+#: uresourcestring.rs_pos_no_customer
+msgid "You must select a customer"
+msgstr "Debe seleccionar un cliente"
+
+#: uresourcestring.rs_pos_credit_no_customer
+msgid "You must select a customer for credit sales"
+msgstr "Debe seleccionar un cliente para ventas a crédito"
+
+#: uresourcestring.rs_purchase_title
+msgctxt "uresourcestring.rs_purchase_title"
+msgid "Purchases"
+msgstr "Compras"
+
+#: uresourcestring.rs_purchase_supplier
+msgctxt "uresourcestring.rs_purchase_supplier"
+msgid "Supplier"
+msgstr "Proveedor"
+
+#: uresourcestring.rs_purchase_date
+msgctxt "uresourcestring.rs_purchase_date"
+msgid "Date"
+msgstr "Fecha"
+
+#: uresourcestring.rs_purchase_add
+msgctxt "uresourcestring.rs_purchase_add"
+msgid "&Add"
+msgstr "&Agregar"
+
+#: uresourcestring.rs_purchase_delete_item
+msgctxt "uresourcestring.rs_purchase_delete_item"
+msgid "&Delete"
+msgstr "&Eliminar"
+
+#: uresourcestring.rs_purchase_save
+msgid "&Save Purchase"
+msgstr "&Guardar Compra"
+
+#: uresourcestring.rs_purchase_total
+msgid "Purchase Total: $%s"
+msgstr "Total Compra: $%s"
+
+#: uresourcestring.rs_purchase_no_supplier
+msgid "You must select a supplier"
+msgstr "Debe seleccionar un proveedor"
+
+#: uresourcestring.rs_purchase_no_items
+msgid "You must add at least one complete item"
+msgstr "Debe agregar al menos un ítem completo"
+
+#: uresourcestring.rs_purchase_grid_product
+msgctxt "uresourcestring.rs_purchase_grid_product"
+msgid "Product"
+msgstr "Producto"
+
+#: uresourcestring.rs_purchase_grid_qty
+msgid "Qty"
+msgstr "Cant."
+
+#: uresourcestring.rs_purchase_grid_totalcost
+msgid "Total Cost"
+msgstr "Costo Total"
+
+#: uresourcestring.rs_purchase_grid_utility
+msgid "%% Utility"
+msgstr "%% Utilidad"
+
+#: uresourcestring.rs_purchase_grid_unitcost
+msgid "Unit Cost"
+msgstr "Costo Unit."
+
+#: uresourcestring.rs_purchase_grid_price
+msgctxt "uresourcestring.rs_purchase_grid_price"
+msgid "Sale Price"
+msgstr "Precio Venta"
+
+#: uresourcestring.rs_products_search_hint
+msgid "Search by name..."
+msgstr "Buscar por nombre..."
+
+#: uresourcestring.rs_products_btn_new
+msgctxt "uresourcestring.rs_products_btn_new"
+msgid "&New"
+msgstr "&Nuevo"
+
+#: uresourcestring.rs_products_btn_edit
+msgid "&Edit"
+msgstr "&Editar"
+
+#: uresourcestring.rs_products_btn_delete
+msgid "De&lete"
+msgstr "E&liminar"
+
+#: uresourcestring.rs_products_grid_name
+msgctxt "uresourcestring.rs_products_grid_name"
+msgid "Name"
+msgstr "Nombre"
+
+#: uresourcestring.rs_products_grid_stock
+msgid "Stock"
+msgstr "Existencia"
+
+#: uresourcestring.rs_products_grid_cost
+msgctxt "uresourcestring.rs_products_grid_cost"
+msgid "Cost"
+msgstr "Costo"
+
+#: uresourcestring.rs_products_grid_price
+msgctxt "uresourcestring.rs_products_grid_price"
+msgid "Price"
+msgstr "Precio"
+
+#: uresourcestring.rs_products_delete_confirm
+msgid "Delete Product: %s?"
+msgstr "Eliminar Producto: %s?"
+
+#: uresourcestring.rs_people_tab_customers
+msgctxt "uresourcestring.rs_people_tab_customers"
+msgid "Customers"
+msgstr "Clientes"
+
+#: uresourcestring.rs_people_tab_suppliers
+msgctxt "uresourcestring.rs_people_tab_suppliers"
+msgid "Suppliers"
+msgstr "Proveedores"
+
+#: uresourcestring.rs_people_search_hint
+msgctxt "uresourcestring.rs_people_search_hint"
+msgid "Search by name..."
+msgstr "Buscar por nombre..."
+
+#: uresourcestring.rs_people_btn_new
+msgctxt "uresourcestring.rs_people_btn_new"
+msgid "&New"
+msgstr "&Nuevo"
+
+#: uresourcestring.rs_people_btn_edit
+msgctxt "uresourcestring.rs_people_btn_edit"
+msgid "&Edit"
+msgstr "&Editar"
+
+#: uresourcestring.rs_people_btn_delete
+msgctxt "uresourcestring.rs_people_btn_delete"
+msgid "De&lete"
+msgstr "E&liminar"
+
+#: uresourcestring.rs_people_grid_name
+msgctxt "uresourcestring.rs_people_grid_name"
+msgid "Name"
+msgstr "Nombre"
+
+#: uresourcestring.rs_people_grid_phone
+msgid "Phone"
+msgstr "Teléfono"
+
+#: uresourcestring.rs_people_grid_address
+msgctxt "uresourcestring.rs_people_grid_address"
+msgid "Address"
+msgstr "Dirección"
+
+#: uresourcestring.rs_reports_title
+msgid "Reports"
+msgstr "Reportes"
+
+#: uresourcestring.rs_reports_date_from
+msgid "From:"
+msgstr "Desde:"
+
+#: uresourcestring.rs_reports_date_to
+msgid "To:"
+msgstr "Hasta:"
+
+#: uresourcestring.rs_reports_refresh
+msgid "Refresh"
+msgstr "Actualizar"
+
+#: uresourcestring.rs_reports_export
+msgid "Export CSV"
+msgstr "Exportar CSV"
+
+#: uresourcestring.rs_reports_tab_income
+msgid "Income & Profit"
+msgstr "Ingresos y Utilidad"
+
+#: uresourcestring.rs_reports_tab_valuation
+msgid "Inventory Valuation"
+msgstr "Valoración Inventario"
+
+#: uresourcestring.rs_reports_tab_purchases
+msgctxt "uresourcestring.rs_reports_tab_purchases"
+msgid "Purchases"
+msgstr "Compras"
+
+#: uresourcestring.rs_reports_exported
+msgid "Report exported successfully to: %s"
+msgstr "Reporte exportado exitosamente a: %s"
+
+#: uresourcestring.rs_credits_title
+msgid "Debtors"
+msgstr "Deudores"
+
+#: uresourcestring.rs_credits_search_hint
+msgctxt "uresourcestring.rs_credits_search_hint"
+msgid "Search by name..."
+msgstr "Buscar por nombre..."
+
+#: uresourcestring.rs_credits_summary_total
+msgid "Total Debt: $%s"
+msgstr "Deuda Total: $%s"
+
+#: uresourcestring.rs_credits_grid_name
+msgctxt "uresourcestring.rs_credits_grid_name"
+msgid "Name"
+msgstr "Nombre"
+
+#: uresourcestring.rs_credits_grid_sales
+msgid "Credit Sales"
+msgstr "Ventas Crédito"
+
+#: uresourcestring.rs_credits_grid_payments
+msgctxt "uresourcestring.rs_credits_grid_payments"
+msgid "Payments"
+msgstr "Pagos"
+
+#: uresourcestring.rs_credits_grid_balance
+msgctxt "uresourcestring.rs_credits_grid_balance"
+msgid "Balance"
+msgstr "Saldo"
+
+#: uresourcestring.rs_credits_tab_sales
+msgid "Credit Sales"
+msgstr "Ventas Crédito"
+
+#: uresourcestring.rs_credits_tab_payments
+msgctxt "uresourcestring.rs_credits_tab_payments"
+msgid "Payments"
+msgstr "Pagos"
+
+#: uresourcestring.rs_credits_sale_date
+msgctxt "uresourcestring.rs_credits_sale_date"
+msgid "Date"
+msgstr "Fecha"
+
+#: uresourcestring.rs_credits_sale_total
+msgctxt "uresourcestring.rs_credits_sale_total"
+msgid "Total"
+msgstr "Total"
+
+#: uresourcestring.rs_credits_sale_id
+msgid "Operation ID"
+msgstr "ID Operación"
+
+#: uresourcestring.rs_credits_pay_date
+msgctxt "uresourcestring.rs_credits_pay_date"
+msgid "Date"
+msgstr "Fecha"
+
+#: uresourcestring.rs_credits_pay_amount
+msgid "Amount"
+msgstr "Monto"
+
+#: uresourcestring.rs_credits_pay_total
+msgid "Total Payments: $%s"
+msgstr "Total Pagos: $%s"
+
+#: uresourcestring.rs_credits_pay_label_amount
+msgid "Amount:"
+msgstr "Monto:"
+
+#: uresourcestring.rs_credits_pay_label_date
+msgid "Date:"
+msgstr "Fecha:"
+
+#: uresourcestring.rs_credits_btn_register
+msgid "Register Payment"
+msgstr "Registrar Pago"
+
+#: uresourcestring.rs_credits_no_debtor
+msgid "You must select a debtor"
+msgstr "Debe seleccionar un deudor"
+
+#: uresourcestring.rs_credits_no_sale
+msgid "You must select a credit sale"
+msgstr "Debe seleccionar una venta a crédito"
+
+#: uresourcestring.rs_credits_invalid_amount
+msgid "Enter a valid amount"
+msgstr "Ingrese un monto válido"
+
+#: uresourcestring.rs_credits_amount_zero
+msgid "Amount must be greater than zero"
+msgstr "El monto debe ser mayor a cero"
+
+#: uresourcestring.rs_credits_pay_success
+msgid "Payment registered successfully"
+msgstr "Pago registrado exitosamente"
+
+#: uresourcestring.rs_credits_checkbox
+msgid "Credit"
+msgstr "Crédito"

@@ -1,0 +1,33 @@
+# Lazarus/FPC build artifacts
+*.o
+*.ppu
+*.rsj
+*.compiled
+*.or
+*.res
+link*.res
+ppas.sh
+
+# Binary output
+apotheca
+apotheca.exe
+
+# Lazarus generated form resources (from {$R *.lfm} in output dir)
+/uframe*.lfm
+/uformsplash.lfm
+
+# Logs
+*.log
+logs/
+
+# Database (user data, not source)
+db/
+
+# Backup files
+backup/
+*.bak
+*~
+
+# OS files
+.DS_Store
+Thumbs.db

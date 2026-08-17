@@ -1,0 +1,119 @@
+object FramePOS: TFramePOS
+  Left = 0
+  Height = 580
+  Top = 0
+  Width = 700
+  ClientHeight = 580
+  ClientWidth = 700
+  TabOrder = 0
+  object EditSearch: TEdit
+    Left = 8
+    Height = 27
+    Top = 8
+    Width = 400
+    Anchors = [akTop, akLeft, akRight]
+    OnChange = OnSearchChange
+    TabOrder = 0
+    TextHint = 'Buscar producto...'
+  end
+  object ListBoxResults: TListBox
+    Left = 8
+    Height = 120
+    Top = 40
+    Width = 400
+    Anchors = [akTop, akLeft, akRight]
+    OnClick = OnProductSelected
+    TabOrder = 1
+    Visible = False
+  end
+  object GridCart: TStringGrid
+    Left = 8
+    Height = 320
+    Top = 168
+    Width = 684
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ColCount = 4
+    FixedCols = 0
+    FixedRows = 1
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRowSelect, goEditing, goSmoothScroll]
+    RowCount = 2
+    TabOrder = 2
+    OnEditingDone = OnGridEditingDone
+    OnKeyDown = OnGridKeyDown
+    ColWidths = (
+      250
+      120
+      100
+      150
+    )
+  end
+  object BtnRemoveItem: TBitBtn
+    Left = 8
+    Height = 30
+    Top = 496
+    Width = 120
+    Anchors = [akLeft, akBottom]
+    Caption = 'Eliminar Item'
+    OnClick = OnRemoveItemClick
+    TabOrder = 3
+  end
+  object EditCustomer: TEdit
+    Left = 8
+    Height = 27
+    Top = 534
+    Width = 250
+    Anchors = [akLeft, akBottom]
+    ReadOnly = True
+    TabOrder = 4
+    TextHint = 'Cliente...'
+  end
+  object BtnSelectCustomer: TBitBtn
+    Left = 264
+    Height = 30
+    Top = 532
+    Width = 140
+    Anchors = [akLeft, akBottom]
+    Caption = 'Sel. Cliente'
+    OnClick = OnSelectCustomerClick
+    TabOrder = 5
+  end
+  object CheckCredit: TCheckBox
+    Left = 410
+    Height = 23
+    Top = 536
+    Width = 80
+    Anchors = [akLeft, akBottom]
+    Caption = 'Crédito'
+    TabOrder = 6
+  end
+  object BtnCompleteSale: TBitBtn
+    Left = 510
+    Height = 40
+    Top = 528
+    Width = 180
+    Anchors = [akRight, akBottom]
+    Caption = 'Completar Venta'
+    OnClick = OnCompleteSaleClick
+    TabOrder = 7
+  end
+  object LabelGrandTotal: TLabel
+    Left = 450
+    Height = 30
+    Top = 496
+    Width = 230
+    Anchors = [akRight, akBottom]
+    Alignment = taRightJustify
+    Caption = 'Total: $0.00'
+    Font.Height = -18
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object TimerSearch: TTimer
+    Enabled = False
+    Interval = 300
+    OnTimer = OnTimerFire
+    Left = 560
+    Top = 8
+  end
+end

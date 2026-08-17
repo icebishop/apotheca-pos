@@ -1,0 +1,145 @@
+object FrameReports: TFrameReports
+  Left = 0
+  Height = 500
+  Top = 0
+  Width = 700
+  ClientHeight = 500
+  ClientWidth = 700
+  TabOrder = 0
+  DesignLeft = 0
+  DesignTop = 0
+  object PanelTop: TPanel
+    Left = 0
+    Height = 80
+    Top = 0
+    Width = 700
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 80
+    ClientWidth = 700
+    TabOrder = 0
+    object LabelTitle: TLabel
+      Left = 16
+      Height = 24
+      Top = 8
+      Width = 100
+      Caption = 'Reportes'
+      Font.Height = -14
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object LabelDateFrom: TLabel
+      Left = 16
+      Height = 18
+      Top = 50
+      Width = 40
+      Caption = 'Desde:'
+      ParentColor = False
+    end
+    object DateFrom: TDateEdit
+      Left = 70
+      Height = 27
+      Top = 46
+      Width = 130
+      CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
+      OKCaption = 'OK'
+      CancelCaption = 'Cancel'
+      DefaultToday = True
+      DateOrder = doNone
+      ButtonWidth = 23
+      NumGlyphs = 0
+      TabOrder = 0
+    end
+    object LabelDateTo: TLabel
+      Left = 215
+      Height = 18
+      Top = 50
+      Width = 36
+      Caption = 'Hasta:'
+      ParentColor = False
+    end
+    object DateTo: TDateEdit
+      Left = 260
+      Height = 27
+      Top = 46
+      Width = 130
+      CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
+      OKCaption = 'OK'
+      CancelCaption = 'Cancel'
+      DefaultToday = True
+      DateOrder = doNone
+      ButtonWidth = 23
+      NumGlyphs = 0
+      TabOrder = 1
+    end
+    object BtnRefresh: TBitBtn
+      Left = 410
+      Height = 28
+      Top = 46
+      Width = 110
+      Caption = 'Actualizar'
+      OnClick = BtnRefreshClick
+      TabOrder = 2
+    end
+    object BtnExportCSV: TBitBtn
+      Left = 530
+      Height = 28
+      Top = 46
+      Width = 130
+      Caption = 'Exportar CSV'
+      OnClick = BtnExportCSVClick
+      TabOrder = 3
+    end
+  end
+  object TabControl: TTabControl
+    Left = 0
+    Height = 420
+    Top = 80
+    Width = 700
+    OnChange = TabControlChange
+    Align = alClient
+    TabIndex = 0
+    Tabs.Strings = (
+      'Ingresos y Utilidad'
+      'Valoración Inventario'
+      'Compras'
+    )
+    TabOrder = 1
+    object GridReport: TStringGrid
+      Left = 2
+      Height = 220
+      Top = 24
+      Width = 696
+      Align = alTop
+      ColCount = 10
+      FixedCols = 0
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRowSelect, goColSizing, goSmoothScroll]
+      RowCount = 2
+      TabOrder = 0
+      OnSelection = GridReportSelection
+    end
+    object SplitterDetail: TSplitter
+      Left = 2
+      Height = 5
+      Top = 244
+      Width = 696
+      Align = alTop
+      ResizeAnchor = akTop
+      Visible = False
+    end
+    object GridDetail: TStringGrid
+      Left = 2
+      Height = 145
+      Top = 249
+      Width = 696
+      Align = alClient
+      ColCount = 5
+      FixedCols = 0
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRowSelect, goColSizing, goSmoothScroll]
+      RowCount = 2
+      TabOrder = 1
+      Visible = False
+    end
+  end
+end

@@ -1,0 +1,67 @@
+object FormFindSupplier: TFormFindSupplier
+  Left = 513
+  Height = 232
+  Top = 444
+  Width = 271
+  ActiveControl = EditSupplier
+  Caption = 'Find Supplier'
+  ClientHeight = 232
+  ClientWidth = 271
+  OnCreate = FormCreate
+  LCLVersion = '0.9.28.2'
+  object EditSupplier: TEdit
+    Left = 8
+    Height = 27
+    Top = 8
+    Width = 256
+    OnKeyUp = EditSupplierKeyUp
+    TabOrder = 0
+  end
+  object StringGridSupplier: TStringGrid
+    Left = 8
+    Height = 148
+    Top = 48
+    Width = 256
+    ColCount = 1
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSelect, goSmoothScroll]
+    TabOrder = 1
+    OnClick = StringGridSupplierClick
+    ColWidths = (
+      251
+    )
+    Cells = (
+      1
+      0
+      0
+      'Supplier'
+    )
+  end
+  object BitBtnNew: TBitBtn
+    Left = 16
+    Height = 30
+    Top = 200
+    Width = 75
+    Caption = '&New'
+    OnClick = BitBtnNewClick
+    TabOrder = 2
+  end
+  object BitBtnOk: TBitBtn
+    Left = 112
+    Height = 30
+    Top = 200
+    Width = 75
+    Caption = '&Ok'
+    OnClick = BitBtnOkClick
+    TabOrder = 3
+  end
+  object BitBtnCancel: TBitBtn
+    Left = 189
+    Height = 30
+    Top = 200
+    Width = 75
+    Caption = '&Cancel'
+    OnClick = BitBtnCancelClick
+    TabOrder = 4
+  end
+end

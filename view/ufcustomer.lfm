@@ -1,0 +1,80 @@
+object FormCustomer: TFormCustomer
+  Left = 304
+  Height = 145
+  Top = 199
+  Width = 405
+  ActiveControl = EditName
+  Caption = 'Customers'
+  ClientHeight = 145
+  ClientWidth = 405
+  OnCreate = FormCreate
+  OnShow = FormShow
+  LCLVersion = '0.9.28.2'
+  object LabelName: TLabel
+    Left = 16
+    Height = 18
+    Top = 16
+    Width = 40
+    Caption = 'Name'
+    ParentColor = False
+  end
+  object LabelTelephone: TLabel
+    Left = 16
+    Height = 18
+    Top = 48
+    Width = 67
+    Caption = 'Telephone'
+    ParentColor = False
+  end
+  object LabelAddress: TLabel
+    Left = 16
+    Height = 18
+    Top = 80
+    Width = 53
+    Caption = 'Address'
+    ParentColor = False
+  end
+  object EditName: TEdit
+    Left = 104
+    Height = 27
+    Top = 16
+    Width = 296
+    OnExit = EditNameExit
+    TabOrder = 0
+  end
+  object EditTelephone: TEdit
+    Left = 104
+    Height = 27
+    Top = 48
+    Width = 296
+    OnExit = EditTelephoneExit
+    TabOrder = 1
+  end
+  object EditAddress: TEdit
+    Left = 104
+    Height = 27
+    Top = 80
+    Width = 296
+    OnExit = EditAddressExit
+    TabOrder = 2
+  end
+  object BitBtnOk: TBitBtn
+    Left = 248
+    Height = 30
+    Top = 112
+    Width = 75
+    Caption = '&Ok'
+    OnClick = BitBtnOkClick
+    TabOrder = 3
+  end
+  object BitBtnCancel: TBitBtn
+    Left = 325
+    Height = 30
+    Top = 112
+    Width = 75
+    Caption = '&Cancel'
+    OnClick = BitBtnCancelClick
+    OnExit = BitBtnCancelExit
+    TabOrder = 4
+  end
+end
