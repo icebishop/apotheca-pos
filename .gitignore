@@ -1,4 +1,4 @@
-# Lazarus/FPC build artifacts
+d# Lazarus/FPC build artifacts
 *.o
 *.ppu
 *.rsj
@@ -25,6 +25,7 @@ db/
 
 # Backup files
 backup/
+images/
 *.bak
 *~
 

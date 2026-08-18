@@ -1,12 +1,13 @@
 object FormProduct: TFormProduct
   Left = 456
-  Height = 145
-  Top = 313
-  Width = 408
+  Height = 480
+  Top = 200
+  Width = 520
   ActiveControl = EditName
   Caption = 'Products'
-  ClientHeight = 145
-  ClientWidth = 408
+  ClientHeight = 480
+  ClientWidth = 520
+  Position = poMainFormCenter
   OnCreate = FormCreate
   OnShow = FormShow
   LCLVersion = '0.9.28.2'
@@ -15,7 +16,7 @@ object FormProduct: TFormProduct
     Height = 18
     Top = 16
     Width = 75
-    Caption = 'Description'
+    Caption = 'Name'
     ParentColor = False
   end
   object LabelMinStock: TLabel
@@ -34,48 +35,177 @@ object FormProduct: TFormProduct
     Caption = 'Max Stock'
     ParentColor = False
   end
+  object LabelOriginalPrice: TLabel
+    Left = 16
+    Height = 18
+    Top = 112
+    Width = 80
+    Caption = 'Original Price'
+    ParentColor = False
+  end
+  object LabelCategory: TLabel
+    Left = 16
+    Height = 18
+    Top = 144
+    Width = 60
+    Caption = 'Category'
+    ParentColor = False
+  end
+  object LabelBrand: TLabel
+    Left = 16
+    Height = 18
+    Top = 176
+    Width = 40
+    Caption = 'Brand'
+    ParentColor = False
+  end
+  object LabelCondition: TLabel
+    Left = 16
+    Height = 18
+    Top = 208
+    Width = 60
+    Caption = 'Condition'
+    ParentColor = False
+  end
+  object LabelGoogleCat: TLabel
+    Left = 16
+    Height = 18
+    Top = 240
+    Width = 120
+    Caption = 'Google Category'
+    ParentColor = False
+  end
+  object LabelDescription: TLabel
+    Left = 16
+    Height = 18
+    Top = 272
+    Width = 75
+    Caption = 'Description'
+    ParentColor = False
+  end
   object EditName: TEdit
-    Left = 119
+    Left = 140
     Height = 27
     Top = 16
-    Width = 284
+    Width = 370
+    Anchors = [akTop, akLeft, akRight]
     OnExit = EditNameExit
     TabOrder = 0
   end
   object EditMinStock: TEdit
-    Left = 119
+    Left = 140
     Height = 27
     Top = 48
-    Width = 284
+    Width = 370
+    Anchors = [akTop, akLeft, akRight]
     OnExit = EditMinStockExit
     TabOrder = 1
     Text = '1'
   end
   object EditMaxStock: TEdit
-    Left = 119
+    Left = 140
     Height = 27
     Top = 80
-    Width = 284
+    Width = 370
+    Anchors = [akTop, akLeft, akRight]
     OnExit = EditMaxStockExit
     TabOrder = 2
     Text = '10'
   end
-  object BitBtnOk: TBitBtn
-    Left = 248
-    Height = 30
+  object EditOriginalPrice: TEdit
+    Left = 140
+    Height = 27
     Top = 112
-    Width = 75
+    Width = 370
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 3
+    Text = '0'
+  end
+  object EditCategory: TEdit
+    Left = 140
+    Height = 27
+    Top = 144
+    Width = 370
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 4
+  end
+  object EditBrand: TEdit
+    Left = 140
+    Height = 27
+    Top = 176
+    Width = 370
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 5
+  end
+  object EditCondition: TEdit
+    Left = 140
+    Height = 27
+    Top = 208
+    Width = 370
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 6
+    Text = 'new'
+  end
+  object EditGoogleCat: TEdit
+    Left = 140
+    Height = 27
+    Top = 240
+    Width = 370
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 7
+  end
+  object MemoDescription: TMemo
+    Left = 140
+    Height = 80
+    Top = 272
+    Width = 370
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 8
+  end
+  object BtnSelectImage: TBitBtn
+    Left = 16
+    Height = 30
+    Top = 362
+    Width = 140
+    Caption = 'Select Image...'
+    OnClick = BtnSelectImageClick
+    TabOrder = 9
+  end
+  object LblImageStatus: TLabel
+    Left = 164
+    Height = 18
+    Top = 368
+    Width = 346
+    Anchors = [akTop, akLeft, akRight]
+    Caption = ''
+    ParentColor = False
+  end
+  object ChkIsService: TCheckBox
+    Left = 16
+    Height = 23
+    Top = 400
+    Width = 100
+    Caption = 'Is Service'
+    TabOrder = 10
+  end
+  object BitBtnOk: TBitBtn
+    Left = 348
+    Height = 30
+    Top = 440
+    Width = 80
+    Anchors = [akRight, akBottom]
     Caption = '&Aceptar'
     OnClick = BitBtnOkClick
-    TabOrder = 3
+    TabOrder = 11
   end
   object BitBtnCancel: TBitBtn
-    Left = 328
+    Left = 432
     Height = 30
-    Top = 112
-    Width = 75
+    Top = 440
+    Width = 80
+    Anchors = [akRight, akBottom]
     Caption = '&Cancelar'
     OnClick = BitBtnCancelClick
-    TabOrder = 4
+    TabOrder = 12
   end
 end

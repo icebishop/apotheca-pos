@@ -6,6 +6,7 @@ object FormFindSale: TFormFindSale
   Caption = 'Find Sale'
   ClientHeight = 276
   ClientWidth = 280
+  Position = poMainFormCenter
   LCLVersion = '0.9.28.2'
   object StringGrid1: TStringGrid
     Left = 8

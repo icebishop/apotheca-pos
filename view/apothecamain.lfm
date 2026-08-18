@@ -99,6 +99,32 @@ object FormPrincipal: TFormPrincipal
       ParentFont = False
       TabOrder = 5
     end
+    object BtnReturns: TBitBtn
+      Left = 0
+      Height = 48
+      Top = 288
+      Width = 180
+      Align = alTop
+      Caption = 'Devoluciones'
+      Font.Color = clWhite
+      Font.Height = -15
+      OnClick = BtnReturnsClick
+      ParentFont = False
+      TabOrder = 6
+    end
+    object BtnExport: TBitBtn
+      Left = 0
+      Height = 48
+      Top = 336
+      Width = 180
+      Align = alTop
+      Caption = 'Export'
+      Font.Color = clWhite
+      Font.Height = -15
+      OnClick = BtnExportClick
+      ParentFont = False
+      TabOrder = 7
+    end
   end
   object PanelContent: TPanel
     Left = 180

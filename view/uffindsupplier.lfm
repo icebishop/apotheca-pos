@@ -7,6 +7,7 @@ object FormFindSupplier: TFormFindSupplier
   Caption = 'Find Supplier'
   ClientHeight = 232
   ClientWidth = 271
+  Position = poMainFormCenter
   OnCreate = FormCreate
   LCLVersion = '0.9.28.2'
   object EditSupplier: TEdit

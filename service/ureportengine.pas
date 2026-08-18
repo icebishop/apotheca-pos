@@ -16,7 +16,7 @@ unit UReportEngine;
 interface
 
 uses
-  Classes, SysUtils, sqldb, sqlite3conn, UDataModule, db;
+  Classes, SysUtils, Math, sqldb, sqlite3conn, UDataModule, db;
 
 type
   TIncomeUtilityReportRow = record
@@ -50,6 +50,15 @@ type
     TotalCost     : Real;
   end;
 
+  TUnitsSoldRow = record
+    ProductId   : Integer;
+    ProductName : String;
+    UnitsSold   : Integer;
+    TotalRevenue: Real;
+    TotalCost   : Real;
+    Utility     : Real;
+  end;
+
   { TReportEngine }
 
   TReportEngine = class(TObject)
@@ -66,6 +75,9 @@ type
 
     // Purchase Report by date range
     function GetPurchaseReport(StartDate, EndDate: TDateTime; var TotalPurchases: Real): TList;
+
+    // Units Sold Report by date range
+    function GetUnitsSoldReport(StartDate, EndDate: TDateTime; var GrandTotalUnits: Integer; var GrandTotalRevenue, GrandTotalCost, GrandTotalUtility: Real): TList;
   end;
 
 implementation
@@ -293,6 +305,106 @@ begin
   Trans.Free;
 
   GetPurchaseReport := ResultList;
+end;
+
+function TReportEngine.GetUnitsSoldReport(StartDate, EndDate: TDateTime; var GrandTotalUnits: Integer; var GrandTotalRevenue, GrandTotalCost, GrandTotalUtility: Real): TList;
+var
+  Query: TSQLQuery;
+  Trans: TSQLTransaction;
+  ResultList: TList;
+  RowPtr: ^TUnitsSoldRow;
+begin
+  ResultList := TList.Create;
+  GrandTotalUnits := 0;
+  GrandTotalRevenue := 0;
+  GrandTotalCost := 0;
+  GrandTotalUtility := 0;
+
+  if FConnection = nil then
+  begin
+    GetUnitsSoldReport := ResultList;
+    Exit;
+  end;
+
+  if StartDate > EndDate then
+  begin
+    GetUnitsSoldReport := ResultList;
+    Exit;
+  end;
+
+  Trans := TSQLTransaction.Create(nil);
+  Query := TSQLQuery.Create(nil);
+  try
+    Trans.DataBase := FConnection;
+    Query.DataBase := FConnection;
+    Query.Transaction := Trans;
+
+    Query.SQL.Text :=
+      'SELECT pr.id AS product_id, pr.name AS product_name, ' +
+      'SUM(i.stock) AS units_sold, ' +
+      'ROUND(SUM(i.stock * i.price), 2) AS total_revenue, ' +
+      'ROUND(SUM(i.stock * i.cost), 2) AS total_cost ' +
+      'FROM operation o ' +
+      'JOIN operationtype ot ON o.type = ot.id ' +
+      'JOIN item i ON i.operation = o.id ' +
+      'JOIN product pr ON i.product = pr.id ' +
+      'WHERE ot.type = ''out'' ' +
+      'AND o.date >= :start_date ' +
+      'AND o.date <= :end_date ' +
+      'GROUP BY pr.id, pr.name ' +
+      'HAVING SUM(i.stock) > 0 ' +
+      'ORDER BY units_sold DESC, pr.name ASC';
+
+    { Convert TDateTime to Julian Day for SQLite comparison }
+    Query.Params.ParamByName('start_date').AsFloat := Int(StartDate) + 2415018.5;
+    Query.Params.ParamByName('end_date').AsFloat := Int(EndDate) + 2415019.49999;
+
+    Trans.StartTransaction;
+    Query.Open;
+
+    while not Query.EOF do
+    begin
+      New(RowPtr);
+      RowPtr^.ProductId    := Query.FieldByName('product_id').AsInteger;
+      RowPtr^.ProductName  := Query.FieldByName('product_name').AsString;
+      RowPtr^.UnitsSold    := Query.FieldByName('units_sold').AsInteger;
+      RowPtr^.TotalRevenue := Query.FieldByName('total_revenue').AsFloat;
+      RowPtr^.TotalCost    := Query.FieldByName('total_cost').AsFloat;
+      RowPtr^.Utility      := RoundTo(RowPtr^.TotalRevenue - RowPtr^.TotalCost, -2);
+
+      GrandTotalUnits   := GrandTotalUnits + RowPtr^.UnitsSold;
+      GrandTotalRevenue := GrandTotalRevenue + RowPtr^.TotalRevenue;
+      GrandTotalCost    := GrandTotalCost + RowPtr^.TotalCost;
+      GrandTotalUtility := GrandTotalUtility + RowPtr^.Utility;
+
+      ResultList.Add(RowPtr);
+      Query.Next;
+    end;
+
+    Query.Close;
+    Trans.Commit;
+  except
+    on E: Exception do
+    begin
+      if Trans.Active then Trans.Rollback;
+      { On failure, clear any partially built results and zero totals }
+      while ResultList.Count > 0 do
+      begin
+        RowPtr := ResultList[ResultList.Count - 1];
+        Dispose(RowPtr);
+        ResultList.Delete(ResultList.Count - 1);
+      end;
+      GrandTotalUnits := 0;
+      GrandTotalRevenue := 0;
+      GrandTotalCost := 0;
+      GrandTotalUtility := 0;
+    end;
+  end;
+
+  Query.Free;
+  Trans.Free;
+
+  GetUnitsSoldReport := ResultList;
 end;
 
 end.

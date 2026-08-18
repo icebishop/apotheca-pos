@@ -2,18 +2,19 @@ LazarusResources.Add('TFormFindSupplier','FORMDATA',[
   'TPF0'#17'TFormFindSupplier'#16'FormFindSupplier'#4'Left'#3#1#2#6'Height'#3
   +#232#0#3'Top'#3#188#1#5'Width'#3#15#1#13'ActiveControl'#7#12'EditSupplier'#7
   +'Caption'#6#13'Find Supplier'#12'ClientHeight'#3#232#0#11'ClientWidth'#3#15#1
-  +#8'OnCreate'#7#10'FormCreate'#10'LCLVersion'#6#8'0.9.28.2'#0#5'TEdit'#12'Edi'
-  +'tSupplier'#4'Left'#2#8#6'Height'#2#27#3'Top'#2#8#5'Width'#3#0#1#7'OnKeyUp'#7
-  +#17'EditSupplierKeyUp'#8'TabOrder'#2#0#0#0#11'TStringGrid'#18'StringGridSupp'
-  +'lier'#4'Left'#2#8#6'Height'#3#148#0#3'Top'#2'0'#5'Width'#3#0#1#8'ColCount'#2
-  +#1#9'FixedCols'#2#0#7'Options'#11#15'goFixedVertLine'#15'goFixedHorzLine'#10
-  +'goVertLine'#10'goHorzLine'#13'goRangeSelect'#11'goRowSelect'#14'goSmoothScr'
-  +'oll'#0#8'TabOrder'#2#1#7'OnClick'#7#23'StringGridSupplierClick'#9'ColWidths'
-  +#1#3#251#0#0#5'Cells'#1#2#1#2#0#2#0#6#8'Supplier'#0#0#0#7'TBitBtn'#9'BitBtnN'
-  +'ew'#4'Left'#2#16#6'Height'#2#30#3'Top'#3#200#0#5'Width'#2'K'#7'Caption'#6#4
-  +'&New'#7'OnClick'#7#14'BitBtnNewClick'#8'TabOrder'#2#2#0#0#7'TBitBtn'#8'BitB'
-  +'tnOk'#4'Left'#2'p'#6'Height'#2#30#3'Top'#3#200#0#5'Width'#2'K'#7'Caption'#6
-  +#3'&Ok'#7'OnClick'#7#13'BitBtnOkClick'#8'TabOrder'#2#3#0#0#7'TBitBtn'#12'Bit'
-  +'BtnCancel'#4'Left'#3#189#0#6'Height'#2#30#3'Top'#3#200#0#5'Width'#2'K'#7'Ca'
-  +'ption'#6#7'&Cancel'#7'OnClick'#7#17'BitBtnCancelClick'#8'TabOrder'#2#4#0#0#0
+  +#8'Position'#7#16'poMainFormCenter'#8'OnCreate'#7#10'FormCreate'#10'LCLVersi'
+  +'on'#6#8'0.9.28.2'#0#5'TEdit'#12'EditSupplier'#4'Left'#2#8#6'Height'#2#27#3
+  +'Top'#2#8#5'Width'#3#0#1#7'OnKeyUp'#7#17'EditSupplierKeyUp'#8'TabOrder'#2#0#0
+  +#0#11'TStringGrid'#18'StringGridSupplier'#4'Left'#2#8#6'Height'#3#148#0#3'To'
+  +'p'#2'0'#5'Width'#3#0#1#8'ColCount'#2#1#9'FixedCols'#2#0#7'Options'#11#15'go'
+  +'FixedVertLine'#15'goFixedHorzLine'#10'goVertLine'#10'goHorzLine'#13'goRange'
+  +'Select'#11'goRowSelect'#14'goSmoothScroll'#0#8'TabOrder'#2#1#7'OnClick'#7#23
+  +'StringGridSupplierClick'#9'ColWidths'#1#3#251#0#0#5'Cells'#1#2#1#2#0#2#0#6#8
+  +'Supplier'#0#0#0#7'TBitBtn'#9'BitBtnNew'#4'Left'#2#16#6'Height'#2#30#3'Top'#3
+  +#200#0#5'Width'#2'K'#7'Caption'#6#4'&New'#7'OnClick'#7#14'BitBtnNewClick'#8
+  +'TabOrder'#2#2#0#0#7'TBitBtn'#8'BitBtnOk'#4'Left'#2'p'#6'Height'#2#30#3'Top'
+  +#3#200#0#5'Width'#2'K'#7'Caption'#6#3'&Ok'#7'OnClick'#7#13'BitBtnOkClick'#8
+  +'TabOrder'#2#3#0#0#7'TBitBtn'#12'BitBtnCancel'#4'Left'#3#189#0#6'Height'#2#30
+  +#3'Top'#3#200#0#5'Width'#2'K'#7'Caption'#6#7'&Cancel'#7'OnClick'#7#17'BitBtn'
+  +'CancelClick'#8'TabOrder'#2#4#0#0#0
 ]);

@@ -16,6 +16,7 @@ uses
   public
 
     function get(operationTypeId:Integer):TOperationType;
+    function getByDescription(description:String):TOperationType;
 
   published
     // Externally interrogatable public definitions
@@ -45,6 +46,31 @@ implementation
          Self.getQuery().Close;
         except
          get := nil;
+        end;
+   end;
+
+   function TDataOperationType.getByDescription(description:String):TOperationType;
+   var
+      operationType:TOperationType;
+   begin
+        try
+         Self.getQuery().SQL.Text := 'select * from operationType where description = :desc';
+         Self.getQuery().Params.ParamByName('desc').AsString := description;
+         Self.getQuery().Open;
+
+         operationType := nil;
+         Self.getQuery().First;
+         if not Self.getQuery().EOF then
+         begin
+              operationType := TOperationType.Create;
+              operationType.setId(Self.getQuery().FieldByName('id').AsInteger);
+              operationType.setName(Self.getQuery().FieldByName('description').AsString);
+              operationType.setTyp(Self.getQuery().FieldByName('type').AsString);
+         end;
+         getByDescription := operationType;
+         Self.getQuery().Close;
+        except
+         getByDescription := nil;
         end;
    end;
 

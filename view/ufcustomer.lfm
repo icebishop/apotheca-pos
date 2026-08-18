@@ -7,6 +7,7 @@ object FormCustomer: TFormCustomer
   Caption = 'Customers'
   ClientHeight = 145
   ClientWidth = 405
+  Position = poMainFormCenter
   OnCreate = FormCreate
   OnShow = FormShow
   LCLVersion = '0.9.28.2'

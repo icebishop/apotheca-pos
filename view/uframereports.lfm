@@ -104,6 +104,7 @@ object FrameReports: TFrameReports
       'Ingresos y Utilidad'
       'Valoración Inventario'
       'Compras'
+      'Unidades Vendidas'
     )
     TabOrder = 1
     object GridReport: TStringGrid

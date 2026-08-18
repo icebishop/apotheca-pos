@@ -817,3 +817,134 @@ msgstr "Pago registrado exitosamente"
 #: uresourcestring.rs_credits_checkbox
 msgid "Credit"
 msgstr "Crédito"
+
+#: uresourcestring.rs_reports_tab_units_sold
+msgid "Units Sold"
+msgstr "Unidades Vendidas"
+
+#: uresourcestring.rs_reports_units_col_product
+msgctxt "uresourcestring.rs_reports_units_col_product"
+msgid "Product"
+msgstr "Producto"
+
+#: uresourcestring.rs_reports_units_col_units
+msgctxt "uresourcestring.rs_reports_units_col_units"
+msgid "Units Sold"
+msgstr "Unidades Vendidas"
+
+#: uresourcestring.rs_reports_units_col_revenue
+msgid "Revenue"
+msgstr "Ingresos"
+
+#: uresourcestring.rs_reports_units_col_cost
+msgctxt "uresourcestring.rs_reports_units_col_cost"
+msgid "Cost"
+msgstr "Costo"
+
+#: uresourcestring.rs_reports_units_col_utility
+msgid "Utility"
+msgstr "Utilidad"
+
+#: uresourcestring.rs_reports_units_total
+msgid "TOTAL"
+msgstr "TOTAL"
+
+#: uresourcestring.rs_reports_export_error
+msgid "Error exporting CSV: %s"
+msgstr "Error al exportar CSV: %s"
+
+#: uresourcestring.rs_nav_returns
+msgid "Returns"
+msgstr "Devoluciones"
+
+#: uresourcestring.rs_returns_title
+msgid "Returns / Losses"
+msgstr "Devoluciones / Pérdidas"
+
+#: uresourcestring.rs_returns_op_type
+msgid "Operation Type"
+msgstr "Tipo de Operación"
+
+#: uresourcestring.rs_returns_person
+msgid "Person"
+msgstr "Persona"
+
+#: uresourcestring.rs_returns_date
+msgid "Date"
+msgstr "Fecha"
+
+#: uresourcestring.rs_returns_add
+msgid "Add Item"
+msgstr "Agregar Ítem"
+
+#: uresourcestring.rs_returns_delete
+msgid "Delete Item"
+msgstr "Eliminar Ítem"
+
+#: uresourcestring.rs_returns_save
+msgid "Save"
+msgstr "Guardar"
+
+#: uresourcestring.rs_returns_rebuild
+msgid "Rebuild Balances"
+msgstr "Reconstruir Saldos"
+
+#: uresourcestring.rs_returns_grid_product
+msgctxt "uresourcestring.rs_returns_grid_product"
+msgid "Product"
+msgstr "Producto"
+
+#: uresourcestring.rs_returns_grid_qty
+msgctxt "uresourcestring.rs_returns_grid_qty"
+msgid "Quantity"
+msgstr "Cantidad"
+
+#: uresourcestring.rs_returns_grid_cost
+msgid "Unit Cost"
+msgstr "Costo Unitario"
+
+#: uresourcestring.rs_returns_no_items
+msgid "You must add at least one item with a product"
+msgstr "Debe agregar al menos un ítem con un producto"
+
+#: uresourcestring.rs_returns_no_customer
+msgctxt "uresourcestring.rs_returns_no_customer"
+msgid "You must select a customer"
+msgstr "Debe seleccionar un cliente"
+
+#: uresourcestring.rs_returns_no_supplier
+msgctxt "uresourcestring.rs_returns_no_supplier"
+msgid "You must select a supplier"
+msgstr "Debe seleccionar un proveedor"
+
+#: uresourcestring.rs_returns_insufficient_stock
+msgid "Insufficient stock for: %s (available: %d)"
+msgstr "Stock insuficiente para: %s (disponible: %d)"
+
+#: uresourcestring.rs_returns_save_error
+msgid "Operation was not saved"
+msgstr "La operación no fue guardada"
+
+#: uresourcestring.rs_returns_save_success
+msgid "Operation saved successfully"
+msgstr "Operación guardada exitosamente"
+
+#: uresourcestring.rs_returns_rebuild_success
+msgid "Balances rebuilt successfully"
+msgstr "Saldos reconstruidos exitosamente"
+
+#: uresourcestring.rs_returns_rebuild_warning
+msgid "Some products have negative stock"
+msgstr "Algunos productos tienen stock negativo"
+
+#: uresourcestring.rs_returns_combo_devolution
+msgid "Customer Devolution"
+msgstr "Devolución de Cliente"
+
+#: uresourcestring.rs_returns_combo_loss
+msgid "Inventory Loss"
+msgstr "Pérdida de Inventario"
+
+#: uresourcestring.rs_returns_combo_provider
+msgid "Return to Provider"
+msgstr "Devolución a Proveedor"

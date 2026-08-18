@@ -223,6 +223,16 @@ RS_REPORTS_TAB_VALUATION = 'Inventory Valuation';
 RS_REPORTS_TAB_PURCHASES = 'Purchases';
 RS_REPORTS_EXPORTED = 'Report exported successfully to: %s';
 
+// Units Sold Report
+RS_REPORTS_TAB_UNITS_SOLD = 'Units Sold';
+RS_REPORTS_UNITS_COL_PRODUCT = 'Product';
+RS_REPORTS_UNITS_COL_UNITS = 'Units Sold';
+RS_REPORTS_UNITS_COL_REVENUE = 'Revenue';
+RS_REPORTS_UNITS_COL_COST = 'Cost';
+RS_REPORTS_UNITS_COL_UTILITY = 'Utility';
+RS_REPORTS_UNITS_TOTAL = 'TOTAL';
+RS_REPORTS_EXPORT_ERROR = 'Error exporting CSV: %s';
+
 // Credits frame
 RS_CREDITS_TITLE = 'Debtors';
 RS_CREDITS_SEARCH_HINT = 'Search by name...';
@@ -248,6 +258,31 @@ RS_CREDITS_INVALID_AMOUNT = 'Enter a valid amount';
 RS_CREDITS_AMOUNT_ZERO = 'Amount must be greater than zero';
 RS_CREDITS_PAY_SUCCESS = 'Payment registered successfully';
 RS_CREDITS_CHECKBOX = 'Credit';
+
+// Returns frame
+RS_NAV_RETURNS = 'Devoluciones';
+RS_RETURNS_TITLE = 'Devoluciones / Pérdidas';
+RS_RETURNS_OP_TYPE = 'Tipo de Operación';
+RS_RETURNS_PERSON = 'Persona';
+RS_RETURNS_DATE = 'Fecha';
+RS_RETURNS_ADD = '&Agregar';
+RS_RETURNS_DELETE = '&Eliminar';
+RS_RETURNS_SAVE = '&Guardar';
+RS_RETURNS_REBUILD = 'Reconstruir Saldos';
+RS_RETURNS_GRID_PRODUCT = 'Producto';
+RS_RETURNS_GRID_QTY = 'Cantidad';
+RS_RETURNS_GRID_COST = 'Costo Unitario';
+RS_RETURNS_COMBO_DEVOLUTION = 'Devolución de Cliente';
+RS_RETURNS_COMBO_LOSS = 'Pérdida de Inventario';
+RS_RETURNS_COMBO_PROVIDER = 'Devolución a Proveedor';
+RS_RETURNS_NO_ITEMS = 'Debe agregar al menos un ítem con un producto';
+RS_RETURNS_NO_CUSTOMER = 'Debe seleccionar un cliente';
+RS_RETURNS_NO_SUPPLIER = 'Debe seleccionar un proveedor';
+RS_RETURNS_INSUFFICIENT_STOCK = 'Stock insuficiente para: %s (disponible: %d)';
+RS_RETURNS_SAVE_ERROR = 'La operación no fue guardada';
+RS_RETURNS_SAVE_SUCCESS = 'Operación guardada exitosamente';
+RS_RETURNS_REBUILD_SUCCESS = 'Saldos reconstruidos exitosamente';
+RS_RETURNS_REBUILD_WARNING = 'Algunos productos tienen stock negativo después de reconstruir';
 
 
 implementation

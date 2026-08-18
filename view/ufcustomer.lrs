@@ -1,21 +1,22 @@
 LazarusResources.Add('TFormCustomer','FORMDATA',[
   'TPF0'#13'TFormCustomer'#12'FormCustomer'#4'Left'#3'0'#1#6'Height'#3#145#0#3
   +'Top'#3#199#0#5'Width'#3#149#1#13'ActiveControl'#7#8'EditName'#7'Caption'#6#9
-  +'Customers'#12'ClientHeight'#3#145#0#11'ClientWidth'#3#149#1#8'OnCreate'#7#10
-  +'FormCreate'#6'OnShow'#7#8'FormShow'#10'LCLVersion'#6#8'0.9.28.2'#0#6'TLabel'
-  +#9'LabelName'#4'Left'#2#16#6'Height'#2#18#3'Top'#2#16#5'Width'#2'('#7'Captio'
-  +'n'#6#4'Name'#11'ParentColor'#8#0#0#6'TLabel'#14'LabelTelephone'#4'Left'#2#16
-  +#6'Height'#2#18#3'Top'#2'0'#5'Width'#2'C'#7'Caption'#6#9'Telephone'#11'Paren'
-  +'tColor'#8#0#0#6'TLabel'#12'LabelAddress'#4'Left'#2#16#6'Height'#2#18#3'Top'
-  +#2'P'#5'Width'#2'5'#7'Caption'#6#7'Address'#11'ParentColor'#8#0#0#5'TEdit'#8
-  +'EditName'#4'Left'#2'h'#6'Height'#2#27#3'Top'#2#16#5'Width'#3'('#1#6'OnExit'
-  +#7#12'EditNameExit'#8'TabOrder'#2#0#0#0#5'TEdit'#13'EditTelephone'#4'Left'#2
-  +'h'#6'Height'#2#27#3'Top'#2'0'#5'Width'#3'('#1#6'OnExit'#7#17'EditTelephoneE'
-  +'xit'#8'TabOrder'#2#1#0#0#5'TEdit'#11'EditAddress'#4'Left'#2'h'#6'Height'#2
-  +#27#3'Top'#2'P'#5'Width'#3'('#1#6'OnExit'#7#15'EditAddressExit'#8'TabOrder'#2
-  +#2#0#0#7'TBitBtn'#8'BitBtnOk'#4'Left'#3#248#0#6'Height'#2#30#3'Top'#2'p'#5'W'
-  +'idth'#2'K'#7'Caption'#6#3'&Ok'#7'OnClick'#7#13'BitBtnOkClick'#8'TabOrder'#2
-  +#3#0#0#7'TBitBtn'#12'BitBtnCancel'#4'Left'#3'E'#1#6'Height'#2#30#3'Top'#2'p'
-  +#5'Width'#2'K'#7'Caption'#6#7'&Cancel'#7'OnClick'#7#17'BitBtnCancelClick'#6
-  +'OnExit'#7#16'BitBtnCancelExit'#8'TabOrder'#2#4#0#0#0
+  +'Customers'#12'ClientHeight'#3#145#0#11'ClientWidth'#3#149#1#8'Position'#7#16
+  +'poMainFormCenter'#8'OnCreate'#7#10'FormCreate'#6'OnShow'#7#8'FormShow'#10'L'
+  +'CLVersion'#6#8'0.9.28.2'#0#6'TLabel'#9'LabelName'#4'Left'#2#16#6'Height'#2
+  +#18#3'Top'#2#16#5'Width'#2'('#7'Caption'#6#4'Name'#11'ParentColor'#8#0#0#6'T'
+  +'Label'#14'LabelTelephone'#4'Left'#2#16#6'Height'#2#18#3'Top'#2'0'#5'Width'#2
+  +'C'#7'Caption'#6#9'Telephone'#11'ParentColor'#8#0#0#6'TLabel'#12'LabelAddres'
+  +'s'#4'Left'#2#16#6'Height'#2#18#3'Top'#2'P'#5'Width'#2'5'#7'Caption'#6#7'Add'
+  +'ress'#11'ParentColor'#8#0#0#5'TEdit'#8'EditName'#4'Left'#2'h'#6'Height'#2#27
+  +#3'Top'#2#16#5'Width'#3'('#1#6'OnExit'#7#12'EditNameExit'#8'TabOrder'#2#0#0#0
+  +#5'TEdit'#13'EditTelephone'#4'Left'#2'h'#6'Height'#2#27#3'Top'#2'0'#5'Width'
+  +#3'('#1#6'OnExit'#7#17'EditTelephoneExit'#8'TabOrder'#2#1#0#0#5'TEdit'#11'Ed'
+  +'itAddress'#4'Left'#2'h'#6'Height'#2#27#3'Top'#2'P'#5'Width'#3'('#1#6'OnExit'
+  +#7#15'EditAddressExit'#8'TabOrder'#2#2#0#0#7'TBitBtn'#8'BitBtnOk'#4'Left'#3
+  +#248#0#6'Height'#2#30#3'Top'#2'p'#5'Width'#2'K'#7'Caption'#6#3'&Ok'#7'OnClic'
+  +'k'#7#13'BitBtnOkClick'#8'TabOrder'#2#3#0#0#7'TBitBtn'#12'BitBtnCancel'#4'Le'
+  +'ft'#3'E'#1#6'Height'#2#30#3'Top'#2'p'#5'Width'#2'K'#7'Caption'#6#7'&Cancel'
+  +#7'OnClick'#7#17'BitBtnCancelClick'#6'OnExit'#7#16'BitBtnCancelExit'#8'TabOr'
+  +'der'#2#4#0#0#0
 ]);

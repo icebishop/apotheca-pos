@@ -15,6 +15,14 @@ name : String;
 minstock :Integer;
 maxstock :Integer;
 balance : TBalance;
+imageRef : Integer;
+originalPrice : Real;
+isService : Boolean;
+category : String;
+description : String;
+brand : String;
+productCondition : String;
+googleProductCategory : String;
 
 
 public // access by anything
@@ -31,6 +39,22 @@ function getName():String;
 function getMinStock():Integer;
 function getMaxStock():Integer;
 function getBalance():TBalance;
+procedure setImageRef(newImageRef:Integer);
+function getImageRef():Integer;
+procedure setOriginalPrice(newOriginalPrice:Real);
+function getOriginalPrice():Real;
+procedure setIsService(newIsService:Boolean);
+function getIsService():Boolean;
+procedure setCategory(newCategory:String);
+function getCategory():String;
+procedure setDescription(newDescription:String);
+function getDescription():String;
+procedure setBrand(newBrand:String);
+function getBrand():String;
+procedure setProductCondition(newCondition:String);
+function getProductCondition():String;
+procedure setGoogleProductCategory(newCat:String);
+function getGoogleProductCategory():String;
 
 
 
@@ -43,6 +67,14 @@ constructor TProduct.Create;
 begin
 inherited;
 balance := TBalance.Create;
+imageRef := 0;
+originalPrice := 0.0;
+isService := False;
+category := '';
+description := '';
+brand := '';
+productCondition := 'new';
+googleProductCategory := '';
 end;
 
 procedure TProduct.setId(newId:Integer);
@@ -93,6 +125,87 @@ end;
 function TProduct.getBalance():TBalance;
 begin
      getBalance := balance;
+end;
+
+procedure TProduct.setImageRef(newImageRef:Integer);
+begin
+Self.imageRef := newImageRef;
+end;
+
+function TProduct.getImageRef():Integer;
+begin
+getImageRef := Self.imageRef;
+end;
+
+procedure TProduct.setOriginalPrice(newOriginalPrice:Real);
+begin
+if newOriginalPrice >= 0.0 then
+   Self.originalPrice := newOriginalPrice;
+end;
+
+function TProduct.getOriginalPrice():Real;
+begin
+getOriginalPrice := Self.originalPrice;
+end;
+
+procedure TProduct.setIsService(newIsService:Boolean);
+begin
+Self.isService := newIsService;
+end;
+
+function TProduct.getIsService():Boolean;
+begin
+getIsService := Self.isService;
+end;
+
+procedure TProduct.setCategory(newCategory:String);
+begin
+Self.category := newCategory;
+end;
+
+function TProduct.getCategory():String;
+begin
+getCategory := Self.category;
+end;
+
+procedure TProduct.setDescription(newDescription:String);
+begin
+Self.description := newDescription;
+end;
+
+function TProduct.getDescription():String;
+begin
+getDescription := Self.description;
+end;
+
+procedure TProduct.setBrand(newBrand:String);
+begin
+Self.brand := newBrand;
+end;
+
+function TProduct.getBrand():String;
+begin
+getBrand := Self.brand;
+end;
+
+procedure TProduct.setProductCondition(newCondition:String);
+begin
+Self.productCondition := newCondition;
+end;
+
+function TProduct.getProductCondition():String;
+begin
+getProductCondition := Self.productCondition;
+end;
+
+procedure TProduct.setGoogleProductCategory(newCat:String);
+begin
+Self.googleProductCategory := newCat;
+end;
+
+function TProduct.getGoogleProductCategory():String;
+begin
+getGoogleProductCategory := Self.googleProductCategory;
 end;
 
 end.

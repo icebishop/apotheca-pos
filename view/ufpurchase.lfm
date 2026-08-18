@@ -7,6 +7,7 @@ object Formpurchase: TFormpurchase
   Caption = 'Purchase'
   ClientHeight = 398
   ClientWidth = 569
+  Position = poMainFormCenter
   OnCreate = FormCreate
   OnShow = FormShow
   LCLVersion = '0.9.28.2'

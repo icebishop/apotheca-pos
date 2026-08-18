@@ -1,0 +1,803 @@
+[
+  {
+    "id": "p1",
+    "name": "Kit de Limpieza para Flecha de Madera",
+    "category": "Kits",
+    "price": 25000,
+    "originalPrice": 80000,
+    "description": "Kit completo para la limpieza profunda de flechas de billar en madera. Hecho con componentes naturales, sin solventes. Protege y alarga la vida útil de tu taco.",
+    "images": [
+      "/Kit-limpieza-flecha-madera.webp"
+    ],
+    "isVisible": true,
+    "brand": "Don Pulido",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories"
+  },
+  {
+    "id": "p2",
+    "name": "Kit de Limpieza para Flecha de Carbono y Fibra de Vidrio",
+    "category": "Kits",
+    "price": 25000,
+    "originalPrice": 80000,
+    "description": "Kit especializado para flechas de carbono y fibra de vidrio. Fórmula suave que limpia sin dañar los materiales compuestos. Restaura el brillo y la suavidad original.",
+    "isVisible": true,
+    "images": [
+      "/Kit-limpieza-flecha-carbono-fibradevidrio.webp"
+    ],
+    "brand": "Don Pulido",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories"
+  },
+  {
+    "id": "p3",
+    "name": "Casquillos Master multicapa",
+    "category": "Casquillos",
+    "price": 7500,
+    "originalPrice": 10000,
+    "description": "Casquillo Master de excelente durabilidad, consistencia y control para tu taco de billar.",
+    "isVisible": true,
+    "images": [
+      "/Casquillos-Casquillos-Master-Multicapa.webp"
+    ],
+    "brand": "Master",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories > Billiard Cue Tips"
+  },
+  {
+    "id": "p4",
+    "name": "Casquillos Zan",
+    "category": "Casquillos",
+    "price": 18000,
+    "originalPrice": 65000,
+    "description": "Casquillo Zan profesional, fabricado con capas de cuero laminado premium para máxima consistencia y efectos estables.",
+    "isVisible": true,
+    "images": [
+      "/Casquillos-Casquillos-Zen.webp"
+    ],
+    "brand": "Zan",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories > Billiard Cue Tips"
+  },
+  {
+    "id": "p5",
+    "name": "Casquillos Seiko",
+    "category": "Casquillos",
+    "price": 5000,
+    "originalPrice": 8000,
+    "description": "Casquillo Seiko de alta resistencia, diseñado para un impacto sólido y una gran transmisión de energía.",
+    "isVisible": true,
+    "images": [
+      "/Casquillos-Casquillos-Seiko.webp"
+    ],
+    "brand": "Seiko",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories > Billiard Cue Tips"
+  },
+  {
+    "id": "p6",
+    "name": "Casquillos Kamui",
+    "category": "Casquillos",
+    "price": 10000,
+    "originalPrice": 110000,
+    "description": "Casquillo Kamui de renombre mundial. Ofrece una excelente retención de tiza y elasticidad para golpes con efecto.",
+    "isVisible": true,
+    "images": [
+      "/Casquillos-Casquillos-Kamui.webp"
+    ],
+    "brand": "Kamui",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories > Billiard Cue Tips"
+  },
+  {
+    "id": "p7",
+    "name": "Casquillos Diamond",
+    "category": "Casquillos",
+    "price": 3500,
+    "originalPrice": 6000,
+    "description": "Casquillo Diamond con una excelente relación calidad-precio. Brinda un buen balance entre dureza y absorción de impacto.",
+    "isVisible": true,
+    "images": [
+      "/Casquillos-Casquillos-Diamond.webp"
+    ],
+    "brand": "Diamond",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories > Billiard Cue Tips"
+  },
+  {
+    "id": "p7c",
+    "name": "Casquillos Diamond Blue",
+    "category": "Casquillos",
+    "price": 5000,
+    "originalPrice": 16000,
+    "description": "Casquillo Diamond Blue con excelente adherencia y control. Ideal para jugadores que buscan precisión en cada tiro.",
+    "isVisible": true,
+    "images": [
+      "/Casquillos-Casquillos-Diamond-Blue.webp"
+    ],
+    "brand": "Diamond",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories > Billiard Cue Tips"
+  },
+  {
+    "id": "p7b",
+    "name": "Casquillos Green Magic",
+    "category": "Casquillos",
+    "price": 3500,
+    "originalPrice": 6000,
+    "description": "Casquillo Green Magic de cuero seleccionado para un contacto uniforme y un deslizamiento de bola limpio.",
+    "isVisible": true,
+    "images": [
+      "/Casquillos-Casquillos-Green-Magic.webp"
+    ],
+    "brand": "Green Magic",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories > Billiard Cue Tips"
+  },
+  {
+    "id": "p9",
+    "name": "Casquillos Cuppa",
+    "category": "Casquillos",
+    "price": 40000,
+    "originalPrice": 55000,
+    "description": "Casquillo Cuppa de alta gama, fabricado con múltiples capas compactas para un control superior en cada tiro.",
+    "isVisible": false,
+    "brand": "Cuppa",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories > Billiard Cue Tips"
+  },
+  {
+    "id": "p10",
+    "name": "Casquillos Cuppa Rainbow",
+    "category": "Casquillos",
+    "price": 28000,
+    "originalPrice": 40000,
+    "description": "Casquillo Cuppa Rainbow con capas de cuero multicolor laminado de alto desempeño y gran adherencia.",
+    "isVisible": false,
+    "brand": "Cuppa",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories > Billiard Cue Tips"
+  },
+  {
+    "id": "p11",
+    "name": "Casquillos Kamui Athlete",
+    "category": "Casquillos",
+    "price": 28000,
+    "originalPrice": 130000,
+    "description": "Casquillo Kamui Athlete de edición especial, optimizado para deportistas de alto nivel y máxima precisión de golpe.",
+    "isVisible": false,
+    "images": [
+      "/Casquillos-Casquillos-Kamui-Athlete.webp"
+    ],
+    "brand": "Kamui",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories > Billiard Cue Tips"
+  },
+  {
+    "id": "p12",
+    "name": "Casquillos Xan",
+    "category": "Casquillos",
+    "price": 2500,
+    "originalPrice": 4000,
+    "description": "Casquillo Xan económico y resistente para uso regular y entrenamientos diarios.",
+    "isVisible": true,
+    "images": [
+      "/Casquillos-Casquillos-Xan.webp"
+    ],
+    "brand": "Xan",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories > Billiard Cue Tips"
+  },
+  {
+    "id": "p13",
+    "name": "Casquillos Duffering",
+    "category": "Casquillos",
+    "price": 15000,
+    "originalPrice": 25000,
+    "description": "Casquillo Duffering de alta calidad con excelente retención y consistencia en cada golpe.",
+    "isVisible": true,
+    "images": [
+      "/Casquillos-Casquillos-Dufferin.webp"
+    ],
+    "brand": "Duffering",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories > Billiard Cue Tips"
+  },
+  {
+    "id": "p13b",
+    "name": "Casquillos Konllen",
+    "category": "Casquillos",
+    "price": 30000,
+    "originalPrice": 50000,
+    "description": "Casquillo Konllen premium multicapa con gran control y precisión profesional.",
+    "isVisible": true,
+    "images": [
+      "/Casquillos-Casquillos-Konllen.webp"
+    ],
+    "brand": "Konllen",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories > Billiard Cue Tips"
+  },
+  {
+    "id": "p13c",
+    "name": "Casquillos Crical",
+    "category": "Casquillos",
+    "price": 15000,
+    "originalPrice": 25000,
+    "description": "Casquillo Crical con excelente agarre y durabilidad para todo tipo de jugadores.",
+    "isVisible": true,
+    "images": [
+      "/Casquillos-Casquillos-Crical.webp"
+    ],
+    "brand": "Crical",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories > Billiard Cue Tips"
+  },
+  {
+    "id": "p36",
+    "name": "Casquillos Master",
+    "category": "Casquillos",
+    "price": 2000,
+    "originalPrice": 5000,
+    "description": "Casquillo Master de excelente durabilidad, consistencia y control para tu taco de billar.",
+    "isVisible": true,
+    "images": [
+      "/Casquillos-Casquillos-Master.webp"
+    ],
+    "brand": "Master",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories > Billiard Cue Tips"
+  },
+  {
+    "id": "p14",
+    "name": "Tiza AXD Estándar",
+    "category": "Tizas",
+    "price": 40000,
+    "originalPrice": 90000,
+    "description": "Tiza ADX Konllen clásica de gran cobertura y excelente control en todo tipo de casquillos.",
+    "isVisible": true,
+    "images": [
+      "/Tiza-ADX-Konllen.webp"
+    ],
+    "brand": "Konllen",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Chalk"
+  },
+  {
+    "id": "p15",
+    "name": "Tiza Crical",
+    "category": "Tizas",
+    "price": 5500,
+    "originalPrice": 8000,
+    "description": "Tiza Crical con buena consistencia y agarre para asegurar un golpe limpio en tus jugadas cotidianas.",
+    "isVisible": false,
+    "brand": "Crical",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Chalk"
+  },
+  {
+    "id": "p16",
+    "name": "Tiza Turning Point",
+    "category": "Tizas",
+    "price": 15000,
+    "originalPrice": 20000,
+    "description": "Tiza Turning Point de gran duración y adherencia para mantener la consistencia en efectos de billar.",
+    "isVisible": true,
+    "images": [
+      "/Tiza-Tourning-Point.webp"
+    ],
+    "brand": "Turning Point",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Chalk"
+  },
+  {
+    "id": "p17",
+    "name": "Tiza Redonda HR",
+    "category": "Tizas",
+    "price": 28000,
+    "originalPrice": 35000,
+    "description": "Tiza HR redonda de alta calidad para un recubrimiento suave y uniforme en la botana de tu taco.",
+    "isVisible": true,
+    "images": [
+      "/Tiza-HR-redonda.webp"
+    ],
+    "brand": "HR",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Chalk"
+  },
+  {
+    "id": "p18",
+    "name": "Tiza Roku",
+    "category": "Tizas",
+    "price": 30000,
+    "originalPrice": 150000,
+    "description": "Tiza Roku premium que proporciona un control excepcional y previene pifias incluso en efectos de gran rotación.",
+    "isVisible": true,
+    "images": [
+      "/Tiza-Roku.webp"
+    ],
+    "brand": "Roku",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Chalk"
+  },
+  {
+    "id": "p19",
+    "name": "Tiza HR Cuadrada",
+    "category": "Tizas",
+    "price": 16000,
+    "originalPrice": 22000,
+    "description": "Tiza HR de forma clásica cuadrada con buena densidad y retención de tiza.",
+    "isVisible": false,
+    "images": [
+      "/Tiza-hr.webp"
+    ],
+    "brand": "HR",
+    "condition": "new",
+    "availability": "out_of_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Chalk"
+  },
+  {
+    "id": "p20",
+    "name": "Tiza Blue Diamond (Caja x2)",
+    "category": "Tizas",
+    "price": 25000,
+    "originalPrice": 35000,
+    "description": "Caja de 2 tizas Blue Diamond, consistencia premium y adherencia superior para mayor precisión en tus jugadas.",
+    "isVisible": true,
+    "images": [
+      "/Tiza-Blue-Diamond.webp"
+    ],
+    "brand": "Blue Diamond",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Chalk"
+  },
+  {
+    "id": "p20b",
+    "name": "Tiza Zuma",
+    "category": "Tizas",
+    "price": 15000,
+    "originalPrice": 22000,
+    "description": "Tiza Zuma de excelente adherencia y duración para un juego consistente.",
+    "isVisible": true,
+    "images": [
+      "/Tiza-Zuma-570.webp"
+    ],
+    "brand": "Zuma",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Chalk"
+  },
+  {
+    "id": "p21",
+    "name": "Guante Crical Profesional",
+    "category": "Guantes",
+    "price": 25000,
+    "originalPrice": 35000,
+    "description": "Guante de billar Crical con tela elástica y transpirable para un deslizamiento fluido del taco.",
+    "isVisible": false,
+    "images": [
+      "/Guante-Crical.webp"
+    ],
+    "brand": "Crical",
+    "condition": "new",
+    "availability": "out_of_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Gloves"
+  },
+  {
+    "id": "p21b",
+    "name": "Guante Dedos al Medio",
+    "category": "Guantes",
+    "price": 20000,
+    "originalPrice": 30000,
+    "description": "Guante de billar con diseño de dedos al medio para mayor sensibilidad y control.",
+    "isVisible": true,
+    "images": [
+      "/Guante-dedos-al-medio.webp"
+    ],
+    "brand": "Don Pulido",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Gloves"
+  },
+  {
+    "id": "p22",
+    "name": "Guante Wivto Ambidiestro",
+    "category": "Guantes",
+    "price": 18000,
+    "originalPrice": 28000,
+    "description": "Guante de billar Wivto ambidiestro que asegura una fricción mínima y un movimiento extremadamente cómodo.",
+    "isVisible": true,
+    "images": [
+      "/Guante-Ambidiestro.webp"
+    ],
+    "brand": "Wivto",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Gloves"
+  },
+  {
+    "id": "p23",
+    "name": "Guantes de Billar Estándar",
+    "category": "Guantes",
+    "price": 15000,
+    "originalPrice": 25000,
+    "description": "Guante estándar de tres dedos con tela suave y elástica de baja fricción para un deslizamiento constante.",
+    "isVisible": true,
+    "images": [
+      "/Guante-Grip-Belcro.webp"
+    ],
+    "brand": "Don Pulido",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Gloves"
+  },
+  {
+    "id": "p24",
+    "name": "Reparador de Casquillo",
+    "category": "Accesorios",
+    "price": 12500,
+    "originalPrice": 20000,
+    "description": "Herramienta práctica y compacta para moldear, reparar y extender la vida útil del casquillo de tu taco.",
+    "isVisible": true,
+    "images": [
+      "/Accesorios-Reparador-de-casquillo.webp"
+    ],
+    "brand": "Don Pulido",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories"
+  },
+  {
+    "id": "p25",
+    "name": "Porta Tiza de Plástico Simple",
+    "category": "Accesorios",
+    "price": 3000,
+    "originalPrice": 5000,
+    "description": "Portatizas básico de plástico, ultra ligero y práctico para guardar tu tiza favorita.",
+    "isVisible": true,
+    "images": [
+      "/Accesorios-Porta-Plastico-a.webp",
+      "/Accesorios-Porta-Plastico-b.webp",
+      "/Accesorios-Porta-Plastico-c.webp",
+      "/Accesorios-Porta-Plastico-d.webp",
+      "/Accesorios-Porta-Plastico-e.webp",
+      "/Accesorios-Porta-Plastico-f.webp"
+    ],
+    "brand": "Don Pulido",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories"
+  },
+  {
+    "id": "p26",
+    "name": "Porta Tiza de Plástico Premium",
+    "category": "Accesorios",
+    "price": 15000,
+    "originalPrice": 22000,
+    "description": "Portatizas plástico de mayor resistencia con mejor sujeción y protección integral.",
+    "isVisible": true,
+    "images": [
+      "/Accesorios-Porta-Plastico-dos-partes-a.webp"
+    ],
+    "brand": "Don Pulido",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories"
+  },
+  {
+    "id": "p27",
+    "name": "Clip Magnético Porta Tiza",
+    "category": "Accesorios",
+    "price": 20000,
+    "originalPrice": 30000,
+    "description": "Clip magnético de metal duradero para colocar en tu cinturón y llevar tu tiza siempre a mano.",
+    "isVisible": true,
+    "images": [
+      "/Accesorios-clip.webp",
+      "/Accesorios-clip-b.webp"
+    ],
+    "brand": "Don Pulido",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories"
+  },
+  {
+    "id": "p28",
+    "name": "Monedas para entrenamiento",
+    "category": "Accesorios",
+    "price": 2500,
+    "description": "Monedas metálicas para marcar tus rutinas de entrenamiento.",
+    "isVisible": true,
+    "images": [
+      "/Accesorios-Monedas-entrenamiento.webp"
+    ],
+    "brand": "Don Pulido",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories"
+  },
+  {
+    "id": "p29",
+    "name": "Paño de Microfibra Don Pulido",
+    "category": "Accesorios",
+    "price": 3000,
+    "originalPrice": 5000,
+    "description": "Paño de microfibra de alta calidad, ideal para retirar polvo y sudor de la flecha después de jugar.",
+    "isVisible": false,
+    "brand": "Don Pulido",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories"
+  },
+  {
+    "id": "p30",
+    "name": "Porta Tiza de Aluminio",
+    "category": "Accesorios",
+    "price": 25000,
+    "originalPrice": 45000,
+    "description": "Porta tiza elegante de aluminio (dos partes) con imán potente para enganchar a tu cinturón o bolsillo.",
+    "isVisible": true,
+    "images": [
+      "/Accesorios-Porta-Tiza-Dos-Partes.webp",
+      "/Accesorios-Porta-Tiza-Dos-Partes-b.webp",
+      "/Accesorios-Porta-Tiza-Dos-Partes-c.webp",
+      "/Accesorios-Porta-Tiza-Dos-Partes-d.webp"
+    ],
+    "brand": "Don Pulido",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories"
+  },
+  {
+    "id": "p37",
+    "name": "Porta Tiza de Aluminio",
+    "category": "Accesorios",
+    "price": 25000,
+    "originalPrice": 45000,
+    "description": "Porta tiza elegante de aluminio (dos partes) con imán potente para enganchar a tu cinturón o bolsillo.",
+    "isVisible": true,
+    "images": [
+      "/Accesorios-Porta-Tiza-Dos-Partes-Rojo.webp"
+    ],
+    "brand": "Don Pulido",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories"
+  },
+  {
+    "id": "p38",
+    "name": "Porta Tiza de Aluminio",
+    "category": "Accesorios",
+    "price": 25000,
+    "originalPrice": 45000,
+    "description": "Porta tiza elegante de aluminio (dos partes) con imán potente para enganchar a tu cinturón o bolsillo.",
+    "isVisible": true,
+    "images": [
+      "/Accesorios-Porta-Tiza-Dos-Partes-Azul.webp"
+    ],
+    "brand": "Don Pulido",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories"
+  },
+  {
+    "id": "p39",
+    "name": "Porta Tiza de Aluminio Redondo",
+    "category": "Accesorios",
+    "price": 20000,
+    "originalPrice": 40000,
+    "description": "Porta tiza elegante de aluminio (dos partes) con imán potente para enganchar a tu cinturón o bolsillo.",
+    "isVisible": true,
+    "images": [
+      "/Accesorios-Porta-Tiza-Redondo.webp"
+    ],
+    "brand": "Don Pulido",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories"
+  },
+  {
+    "id": "p40",
+    "name": "Porta Tiza de Aluminio Hexagonal",
+    "category": "Accesorios",
+    "price": 35000,
+    "originalPrice": 60000,
+    "description": "Porta tiza elegante de aluminio (dos partes) con imán potente para enganchar a tu cinturón o bolsillo.",
+    "isVisible": true,
+    "images": [
+      "/Accesorios-Porta-Tiza-Hexagonal.webp"
+    ],
+    "brand": "Don Pulido",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories"
+  },
+  {
+    "id": "p31",
+    "name": "Pulidor de Flechas",
+    "category": "Accesorios",
+    "price": 8000,
+    "originalPrice": 12000,
+    "description": "Pulidor especial para limpiar profundamente la flecha de tu taco de billar sumamente suave al tacto.",
+    "isVisible": false,
+    "brand": "Don Pulido",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories"
+  },
+  {
+    "id": "p32",
+    "name": "Protectores de Casquillo (Tapones)",
+    "category": "Accesorios",
+    "price": 2500,
+    "originalPrice": 4000,
+    "description": "Tapones protectores de hule flexibles para resguardar el casquillo de golpes y suciedad cuando no juegas.",
+    "isVisible": true,
+    "images": [
+      "/Accesorios-Protector-Casquillo.webp"
+    ],
+    "brand": "Don Pulido",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories"
+  },
+  {
+    "id": "p33",
+    "name": "Porta Tiza de Aluminio (3 Piezas)",
+    "category": "Accesorios",
+    "price": 60000,
+    "originalPrice": 100000,
+    "description": "Porta tiza premium de aluminio de tres piezas con tapa protectora e imán de sujeción fuerte.",
+    "isVisible": true,
+    "images": [
+      "/Accesorios-Porta-Tiza-Tres-Partes.webp",
+      "/Accesorios-Porta-Tiza-Tres-Partes-b.webp",
+      "/Accesorios-Porta-Tiza-Tres-Partes-c.webp"
+    ],
+    "brand": "Don Pulido",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories"
+  },
+  {
+    "id": "p34",
+    "name": "Perfilador de Casquillo",
+    "category": "Accesorios",
+    "price": 40000,
+    "originalPrice": 60000,
+    "description": "Herramienta metálica de precisión para perfilar, dar forma y acondicionar la curvatura de la botana de tu taco.",
+    "isVisible": true,
+    "images": [
+      "/Accesorios-Perfilador-de-casquillo.webp"
+    ],
+    "brand": "Don Pulido",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories"
+  },
+  {
+    "id": "p35",
+    "name": "Recortador de Casquillo",
+    "category": "Accesorios",
+    "price": 9000,
+    "originalPrice": 15000,
+    "description": "Herramienta práctica para recortar y alinear el casquillo de manera limpia y uniforme.",
+    "isVisible": true,
+    "images": [
+      "/Accesorios-Recortador-de-casquillo.webp"
+    ],
+    "brand": "Don Pulido",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories"
+  },
+  {
+    "id": "p41",
+    "name": "Protector de Junta",
+    "category": "Accesorios",
+    "price": 25000,
+    "originalPrice": 40000,
+    "description": "Protector de junta para resguardar la conexión entre flecha y culata de tu taco de billar.",
+    "isVisible": true,
+    "images": [
+      "/Accesorios-protector-junta-38.webp"
+    ],
+    "brand": "Don Pulido",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories"
+  },
+  {
+    "id": "p42",
+    "name": "Grips",
+    "category": "Accesorios",
+    "price": 20000,
+    "originalPrice": 35000,
+    "description": "Grip de silicona para mejorar el agarre y comodidad en la culata de tu taco.",
+    "isVisible": true,
+    "images": [],
+    "brand": "Don Pulido",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories"
+  },
+  {
+    "id": "p43",
+    "name": "Supresores de Vibración",
+    "category": "Accesorios",
+    "price": 2000,
+    "originalPrice": 4000,
+    "description": "Supresores de vibración para reducir el feedback en el golpe y mejorar la sensación del tiro.",
+    "isVisible": true,
+    "images": [],
+    "brand": "Don Pulido",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories"
+  },
+  {
+    "id": "p44",
+    "name": "Limpiador de Mesa",
+    "category": "Accesorios",
+    "price": 60000,
+    "originalPrice": 90000,
+    "description": "Limpiador profesional para el paño de la mesa de billar, elimina polvo y residuos de tiza.",
+    "isVisible": true,
+    "images": [
+      "/Accesorios-Limpiador-de-mesa.webp"
+    ],
+    "brand": "Don Pulido",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories"
+  },
+  {
+    "id": "p13d",
+    "name": "Casquillos Xfen",
+    "category": "Casquillos",
+    "price": 14000,
+    "description": "Casquillo Xfen multicapa de alto rendimiento con gran retención y control para jugadores exigentes.",
+    "isVisible": true,
+    "images": [],
+    "brand": "Xfen",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories > Billiard Cue Tips"
+  },
+  {
+    "id": "p45",
+    "name": "Cinta Grip",
+    "category": "Accesorios",
+    "price": 2500,
+    "description": "Cinta grip adhesiva para mejorar el agarre y comodidad en la culata de tu taco de billar.",
+    "isVisible": true,
+    "images": [],
+    "brand": "Don Pulido",
+    "condition": "new",
+    "availability": "in_stock",
+    "google_product_category": "Sporting Goods > Billiards > Billiard Cue Accessories"
+  }
+]

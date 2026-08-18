@@ -27,13 +27,14 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs,
   ComCtrls, Grids, StdCtrls, Buttons, ExtCtrls, EditBtn,
-  UReportEngine, UDataModule, UGridUtils;
+  UReportEngine, UDataModule, UGridUtils, UResourceString;
 
 type
 
   PIncomeUtilityReportRow = ^TIncomeUtilityReportRow;
   PInventoryValuationRow = ^TInventoryValuationRow;
   PPurchaseReportRow = ^TPurchaseReportRow;
+  PUnitsSoldRow = ^TUnitsSoldRow;
 
   { TFrameReports }
 
@@ -59,6 +60,7 @@ type
     FIncomeList: TList;
     FValuationList: TList;
     FPurchaseList: TList;
+    FUnitsSoldList: TList;
     FPurchaseMasterIds: TList; { TList of PInteger - operation IDs for master rows }
     FInitialized: Boolean;
     procedure ClearList(var AList: TList);
@@ -67,10 +69,12 @@ type
     procedure LoadInventoryValuationReport;
     procedure LoadPurchaseReport;
     procedure LoadPurchaseDetail(AOperationId: Integer);
+    procedure LoadUnitsSoldReport;
     procedure SetupIncomeGridHeaders;
     procedure SetupValuationGridHeaders;
     procedure SetupPurchaseMasterHeaders;
     procedure SetupPurchaseDetailHeaders;
+    procedure SetupUnitsSoldGridHeaders;
     procedure ShowDetailGrid(AVisible: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
@@ -90,6 +94,7 @@ begin
   FIncomeList := nil;
   FValuationList := nil;
   FPurchaseList := nil;
+  FUnitsSoldList := nil;
   FPurchaseMasterIds := nil;
   FReportEngine := nil;
   FInitialized := False;
@@ -100,6 +105,7 @@ begin
   ClearList(FIncomeList);
   ClearList(FValuationList);
   ClearList(FPurchaseList);
+  ClearList(FUnitsSoldList);
   ClearMasterIds;
   if Assigned(FReportEngine) then
     FReportEngine.Free;
@@ -115,9 +121,10 @@ begin
   DateTo.Date := Date;
 
   TabControl.Tabs.Clear;
-  TabControl.Tabs.Add('Ingresos y Utilidad');
-  TabControl.Tabs.Add('Valoración Inventario');
-  TabControl.Tabs.Add('Compras');
+  TabControl.Tabs.Add(RS_REPORTS_TAB_INCOME);
+  TabControl.Tabs.Add(RS_REPORTS_TAB_VALUATION);
+  TabControl.Tabs.Add(RS_REPORTS_TAB_PURCHASES);
+  TabControl.Tabs.Add(RS_REPORTS_TAB_UNITS_SOLD);
   TabControl.TabIndex := 0;
 
   FReportEngine := TReportEngine.Create(DataModule1.SQLite3Connection1);
@@ -276,6 +283,7 @@ begin
     0: LoadIncomeUtilityReport;
     1: LoadInventoryValuationReport;
     2: LoadPurchaseReport;
+    3: LoadUnitsSoldReport;
   end;
 end;
 
@@ -285,6 +293,7 @@ begin
     0: begin ShowDetailGrid(False); LoadIncomeUtilityReport; end;
     1: begin ShowDetailGrid(False); LoadInventoryValuationReport; end;
     2: begin ShowDetailGrid(True); LoadPurchaseReport; end;
+    3: begin ShowDetailGrid(False); LoadUnitsSoldReport; end;
   end;
 end;
 
@@ -457,6 +466,119 @@ begin
     GridDetail.RowCount := 2;
 end;
 
+procedure TFrameReports.SetupUnitsSoldGridHeaders;
+begin
+  GridReport.Clear;
+  GridReport.ColCount := 5;
+  GridReport.RowCount := 2;
+  GridReport.FixedRows := 1;
+  GridReport.Cells[0, 0] := RS_REPORTS_UNITS_COL_PRODUCT;
+  GridReport.Cells[1, 0] := RS_REPORTS_UNITS_COL_UNITS;
+  GridReport.Cells[2, 0] := RS_REPORTS_UNITS_COL_REVENUE;
+  GridReport.Cells[3, 0] := RS_REPORTS_UNITS_COL_COST;
+  GridReport.Cells[4, 0] := RS_REPORTS_UNITS_COL_UTILITY;
+  DistributeColumns(GridReport, [30, 18, 18, 18, 16]);
+end;
+
+procedure TFrameReports.LoadUnitsSoldReport;
+var
+  i: Integer;
+  TotUnits: Integer;
+  TotRevenue, TotCost, TotUtility: Real;
+  RowPtr: PUnitsSoldRow;
+  StartDateVal, EndDateVal: TDateTime;
+begin
+  if not Assigned(FReportEngine) then Exit;
+
+  StartDateVal := DateFrom.Date;
+  EndDateVal := DateTo.Date;
+
+  TotUnits := 0;
+  TotRevenue := 0;
+  TotCost := 0;
+  TotUtility := 0;
+
+  ClearList(FUnitsSoldList);
+  FUnitsSoldList := FReportEngine.GetUnitsSoldReport(StartDateVal, EndDateVal,
+    TotUnits, TotRevenue, TotCost, TotUtility);
+
+  SetupUnitsSoldGridHeaders;
+
+  if FUnitsSoldList.Count > 0 then
+    GridReport.RowCount := FUnitsSoldList.Count + 2  { +1 header, +1 totals row }
+  else
+    GridReport.RowCount := 2;  { header + totals row }
+
+  for i := 0 to FUnitsSoldList.Count - 1 do
+  begin
+    RowPtr := PUnitsSoldRow(FUnitsSoldList[i]);
+    GridReport.Cells[0, i + 1] := RowPtr^.ProductName;
+    GridReport.Cells[1, i + 1] := IntToStr(RowPtr^.UnitsSold);
+    GridReport.Cells[2, i + 1] := Format('%.2f', [RowPtr^.TotalRevenue]);
+    GridReport.Cells[3, i + 1] := Format('%.2f', [RowPtr^.TotalCost]);
+    GridReport.Cells[4, i + 1] := Format('%.2f', [RowPtr^.Utility]);
+  end;
+
+  { Add grand totals row at the bottom }
+  if FUnitsSoldList.Count > 0 then
+  begin
+    GridReport.Cells[0, FUnitsSoldList.Count + 1] := RS_REPORTS_UNITS_TOTAL;
+    GridReport.Cells[1, FUnitsSoldList.Count + 1] := IntToStr(TotUnits);
+    GridReport.Cells[2, FUnitsSoldList.Count + 1] := Format('%.2f', [TotRevenue]);
+    GridReport.Cells[3, FUnitsSoldList.Count + 1] := Format('%.2f', [TotCost]);
+    GridReport.Cells[4, FUnitsSoldList.Count + 1] := Format('%.2f', [TotUtility]);
+  end
+  else
+  begin
+    { Empty results: show headers + zero totals row only (requirement 4.5) }
+    GridReport.Cells[0, 1] := RS_REPORTS_UNITS_TOTAL;
+    GridReport.Cells[1, 1] := '0';
+    GridReport.Cells[2, 1] := Format('%.2f', [0.0]);
+    GridReport.Cells[3, 1] := Format('%.2f', [0.0]);
+    GridReport.Cells[4, 1] := Format('%.2f', [0.0]);
+  end;
+end;
+
+procedure ExportUnitsSoldToCSV(Grid: TStringGrid; const FileName: String);
+var
+  StringList: TStringList;
+  i, j: Integer;
+  LineStr: String;
+begin
+  StringList := TStringList.Create;
+  try
+    { Write English header row per requirement 5.1 }
+    StringList.Add('"Product","Units Sold","Revenue","Cost","Utility"');
+
+    { Write data rows: iterate grid rows 1..RowCount-1 (includes totals row) }
+    for i := 1 to Grid.RowCount - 1 do
+    begin
+      LineStr := '';
+      for j := 0 to Grid.ColCount - 1 do
+      begin
+        if j > 0 then
+          LineStr := LineStr + ',';
+        { For the last row (totals), use "Total" label in column 0 per req 5.3 }
+        if (i = Grid.RowCount - 1) and (j = 0) then
+          LineStr := LineStr + '"Total"'
+        else
+          LineStr := LineStr + '"' + Grid.Cells[j, i] + '"';
+      end;
+      StringList.Add(LineStr);
+    end;
+
+    try
+      StringList.SaveToFile(FileName);
+      ShowMessage(Format(RS_REPORTS_EXPORTED, [FileName]));
+    except
+      on E: Exception do
+        ShowMessage(Format(RS_REPORTS_EXPORT_ERROR, [E.Message]));
+    end;
+  finally
+    StringList.Free;
+  end;
+end;
+
 procedure TFrameReports.BtnExportCSVClick(Sender: TObject);
 var
   SaveDialog: TSaveDialog;
@@ -465,7 +587,6 @@ var
   LineStr: String;
 begin
   SaveDialog := TSaveDialog.Create(Self);
-  StringList := TStringList.Create;
   try
     SaveDialog.Filter := 'CSV Files (*.csv)|*.csv|Text Files (*.txt)|*.txt';
     SaveDialog.DefaultExt := 'csv';
@@ -473,22 +594,34 @@ begin
 
     if SaveDialog.Execute then
     begin
-      for i := 0 to GridReport.RowCount - 1 do
+      { Units Sold tab uses dedicated export with English headers }
+      if TabControl.TabIndex = 3 then
       begin
-        LineStr := '';
-        for j := 0 to GridReport.ColCount - 1 do
-        begin
-          if j > 0 then
-            LineStr := LineStr + ',';
-          LineStr := LineStr + '"' + GridReport.Cells[j, i] + '"';
+        ExportUnitsSoldToCSV(GridReport, SaveDialog.FileName);
+      end
+      else
+      begin
+        StringList := TStringList.Create;
+        try
+          for i := 0 to GridReport.RowCount - 1 do
+          begin
+            LineStr := '';
+            for j := 0 to GridReport.ColCount - 1 do
+            begin
+              if j > 0 then
+                LineStr := LineStr + ',';
+              LineStr := LineStr + '"' + GridReport.Cells[j, i] + '"';
+            end;
+            StringList.Add(LineStr);
+          end;
+          StringList.SaveToFile(SaveDialog.FileName);
+          ShowMessage(Format(RS_REPORTS_EXPORTED, [SaveDialog.FileName]));
+        finally
+          StringList.Free;
         end;
-        StringList.Add(LineStr);
       end;
-      StringList.SaveToFile(SaveDialog.FileName);
-      ShowMessage('Reporte exportado exitosamente a: ' + SaveDialog.FileName);
     end;
   finally
-    StringList.Free;
     SaveDialog.Free;
   end;
 end;

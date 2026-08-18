@@ -91,14 +91,38 @@ implementation
             Self.getQuery().SQL.Text := 'insert into product('+
                               '	name,'+
                               '	minstock,'+
-                              '	maxstock)'+
+                              '	maxstock,'+
+                              '	image_ref,'+
+                              '	originalprice,'+
+                              '	isservice,'+
+                              '	category,'+
+                              '	description,'+
+                              '	brand,'+
+                              '	condition,'+
+                              '	google_product_category)'+
                               ' values (:name,'+
                               ' :minstock,'+
-                              '	:maxstock);';
+                              '	:maxstock,'+
+                              ' :image_ref,'+
+                              ' :originalprice,'+
+                              ' :isservice,'+
+                              ' :category,'+
+                              ' :description,'+
+                              ' :brand,'+
+                              ' :condition,'+
+                              ' :google_product_category);';
 
             Self.getQuery().Params.ParamByName('name').AsString := product.getName();
             Self.getQuery().Params.ParamByName('minstock').AsInteger := product.getMinStock();
             Self.getQuery().Params.ParamByName('maxstock').AsInteger := product.getMaxStock();
+            Self.getQuery().Params.ParamByName('image_ref').AsInteger := product.getImageRef();
+            Self.getQuery().Params.ParamByName('originalprice').AsFloat := product.getOriginalPrice();
+            Self.getQuery().Params.ParamByName('isservice').AsInteger := Ord(product.getIsService());
+            Self.getQuery().Params.ParamByName('category').AsString := product.getCategory();
+            Self.getQuery().Params.ParamByName('description').AsString := product.getDescription();
+            Self.getQuery().Params.ParamByName('brand').AsString := product.getBrand();
+            Self.getQuery().Params.ParamByName('condition').AsString := product.getProductCondition();
+            Self.getQuery().Params.ParamByName('google_product_category').AsString := product.getGoogleProductCategory();
             Self.getQuery().ExecSQL;
             Self.getQuery().SQL.Text:= 'SELECT last_insert_rowid() id';
             Self.getQuery().Open;
@@ -125,11 +149,27 @@ implementation
             Self.getQuery().SQL.Text := 'update product '+
                               '   set name = :name,'+
                               '       minStock = :minStock,'+
-                              '       maxStock = :maxStock'+
+                              '       maxStock = :maxStock,'+
+                              '       image_ref = :image_ref,'+
+                              '       originalprice = :originalprice,'+
+                              '       isservice = :isservice,'+
+                              '       category = :category,'+
+                              '       description = :description,'+
+                              '       brand = :brand,'+
+                              '       condition = :condition,'+
+                              '       google_product_category = :google_product_category'+
                               '  where id = :id';
             Self.getQuery().Params.ParamByName('name').AsString := product.getName();
             Self.getQuery().Params.ParamByName('minstock').AsInteger := product.getMinStock();
             Self.getQuery().Params.ParamByName('maxstock').AsInteger := product.getMaxStock();
+            Self.getQuery().Params.ParamByName('image_ref').AsInteger := product.getImageRef();
+            Self.getQuery().Params.ParamByName('originalprice').AsFloat := product.getOriginalPrice();
+            Self.getQuery().Params.ParamByName('isservice').AsInteger := Ord(product.getIsService());
+            Self.getQuery().Params.ParamByName('category').AsString := product.getCategory();
+            Self.getQuery().Params.ParamByName('description').AsString := product.getDescription();
+            Self.getQuery().Params.ParamByName('brand').AsString := product.getBrand();
+            Self.getQuery().Params.ParamByName('condition').AsString := product.getProductCondition();
+            Self.getQuery().Params.ParamByName('google_product_category').AsString := product.getGoogleProductCategory();
             Self.getQuery().Params.ParamByName('id').AsInteger := product.getId();
             Self.getQuery().ExecSQL;
 
@@ -176,6 +216,29 @@ implementation
               product.setName(query.FieldByName('name').AsString);
               product.setMaxstock(query.FieldByName('maxStock').AsInteger);
               product.setMinstock(query.FieldByName('minStock').AsInteger);
+              if not query.FieldByName('image_ref').IsNull then
+                 product.setImageRef(query.FieldByName('image_ref').AsInteger)
+              else
+                 product.setImageRef(0);
+              if not query.FieldByName('originalprice').IsNull then
+                 product.setOriginalPrice(query.FieldByName('originalprice').AsFloat)
+              else
+                 product.setOriginalPrice(0.0);
+              if (not query.FieldByName('isservice').IsNull) and
+                 (query.FieldByName('isservice').AsInteger = 1) then
+                 product.setIsService(True)
+              else
+                 product.setIsService(False);
+              if not query.FieldByName('category').IsNull then
+                 product.setCategory(query.FieldByName('category').AsString);
+              if not query.FieldByName('description').IsNull then
+                 product.setDescription(query.FieldByName('description').AsString);
+              if not query.FieldByName('brand').IsNull then
+                 product.setBrand(query.FieldByName('brand').AsString);
+              if not query.FieldByName('condition').IsNull then
+                 product.setProductCondition(query.FieldByName('condition').AsString);
+              if not query.FieldByName('google_product_category').IsNull then
+                 product.setGoogleProductCategory(query.FieldByName('google_product_category').AsString);
               product.setBalance(dataBalance.get(product.getId()));
               query.Next;
          end;

@@ -40,8 +40,11 @@ type
     procedure InitDefaultDatabaseSchema;
     procedure MigrateCreditColumn;
     procedure MigratePayOperationColumn;
+    procedure MigrateProductExportColumns;
+    procedure CreateImagesTable;
+    procedure SeedReturnOperationTypes;
   public
-    { public declarations }
+    ImagesTableReady: Boolean;
   end; 
 
 var
@@ -270,6 +273,164 @@ begin
   Trans.Free;
 end;
 
+procedure TDataModule1.SeedReturnOperationTypes;
+var
+  Trans: TSQLTransaction;
+  Query: TSQLQuery;
+begin
+  Trans := TSQLTransaction.Create(nil);
+  Query := TSQLQuery.Create(nil);
+  try
+    Trans.DataBase := SQLite3Connection1;
+    Query.DataBase := SQLite3Connection1;
+    Query.Transaction := Trans;
+    Trans.StartTransaction;
+
+    // Insert "Customer Devolution" if not already present
+    Query.SQL.Text := 'INSERT OR IGNORE INTO operationtype (description, type) ' +
+                      'SELECT ''Customer Devolution'', ''in'' ' +
+                      'WHERE NOT EXISTS (SELECT 1 FROM operationtype WHERE description = ''Customer Devolution'')';
+    Query.ExecSQL;
+
+    // Insert "Inventory Loss" if not already present
+    Query.SQL.Text := 'INSERT OR IGNORE INTO operationtype (description, type) ' +
+                      'SELECT ''Inventory Loss'', ''out'' ' +
+                      'WHERE NOT EXISTS (SELECT 1 FROM operationtype WHERE description = ''Inventory Loss'')';
+    Query.ExecSQL;
+
+    // Insert "Return to Provider" if not already present
+    Query.SQL.Text := 'INSERT OR IGNORE INTO operationtype (description, type) ' +
+                      'SELECT ''Return to Provider'', ''out'' ' +
+                      'WHERE NOT EXISTS (SELECT 1 FROM operationtype WHERE description = ''Return to Provider'')';
+    Query.ExecSQL;
+
+    Trans.Commit;
+    DebugLn('[DataModule] Return operation types seeded');
+  except
+    on E: Exception do
+    begin
+      if Trans.Active then Trans.Rollback;
+      DebugLn('[DataModule] ERROR seeding return operation types: ', E.Message);
+    end;
+  end;
+  Query.Free;
+  Trans.Free;
+end;
+
+procedure TDataModule1.MigrateProductExportColumns;
+var
+  Trans: TSQLTransaction;
+  Query: TSQLQuery;
+  HasImageRef, HasOriginalPrice, HasIsService: Boolean;
+begin
+  Trans := TSQLTransaction.Create(nil);
+  Query := TSQLQuery.Create(nil);
+  try
+    Trans.DataBase := SQLite3Connection1;
+    Query.DataBase := SQLite3Connection1;
+    Query.Transaction := Trans;
+    Trans.StartTransaction;
+
+    { Check which columns already exist }
+    HasImageRef := False;
+    HasOriginalPrice := False;
+    HasIsService := False;
+    Query.SQL.Text := 'PRAGMA table_info(product)';
+    Query.Open;
+    while not Query.EOF do
+    begin
+      if Query.FieldByName('name').AsString = 'image_ref' then
+        HasImageRef := True
+      else if Query.FieldByName('name').AsString = 'originalprice' then
+        HasOriginalPrice := True
+      else if Query.FieldByName('name').AsString = 'isservice' then
+        HasIsService := True;
+      Query.Next;
+    end;
+    Query.Close;
+
+    { Add missing columns individually }
+    if not HasImageRef then
+    begin
+      try
+        Query.SQL.Text := 'ALTER TABLE product ADD COLUMN image_ref INTEGER DEFAULT 0';
+        Query.ExecSQL;
+      except
+        on E: Exception do
+          LogError('DataModule', 'MIGRATE_IMAGE_REF_FAILED', 'error=' + E.Message);
+      end;
+    end;
+
+    if not HasOriginalPrice then
+    begin
+      try
+        Query.SQL.Text := 'ALTER TABLE product ADD COLUMN originalprice REAL DEFAULT 0.0';
+        Query.ExecSQL;
+      except
+        on E: Exception do
+          LogError('DataModule', 'MIGRATE_ORIGINALPRICE_FAILED', 'error=' + E.Message);
+      end;
+    end;
+
+    if not HasIsService then
+    begin
+      try
+        Query.SQL.Text := 'ALTER TABLE product ADD COLUMN isservice INTEGER DEFAULT 0';
+        Query.ExecSQL;
+      except
+        on E: Exception do
+          LogError('DataModule', 'MIGRATE_ISSERVICE_FAILED', 'error=' + E.Message);
+      end;
+    end;
+
+    Trans.Commit;
+  except
+    on E: Exception do
+    begin
+      if Trans.Active then Trans.Rollback;
+      LogError('DataModule', 'MIGRATE_EXPORT_COLUMNS_FAILED', 'error=' + E.Message);
+    end;
+  end;
+  Query.Free;
+  Trans.Free;
+end;
+
+procedure TDataModule1.CreateImagesTable;
+var
+  Trans: TSQLTransaction;
+  Query: TSQLQuery;
+begin
+  ImagesTableReady := False;
+  Trans := TSQLTransaction.Create(nil);
+  Query := TSQLQuery.Create(nil);
+  try
+    Trans.DataBase := SQLite3Connection1;
+    Query.DataBase := SQLite3Connection1;
+    Query.Transaction := Trans;
+    Trans.StartTransaction;
+
+    Query.SQL.Text := 'CREATE TABLE IF NOT EXISTS images (' +
+                      'id INTEGER PRIMARY KEY AUTOINCREMENT, ' +
+                      'product_id INTEGER NOT NULL, ' +
+                      'data BLOB NOT NULL)';
+    Query.ExecSQL;
+
+    Query.SQL.Text := 'CREATE INDEX IF NOT EXISTS idx_images_product ON images(product_id)';
+    Query.ExecSQL;
+
+    Trans.Commit;
+    ImagesTableReady := True;
+  except
+    on E: Exception do
+    begin
+      if Trans.Active then Trans.Rollback;
+      LogError('DataModule', 'CREATE_IMAGES_TABLE_FAILED', 'error=' + E.Message);
+    end;
+  end;
+  Query.Free;
+  Trans.Free;
+end;
+
 procedure TDataModule1.DataModuleCreate(Sender: TObject);
 var
   DbPath: String;
@@ -315,6 +476,12 @@ begin
     DebugLn('[DataModule] Credit column migration complete');
     MigratePayOperationColumn;
     DebugLn('[DataModule] Pay operation column migration complete');
+    SeedReturnOperationTypes;
+    DebugLn('[DataModule] Return operation types seeding complete');
+    MigrateProductExportColumns;
+    DebugLn('[DataModule] Product export columns migration complete');
+    CreateImagesTable;
+    DebugLn('[DataModule] Images table creation complete');
     LogInfo('DataModule', 'DB_MIGRATIONS_COMPLETE', 'All migrations applied');
   except
     on E: Exception do

@@ -7,6 +7,7 @@ object FormSupplier: TFormSupplier
   Caption = 'Proveedores'
   ClientHeight = 145
   ClientWidth = 407
+  Position = poMainFormCenter
   OnCreate = FormCreate
   OnShow = FormShow
   LCLVersion = '0.9.28.2'

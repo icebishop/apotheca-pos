@@ -49,7 +49,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="88">
+    <Units Count="91">
       <Unit0>
         <Filename Value="apotheca.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -752,6 +752,28 @@
         <UnitName Value="UFrameCredits"/>
         <UsageCount Value="20"/>
       </Unit87>
+      <Unit88>
+        <Filename Value="service/ureturnservice.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UReturnService"/>
+        <UsageCount Value="20"/>
+      </Unit88>
+      <Unit89>
+        <Filename Value="view/uframereturns.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FrameReturns"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="UFrameReturns"/>
+        <UsageCount Value="20"/>
+      </Unit89>
+      <Unit90>
+        <Filename Value="view/uframeexport.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FrameExport"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="UFrameExport"/>
+        <UsageCount Value="20"/>
+      </Unit90>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>

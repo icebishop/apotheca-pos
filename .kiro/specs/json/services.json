@@ -1,0 +1,25 @@
+[
+  {
+    "id": "s1",
+    "name": "Limpieza de Flecha de Madera",
+    "price": 10000,
+    "originalPrice": 25000,
+    "description": "Limpieza profunda, remoción de mugre, aceites y grasas corporales acumulados. Sellado y pulido ultra suave para madera.",
+    "image": "/limpieza-flechas-madera.png"
+  },
+  {
+    "id": "s2",
+    "name": "Limpieza de Flecha de Fibra de Carbono",
+    "price": 12000,
+    "originalPrice": 35000,
+    "description": "Mantenimiento especializado para tacos de fibra de carbono. Remueve impurezas y aceites, devolviendo el deslizamiento natural."
+  },
+  {
+    "id": "s3",
+    "name": "Instalación de casquillos",
+    "price": 18000,
+    "originalPrice": 30000,
+    "description": "Instalación y cambio de casquillos (Punteras) para tacos de billar. Ajuste, pegado y perfilado de precisión.",
+    "image": "/instalacion-casquillos.png"
+  }
+]

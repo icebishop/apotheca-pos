@@ -9,6 +9,7 @@ object FormFindPay: TFormFindPay
   Caption = 'Find Pay'
   ClientHeight = 272
   ClientWidth = 281
+  Position = poMainFormCenter
   OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow

@@ -1,0 +1,189 @@
+object FrameReturns: TFrameReturns
+  Left = 0
+  Height = 480
+  Top = 0
+  Width = 640
+  ClientHeight = 480
+  ClientWidth = 640
+  TabOrder = 0
+  DesignLeft = 0
+  DesignTop = 0
+  object LabelTitle: TLabel
+    Left = 16
+    Height = 24
+    Top = 8
+    Width = 200
+    Caption = 'Devoluciones / P'#233'rdidas'
+    Font.Height = -14
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object LabelOpType: TLabel
+    Left = 16
+    Height = 18
+    Top = 48
+    Width = 130
+    Caption = 'Tipo de Operaci'#243'n'
+    ParentColor = False
+  end
+  object LabelPerson: TLabel
+    Left = 16
+    Height = 18
+    Top = 80
+    Width = 60
+    Caption = 'Persona'
+    ParentColor = False
+  end
+  object LabelDate: TLabel
+    Left = 360
+    Height = 18
+    Top = 80
+    Width = 42
+    Caption = 'Fecha'
+    ParentColor = False
+  end
+  object ComboOpType: TComboBox
+    Left = 150
+    Height = 27
+    Top = 44
+    Width = 220
+    ItemHeight = 20
+    Items.Strings = (
+      'Devoluci'#243'n de Cliente'
+      'P'#233'rdida de Inventario'
+      'Devoluci'#243'n a Proveedor'
+    )
+    OnChange = ComboOpTypeChange
+    Style = csDropDownList
+    TabOrder = 0
+  end
+  object EditPerson: TEdit
+    Left = 96
+    Height = 27
+    Top = 76
+    Width = 200
+    ReadOnly = True
+    TabOrder = 1
+  end
+  object BtnSelectPerson: TBitBtn
+    Left = 296
+    Height = 27
+    Top = 76
+    Width = 30
+    Caption = '...'
+    OnClick = BtnSelectPersonClick
+    TabOrder = 2
+  end
+  object DateEdit: TDateEdit
+    Left = 408
+    Height = 27
+    Top = 76
+    Width = 150
+    CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
+    OKCaption = 'OK'
+    CancelCaption = 'Cancel'
+    DefaultToday = True
+    DateOrder = doNone
+    ButtonWidth = 23
+    NumGlyphs = 0
+    OnChange = DateEditChange
+    TabOrder = 3
+  end
+  object GridItems: TStringGrid
+    Left = 16
+    Height = 280
+    Top = 116
+    Width = 608
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ColCount = 3
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
+    RowCount = 2
+    TabOrder = 4
+    OnEditingDone = GridItemsEditingDone
+    OnSelectCell = GridItemsSelectCell
+    ColWidths = (
+      304
+      152
+      152
+    )
+    Cells = (
+      3
+      0
+      0
+      'Producto'
+      1
+      0
+      'Cantidad'
+      2
+      0
+      'Costo Unitario'
+    )
+  end
+  object BtnAddItem: TBitBtn
+    Left = 16
+    Height = 30
+    Top = 410
+    Width = 120
+    Anchors = [akLeft, akBottom]
+    Caption = '&Agregar'
+    Constraints.MinHeight = 30
+    Constraints.MinWidth = 120
+    OnClick = BtnAddItemClick
+    TabOrder = 5
+  end
+  object BtnDeleteItem: TBitBtn
+    Left = 137
+    Height = 30
+    Top = 410
+    Width = 120
+    Anchors = [akLeft, akBottom]
+    Caption = '&Eliminar'
+    Constraints.MinHeight = 30
+    Constraints.MinWidth = 120
+    OnClick = BtnDeleteItemClick
+    TabOrder = 6
+  end
+  object BtnSave: TBitBtn
+    Left = 335
+    Height = 30
+    Top = 410
+    Width = 115
+    Anchors = [akRight, akBottom]
+    Caption = '&Guardar'
+    OnClick = BtnSaveClick
+    TabOrder = 7
+  end
+  object BtnRebuild: TBitBtn
+    Left = 456
+    Height = 30
+    Top = 410
+    Width = 185
+    Anchors = [akRight, akBottom]
+    Caption = 'Reconstruir Saldos'
+    Constraints.MinHeight = 30
+    Constraints.MinWidth = 185
+    OnClick = BtnRebuildClick
+    TabOrder = 8
+  end
+  object StatusBarReturns: TStatusBar
+    Left = 0
+    Height = 21
+    Top = 459
+    Width = 640
+    Anchors = [akLeft, akRight, akBottom]
+    Panels = <>
+    SizeGrip = False
+  end
+  object BtnSelectProduct: TButton
+    Left = 0
+    Height = 25
+    Top = 0
+    Width = 30
+    Caption = '...'
+    OnClick = BtnSelectProductClick
+    TabOrder = 9
+    Visible = False
+  end
+end

@@ -10,8 +10,34 @@ Inventory and point-of-sale management application for billiard supplies. Built 
 - Product inventory with balance tracking
 - Customer and supplier management
 - Reports (income, inventory valuation, purchases)
+- JSON Export with product images for web catalogs
+- Product image management (PNG upload, WebP storage)
 - Multi-language support (English default, Spanish via OS detection)
 - OWASP-compliant structured logging
+
+### JSON Export
+
+Export products and services to structured JSON files for integration with e-commerce platforms or web catalogs.
+
+- **Sidebar button**: Click "Export" in the sidebar to access the export panel
+- **Checkboxes**: Choose to export products, services, or both
+- **File path**: Select where to save the JSON file(s)
+- **Image directory**: Select where to export product images as WebP files
+- **Image filenames**: Lower-dashed format (e.g. "Casquillos Master multicapa" → `casquillos-master-multicapa.webp`)
+- **Calculated fields**: `availability` (`in_stock`/`out_of_stock`) and `isVisible` derived from stock balance
+- **Full product data**: name, category, price, originalPrice, description, images, brand, condition, google_product_category
+
+When both products and services are exported, separate files are created with `_products.json` / `_services.json` suffixes.
+
+### Product Form
+
+The product create/edit form captures:
+- Name, min/max stock, original price
+- Category, brand, condition
+- Google product category (for feed integration)
+- Description (multi-line)
+- Service flag (checkbox)
+- Image upload (PNG validated, stored as WebP in database)
 
 ## Architecture
 
@@ -57,7 +83,8 @@ invcar/
 │   ├── udatacustomer.pas   # Customer queries
 │   ├── udatasupplier.pas   # Supplier queries
 │   ├── udataperson.pas     # Person persistence
-│   └── udatapay.pas        # Payment persistence
+│   ├── udatapay.pas        # Payment persistence
+│   └── udataimage.pas      # Image BLOB storage
 ├── service/                # Business logic layer
 │   ├── usaleservice.pas    # Sale workflow (POS → persist)
 │   ├── ucartservice.pas    # Shopping cart management
@@ -65,6 +92,10 @@ invcar/
 │   ├── upurchaseservice.pas# Purchase workflow
 │   ├── ureportengine.pas   # Report generation
 │   ├── ubalancebuilder.pas # Balance recalculation
+│   ├── uexportservice.pas  # JSON export orchestration
+│   ├── ujsonserializer.pas # RFC 8259 JSON serializer
+│   ├── uwebpconverter.pas  # WebP conversion + name normalization
+│   ├── upngvalidator.pas   # PNG signature validation
 │   └── u*validator.pas     # Input validation
 ├── view/                   # UI layer (LCL Frames and Forms)
 │   ├── apothecamain.pas    # Main form + sidebar navigation
@@ -74,6 +105,7 @@ invcar/
 │   ├── uframeproducts.pas  # Product catalog frame
 │   ├── uframepeople.pas    # Customer/supplier frame
 │   ├── uframereports.pas   # Reports frame
+│   ├── uframeexport.pas    # JSON export frame
 │   ├── uformsplash.pas     # Startup splash screen
 │   └── uf*.pas             # Dialog forms (find, edit)
 ├── tests/                  # Property-based tests (FPCUnit)
@@ -97,6 +129,7 @@ graph TD
         FPR[TFrameProducts]
         FPE[TFramePeople]
         FR[TFrameReports]
+        FE[TFrameExport]
         FS[TFormSplash]
     end
 
@@ -107,6 +140,8 @@ graph TD
         PS[TPurchaseService]
         RE[TReportEngine]
         BB[TBalanceBuilder]
+        ES[TExportService]
+        JS[TJsonSerializer]
     end
 
     subgraph REPOSITORY["REPOSITORY (Data Access)"]
@@ -133,11 +168,13 @@ graph TD
         TBL[person, customer, supplier, product, balance, operationtype, operation, item, pay]
     end
 
-    FM --> FP & FC & FPU & FPR & FPE & FR
+    FM --> FP & FC & FPU & FPR & FPE & FR & FE
     FP --> SS & CS
     FC --> CRS
     FPU --> PS
     FR --> RE
+    FE --> ES
+    ES --> JS
     SS --> DO
     CRS --> DPa
     PS --> DI
@@ -163,6 +200,11 @@ graph TD
 | `TFrameProducts` | Product CRUD with search |
 | `TFramePeople` | Customer/supplier management (tabbed) |
 | `TFrameReports` | Date-filtered reports with CSV export |
+| `TFrameExport` | JSON export configuration and execution |
+| `TExportService` | Orchestrates product query, image export, JSON serialization |
+| `TJsonSerializer` | RFC 8259 JSON output with full product attributes |
+| `TWebPConverter` | WebP conversion and lower-dashed name normalization |
+| `TDataImage` | Image BLOB storage and retrieval |
 | `TSaleService` | Validates cart, sets credit flag, persists sale via TDataOut |
 | `TCreditService` | Debt balance calculation, payment registration |
 | `TCartService` | In-memory cart operations (add, remove, quantities) |
@@ -193,6 +235,14 @@ erDiagram
         TEXT name
         INTEGER minstock
         INTEGER maxstock
+        INTEGER image_ref FK
+        REAL originalprice
+        INTEGER isservice
+        TEXT category
+        TEXT description
+        TEXT brand
+        TEXT condition
+        TEXT google_product_category
     }
     balance {
         INTEGER id PK
@@ -201,6 +251,11 @@ erDiagram
         REAL balance
         REAL cost
         REAL price
+    }
+    images {
+        INTEGER id PK
+        INTEGER product_id FK
+        BLOB data
     }
     operationtype {
         INTEGER id PK
@@ -233,6 +288,7 @@ erDiagram
     person ||--o{ customer : "is a"
     person ||--o{ supplier : "is a"
     product ||--|| balance : "has"
+    product ||--o| images : "has image"
     operationtype ||--o{ operation : "categorizes"
     person ||--o{ operation : "performs"
     operation ||--o{ item : "contains"
@@ -331,6 +387,9 @@ sequenceDiagram
     DM->>DM: InitDefaultDatabaseSchema
     DM->>DM: MigrateCreditColumn
     DM->>DM: MigratePayOperationColumn
+    DM->>DM: SeedReturnOperationTypes
+    DM->>DM: MigrateProductExportColumns
+    DM->>DM: CreateImagesTable
     DM-->>M: Ready
 
     M->>F: CreateForm
@@ -350,11 +409,13 @@ stateDiagram-v2
     POS --> Products : Click "Productos"
     POS --> People : Click "Personas"
     POS --> Reports : Click "Reportes"
+    POS --> Export : Click "Export"
     Credits --> POS : Click "Ventas"
     Purchases --> POS : Click "Ventas"
     Products --> POS : Click "Ventas"
     People --> POS : Click "Ventas"
     Reports --> POS : Click "Ventas"
+    Export --> POS : Click "Ventas"
 ```
 
 ## Prerequisites
@@ -362,17 +423,19 @@ stateDiagram-v2
 - **Free Pascal Compiler** (FPC) 3.2.2+
 - **Lazarus IDE** 2.2+ (provides `lazbuild` CLI)
 - **SQLite3** runtime library
+- **libwebp** (optional, for PNG→WebP conversion via `cwebp`)
+- **librsvg** (optional, for SVG→PNG icon conversion)
 
 ### Linux (Debian/Ubuntu)
 
 ```bash
-sudo apt install fpc lazarus libsqlite3-0
+sudo apt install fpc lazarus libsqlite3-0 webp librsvg2-bin
 ```
 
 ### Linux (Arch)
 
 ```bash
-sudo pacman -S fpc lazarus sqlite
+sudo pacman -S fpc lazarus sqlite libwebp librsvg
 ```
 
 ## Building

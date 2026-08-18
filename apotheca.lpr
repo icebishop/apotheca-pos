@@ -48,6 +48,10 @@ begin
   LogSecurity('App', 'APP_START', 'Application starting');
   Application.Initialize;
 
+  { Set application icon }
+  if FileExists(ExtractFilePath(ParamStr(0)) + 'apotheca.ico') then
+    Application.Icon.LoadFromFile(ExtractFilePath(ParamStr(0)) + 'apotheca.ico');
+
   { Show splash screen for 5 seconds (modal, timer auto-closes) }
   Splash := TFormSplash.Create(Application);
   try
