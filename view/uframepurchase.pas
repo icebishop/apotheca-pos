@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, Forms, Controls, Graphics, StdCtrls, EditBtn, Grids,
   Buttons, ComCtrls, Dialogs, LCLType,
   UPurchase, UItem, UFFindSupplier, UFFindProduct,
-  UPurchaseService, UDataModule, UResourceString, UGridUtils;
+  UPurchaseService, UDataModule, UResourceString, UGridUtils, LazLogger;
 
 type
 
@@ -116,6 +116,7 @@ procedure TFramePurchase.BtnSelectSupplierClick(Sender: TObject);
 var
   formFindSupplier: TFormFindSupplier;
 begin
+  try
   formFindSupplier := TFormFindSupplier.Create(Self);
   try
     formFindSupplier.ShowModal;
@@ -127,6 +128,9 @@ begin
   finally
     formFindSupplier.Free;
   end;
+  except
+    on E: Exception do DebugLn('[TFramePurchase.BtnSelectSupplierClick] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFramePurchase.DateEditChange(Sender: TObject);
@@ -136,6 +140,7 @@ end;
 
 procedure TFramePurchase.BtnAddItemClick(Sender: TObject);
 begin
+  try
   FPurchase.getItemList().Add(TItem.Create);
   SetLength(FTotalCosts, Length(FTotalCosts) + 1);
   FTotalCosts[High(FTotalCosts)] := 0;
@@ -146,10 +151,14 @@ begin
   FItemFlag := False;
   LoadDataGrid;
   CalculateTotal;
+  except
+    on E: Exception do DebugLn('[TFramePurchase.BtnAddItemClick] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFramePurchase.BtnDeleteItemClick(Sender: TObject);
 begin
+  try
   if (FPurchase.getItemList().Count > 0) and (GridItems.Row > 0) then
   begin
     FPurchase.getItemList().Delete(GridItems.Row - 1);
@@ -157,6 +166,9 @@ begin
       FItemFlag := True;
     LoadDataGrid;
     CalculateTotal;
+  end;
+  except
+    on E: Exception do DebugLn('[TFramePurchase.BtnDeleteItemClick] ERROR: ' + E.Message);
   end;
 end;
 
@@ -166,6 +178,7 @@ var
   item: TItem;
   hasCompleteRow: Boolean;
 begin
+  try
   { Validate supplier selected }
   if FPurchase.getSupplier() = nil then
   begin
@@ -203,6 +216,9 @@ begin
     Application.MessageBox(PChar(FPurchaseService.GetLastError()),
       PChar(RS_Error), MB_ICONHAND);
   end;
+  except
+    on E: Exception do DebugLn('[TFramePurchase.BtnSavePurchaseClick] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFramePurchase.BtnSelectProductClick(Sender: TObject);
@@ -210,6 +226,7 @@ var
   formProduct: TFormFindProduct;
   item: TItem;
 begin
+  try
   formProduct := TFormFindProduct.Create(Self);
   try
     formProduct.setFlagAllProducts(True);
@@ -226,6 +243,9 @@ begin
   finally
     formProduct.Free;
   end;
+  except
+    on E: Exception do DebugLn('[TFramePurchase.BtnSelectProductClick] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFramePurchase.GridItemsEditingDone(Sender: TObject);
@@ -235,6 +255,7 @@ var
   totalCost, pct, unitCost, salePrice: Real;
   qty: Integer;
 begin
+  try
   row := GridItems.Row;
   col := GridItems.Col;
   if (row < 1) or (row > FPurchase.getItemList().Count) then
@@ -291,6 +312,9 @@ begin
 
   FItemFlag := True;
   CalculateTotal;
+  except
+    on E: Exception do DebugLn('[TFramePurchase.GridItemsEditingDone] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFramePurchase.GridItemsSelectCell(Sender: TObject; aCol,
@@ -298,6 +322,7 @@ procedure TFramePurchase.GridItemsSelectCell(Sender: TObject; aCol,
 var
   rect: TRect;
 begin
+  try
   if (aCol = 0) and (aRow > 0) then
   begin
     rect := GridItems.CellRect(aCol, aRow);
@@ -309,6 +334,9 @@ begin
   end
   else
     BtnSelectProduct.Visible := False;
+  except
+    on E: Exception do DebugLn('[TFramePurchase.GridItemsSelectCell] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFramePurchase.LoadDataGrid;

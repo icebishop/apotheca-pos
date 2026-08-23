@@ -116,7 +116,7 @@ var
 dataSupplier : TDataSupplier;
 begin
 
-DataModule1.SQLite3Connection1.Transaction := TSQLTransaction.Create(nil);
+DataModule1.EnsureTransaction;
 datasupplier := TDataSupplier.Create(DataModule1.SQLite3Connection1);
 listSupplier := dataSupplier.find('%'+EditSupplier.Text+'%');
 dataSupplier.free();

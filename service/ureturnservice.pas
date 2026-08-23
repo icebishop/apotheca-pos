@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, sqldb, UOperationType, UPerson, UItem, UProduct,
-  UIn, UOut, UTransaction, UDataTransaction, UDataModule, UResourceString;
+  UIn, UOut, UTransaction, UDataTransaction, UDataModule, UResourceString,
+  LazLogger;
 
 type
 
@@ -221,30 +222,30 @@ begin
     TOut(transaction).calculateNewBalance();
 
   { Step 6: Persist via DB transaction }
-  DataModule1.SQLite3Connection1.Transaction := TSQLTransaction.Create(nil);
-  DataModule1.SQLite3Connection1.Transaction.DataBase := DataModule1.SQLite3Connection1;
+  DataModule1.EnsureTransaction;
+  if not DataModule1.SQLite3Connection1.Transaction.Active then
+    DataModule1.SQLite3Connection1.Transaction.StartTransaction;
   dataTransaction := TDataTransaction.Create(DataModule1.SQLite3Connection1);
-  dataTransaction.getTransaction().StartTransaction;
   try
     if dataTransaction.new(transaction) > 0 then
     begin
-      dataTransaction.getTransaction().Commit;
+      DataModule1.SQLite3Connection1.Transaction.Commit;
       Result := True;
     end
     else
     begin
-      dataTransaction.getTransaction().Rollback;
+      if DataModule1.SQLite3Connection1.Transaction.Active then
+        DataModule1.SQLite3Connection1.Transaction.Rollback;
       FLastError := RS_RETURNS_SAVE_ERROR;
     end;
   except
     on E: Exception do
     begin
-      dataTransaction.getTransaction().Rollback;
+      if DataModule1.SQLite3Connection1.Transaction.Active then
+        DataModule1.SQLite3Connection1.Transaction.Rollback;
       FLastError := RS_RETURNS_SAVE_ERROR;
     end;
   end;
-  DataModule1.SQLite3Connection1.Transaction.Free;
-  DataModule1.SQLite3Connection1.Transaction := nil;
   dataTransaction.Free;
 end;
 

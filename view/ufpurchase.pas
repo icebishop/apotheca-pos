@@ -8,7 +8,8 @@ uses
 Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
 StdCtrls, EditBtn, Grids, Buttons, ActnList, Menus, UFFindProduct, UFProduct,
 UItem, UffindSupplier, UPurchase, UDataIn, UDataModule, sqldb, LCLType,
-ComCtrls, UBalanceBuilder, UResourceString, UItemValidator, UTransactionValidator;
+ComCtrls, UBalanceBuilder, UResourceString, UItemValidator, UTransactionValidator,
+LazLogger;
 
 type
 
@@ -78,7 +79,7 @@ var
    item:TItem;
    itemValidator : TItemValidator;
 begin
-
+try
 item := TItem (purchase.getItemList()[StringGridProduct.Row-1]);
 
 itemValidator := TItemValidator.Create;
@@ -105,6 +106,9 @@ item.setPrice(StrToFloat(StringGridProduct.Cells[3,StringGridProduct.Row]));
 
 loadDataGrid();
 calcularTotal();
+except
+  on E: Exception do DebugLn('[TFormPurchase.StringGridProductEditingDone] ERROR: ' + E.Message);
+end;
 end;
 
 procedure TFormPurchase.StringGridProductSelectCell(Sender: TObject; aCol, aRow: Integer;
@@ -112,7 +116,7 @@ var CanSelect: Boolean);
 var
 rect : TRect;
 begin
-
+try
 
 if  (aCol = 0) then
 begin
@@ -124,6 +128,9 @@ end
 else
 begin ButtonSelectProduct.Visible:=false end;
 
+except
+  on E: Exception do DebugLn('[TFormPurchase.StringGridProductSelectCell] ERROR: ' + E.Message);
+end;
 
 end;
 
@@ -168,6 +175,7 @@ end;
 
 procedure TFormPurchase.FormShow(Sender: TObject);
 begin
+    try
     if purchase <> nil then
     begin
          if purchase.getSupplier()<> nil then
@@ -175,6 +183,9 @@ begin
          DateEdit.Date:= purchase.getDate();
          loadDataGrid();
          calcularTotal();
+    end;
+    except
+      on E: Exception do DebugLn('[TFormPurchase.FormShow] ERROR: ' + E.Message);
     end;
 end;
 
@@ -212,15 +223,16 @@ var
    balanceBuilder : TBalanceBuilder;
    transactionValidator : TTransactionValidator;
 begin
+     try
      transactionValidator := TTransactionValidator.Create;
      transactionValidator.setTransaction(purchase);
      if transactionValidator.confirmBox()then
         if transactionValidator.validate()then
         begin
              balanceBuilder := TBalanceBuilder.Create;
-             DataModule1.SQLite3Connection1.Transaction := TSQLTransaction.Create(nil);
+             DataModule1.EnsureTransaction;
              dataIn := TDataIn.Create(DataModule1.SQLite3Connection1);
-             dataIn.getTransaction().StartTransaction;
+if not              dataIn.getTransaction().Active then              dataIn.getTransaction().StartTransaction;
              if flagOperacion = 1 then
              begin
                   purchase.calculateNewBalance();
@@ -265,6 +277,9 @@ begin
         begin
                Application.MessageBox(PChar(transactionValidator.getMessage()), PChar(RS_Error), MB_ICONHAND);
         end;
+     except
+       on E: Exception do DebugLn('[TFormPurchase.ButtonOkClick] ERROR: ' + E.Message);
+     end;
 end;
 
 procedure TFormPurchase.ButtonAddProductClick(Sender: TObject);
@@ -287,6 +302,7 @@ procedure TFormPurchase.ButtonSelectSupplierClick(Sender: TObject);
 var
 formFindSupplier : TFormFindSupplier;
 begin
+try
 formFindSupplier := TFormFindSupplier.Create(Self);
 try
 formFindSupplier.ShowModal;
@@ -295,7 +311,9 @@ EditSupplier.Text:= Purchase.getSupplier.getName();
 finally
 formFindSupplier.Free;
 end;
-
+except
+  on E: Exception do DebugLn('[TFormPurchase.ButtonSelectSupplierClick] ERROR: ' + E.Message);
+end;
 end;
 
 procedure TFormPurchase.ButtonSelectProductClick(Sender: TObject);
@@ -303,6 +321,7 @@ var
 formProduct : TFormFindProduct;
 item :TItem;
 begin
+try
 formProduct := TFormFindProduct.Create(Self);
 try
 formProduct.setFlagAllProducts(true);
@@ -315,6 +334,9 @@ loadDataGrid();
 calcularTotal();
 finally
 formProduct.Free;
+end;
+except
+  on E: Exception do DebugLn('[TFormPurchase.ButtonSelectProductClick] ERROR: ' + E.Message);
 end;
 end;
 

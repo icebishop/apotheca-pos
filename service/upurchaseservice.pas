@@ -44,28 +44,28 @@ begin
   { Step 2: Calculate new balance (adjusts in-memory balance for each item) }
   purchase.calculateNewBalance();
 
-  { Step 3: Create transaction and persist via TDataIn.new() }
-  DataModule1.SQLite3Connection1.Transaction := TSQLTransaction.Create(nil);
-  DataModule1.SQLite3Connection1.Transaction.DataBase := DataModule1.SQLite3Connection1;
+  { Step 3: Persist via TDataIn.new() }
+  DataModule1.EnsureTransaction;
+  if not DataModule1.SQLite3Connection1.Transaction.Active then
+    DataModule1.SQLite3Connection1.Transaction.StartTransaction;
   dataIn := TDataIn.Create(DataModule1.SQLite3Connection1);
-  dataIn.getTransaction().StartTransaction;
   try
     if dataIn.new(purchase) > 0 then
     begin
-      { Step 4a: Success - commit }
-      dataIn.getTransaction().Commit;
+      DataModule1.SQLite3Connection1.Transaction.Commit;
       Result := True;
     end
     else
     begin
-      { Step 4b: Failure - rollback }
-      dataIn.getTransaction().Rollback;
+      if DataModule1.SQLite3Connection1.Transaction.Active then
+        DataModule1.SQLite3Connection1.Transaction.Rollback;
       FLastError := 'El objeto no ha sido Guardado';
     end;
   except
     on E: Exception do
     begin
-      dataIn.getTransaction().Rollback;
+      if DataModule1.SQLite3Connection1.Transaction.Active then
+        DataModule1.SQLite3Connection1.Transaction.Rollback;
       FLastError := 'El objeto no ha sido Guardado';
     end;
   end;

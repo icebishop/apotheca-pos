@@ -127,10 +127,14 @@ begin
   TabControl.Tabs.Add(RS_REPORTS_TAB_UNITS_SOLD);
   TabControl.TabIndex := 0;
 
-  FReportEngine := TReportEngine.Create(DataModule1.SQLite3Connection1);
-
-  SetupIncomeGridHeaders;
-  LoadIncomeUtilityReport;
+  try
+    FReportEngine := TReportEngine.Create(DataModule1.SQLite3Connection1);
+    SetupIncomeGridHeaders;
+    LoadIncomeUtilityReport;
+  except
+    on E: Exception do
+      { Silently handle - reports will be empty }
+  end;
 end;
 
 procedure TFrameReports.SetupIncomeGridHeaders;
@@ -279,21 +283,31 @@ end;
 
 procedure TFrameReports.BtnRefreshClick(Sender: TObject);
 begin
-  case TabControl.TabIndex of
-    0: LoadIncomeUtilityReport;
-    1: LoadInventoryValuationReport;
-    2: LoadPurchaseReport;
-    3: LoadUnitsSoldReport;
+  try
+    case TabControl.TabIndex of
+      0: LoadIncomeUtilityReport;
+      1: LoadInventoryValuationReport;
+      2: LoadPurchaseReport;
+      3: LoadUnitsSoldReport;
+    end;
+  except
+    on E: Exception do
+      { Silently handle }
   end;
 end;
 
 procedure TFrameReports.TabControlChange(Sender: TObject);
 begin
-  case TabControl.TabIndex of
-    0: begin ShowDetailGrid(False); LoadIncomeUtilityReport; end;
-    1: begin ShowDetailGrid(False); LoadInventoryValuationReport; end;
-    2: begin ShowDetailGrid(True); LoadPurchaseReport; end;
-    3: begin ShowDetailGrid(False); LoadUnitsSoldReport; end;
+  try
+    case TabControl.TabIndex of
+      0: begin ShowDetailGrid(False); LoadIncomeUtilityReport; end;
+      1: begin ShowDetailGrid(False); LoadInventoryValuationReport; end;
+      2: begin ShowDetailGrid(True); LoadPurchaseReport; end;
+      3: begin ShowDetailGrid(False); LoadUnitsSoldReport; end;
+    end;
+  except
+    on E: Exception do
+      { Silently handle }
   end;
 end;
 

@@ -8,7 +8,8 @@ uses
 Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
 StdCtrls, Grids, Buttons, EditBtn, Menus, USale, UItem, UDataOut, sqldb,
 UDataModule,LCLType, ComCtrls, UFFindCustomer, UFFindProduct, UBalanceBuilder,
-UResourceString, UTransactionValidator, UProductValidator, UItemValidator;
+UResourceString, UTransactionValidator, UProductValidator, UItemValidator,
+LazLogger;
 
 type
 
@@ -140,17 +141,25 @@ end;
 
 procedure TFormSale.FormShow(Sender: TObject);
 begin
+  try
   if sale.getCustomer() <> nil then
     EditCustomer.Text:= sale.getCustomer().getName();
   loadDataGrid();
   calculateTotal();
+  except
+    on E: Exception do DebugLn('[TFormSale.FormShow] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFormSale.BitBtnAddClick(Sender: TObject);
 begin
+     try
      sale.getItemList().Add(TItem.Create);
      loadDataGrid();
      calculateTotal();
+     except
+       on E: Exception do DebugLn('[TFormSale.BitBtnAddClick] ERROR: ' + E.Message);
+     end;
 end;
 
 procedure TFormSale.BitBtnDeleteClick(Sender: TObject);
@@ -162,6 +171,7 @@ procedure TFormSale.BitBtnCustomerClick(Sender: TObject);
 var
    formFindCustomer : TFormFindCustomer;
 begin
+     try
      formFindCustomer := TFormFindCustomer.Create(Self);
      try
         formFindCustomer.ShowModal;
@@ -170,6 +180,9 @@ begin
      finally
             formFindCustomer.Free;
      end;
+     except
+       on E: Exception do DebugLn('[TFormSale.BitBtnCustomerClick] ERROR: ' + E.Message);
+     end;
 end;
 
 procedure TFormSale.ButtonProductClick(Sender: TObject);
@@ -177,6 +190,7 @@ var
    formProduct : TFormFindProduct;
    item :TItem;
 begin
+     try
      formProduct := TFormFindProduct.Create(Self);
      try
         formProduct.setFlagAllProducts(false);
@@ -192,6 +206,9 @@ begin
         end;
      finally
             formProduct.Free;
+     end;
+     except
+       on E: Exception do DebugLn('[TFormSale.ButtonProductClick] ERROR: ' + E.Message);
      end;
 end;
 
@@ -217,6 +234,7 @@ var
    dataOut : TDataOut;
    balanceBuilder : TBalanceBuilder;
 begin
+try
 { TODO 1 -odiego -cerror : Limpiar los datos de la transaccion al guardar }
 { TODO 1 -odiego -cerror : Validar que el stock sea positivo al guardar }
 
@@ -226,9 +244,9 @@ begin
      if saleValidator.validate() then
      begin
           balanceBuilder := TBalanceBuilder.Create;
-          DataModule1.SQLite3Connection1.Transaction := TSQLTransaction.Create(nil);
+          DataModule1.EnsureTransaction;
           dataOut := TDataOut.Create(DataModule1.SQLite3Connection1);
-          dataOut.getTransaction().StartTransaction;
+if not           dataOut.getTransaction().Active then           dataOut.getTransaction().StartTransaction;
           if flagOperation = 1 then
           begin
                sale.calculateNewBalance();
@@ -271,7 +289,9 @@ begin
      else
          Application.MessageBox(PChar(saleValidator.getMessage()), PChar(RS_Error), MB_ICONWARNING);
      end;
-
+except
+  on E: Exception do DebugLn('[TFormSale.BitBtnOkClick] ERROR: ' + E.Message);
+end;
 end;
 
 procedure TFormSale.BitBtnCancelClick(Sender: TObject);
@@ -291,6 +311,7 @@ var
    item:TItem;
    itemValidator : TItemValidator;
 begin
+     try
      item := TItem (sale.getItemList()[StringGridProduct.Row-1]);
      item.setPrice(StrToFloat(StringGridProduct.Cells[1,StringGridProduct.Row]));
      item.setStock(StrToInt(StringGridProduct.Cells[2,StringGridProduct.Row]));
@@ -320,6 +341,9 @@ begin
      itemValidator.Free;
      loadDataGrid();
      calculateTotal();
+     except
+       on E: Exception do DebugLn('[TFormSale.StringGridProductEditingDone] ERROR: ' + E.Message);
+     end;
 end;
 
 procedure TFormSale.StringGridProductSelectCell(Sender: TObject; aCol, aRow: Integer;
@@ -327,6 +351,7 @@ var CanSelect: Boolean);
 var
    rect : TRect;
 begin
+     try
      if  (aCol = 0) then
      begin
           rect := StringGridProduct.CellRect(aCol, aRow);
@@ -339,7 +364,9 @@ begin
      begin
           ButtonProduct.Visible:=false
      end;
-
+     except
+       on E: Exception do DebugLn('[TFormSale.StringGridProductSelectCell] ERROR: ' + E.Message);
+     end;
 end;
 
 procedure TFormSale.setFlagOperation(flag:Integer);

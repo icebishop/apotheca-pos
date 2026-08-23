@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, UItem, UBalance, UDataTransaction, UDataModule, UProduct,
-  UTransaction, sqldb, UDataProduct, UDataBalance;
+  UTransaction, sqldb, UDataProduct, UDataBalance, LazLogger;
 
   type
     TBalanceBuilder = class(TObject)
@@ -69,13 +69,17 @@ var
    balance:TBalance;
    i,j : Integer;
 begin
-
+   Result := nil;
+   try
    dataTransaction := TDataTransaction.Create(DataModule1.SQLite3Connection1);
 
    transactionList := dataTransaction.get(product);
    balance := TBalance.Create;
    balance.setId(product.getBalance().getId());
 
+   DebugLn('[BalanceBuilder] Product: ' + product.getName() +
+     ' (id=' + IntToStr(product.getId()) + ') - ' +
+     IntToStr(transactionList.Count) + ' transactions');
 
    for i := 0 to transactionList.Count-1 do
    begin
@@ -85,13 +89,29 @@ begin
         begin
              item := TItem(transaction.getItemList()[j]);
 
+             DebugLn('[BalanceBuilder]   Op id=' + IntToStr(transaction.getId()) +
+               ' type=' + transaction.getOperationType().getTyp() +
+               ' (' + transaction.getOperationType().getName() + ')' +
+               ' qty=' + IntToStr(item.getStock()) +
+               ' cost=' + FormatFloat('0.00', item.getCost()) +
+               ' price=' + FormatFloat('0.00', item.getPrice()));
+
              if transaction.getOperationType().getTyp() = 'in'then
                 balance := Self.calculateBalanceIN(item,balance)
              else
                 balance := Self.calculateBalanceOUT(item,balance)
         end;
    end;
-   build := balance;
+
+   DebugLn('[BalanceBuilder]   Result: stock=' + IntToStr(balance.getStock()) +
+     ' cost=' + FormatFloat('0.00', balance.getCost()) +
+     ' price=' + FormatFloat('0.00', balance.getPrice()) +
+     ' balance=' + FormatFloat('0.00', balance.getBalance()));
+
+   Result := balance;
+   except
+     on E: Exception do DebugLn('[TBalanceBuilder.build(product)] ERROR: ' + E.Message);
+   end;
 end;
 
 function TBalanceBuilder.build():boolean;
@@ -101,33 +121,50 @@ var
    productList:TList;
    dataBalance : TDataBalance;
    product : TProduct;
-   ret:integer;
    balance:TBalance;
 begin
-   ret:=0;
+   Result := False;
+   try
    dataProduct := TDataProducto.Create(DataModule1.SQLite3Connection1);
    dataBalance := TDataBalance.Create(DataModule1.SQLite3Connection1);
    productList := dataProduct.find('');
+   DebugLn('[TBalanceBuilder.build] Found ' + IntToStr(productList.Count) + ' products');
+
+   { Ensure transaction is active for writes }
+   if not DataModule1.SQLite3Connection1.Transaction.Active then
+     DataModule1.SQLite3Connection1.Transaction.StartTransaction;
+
    for i := 0 to productList.Count -1 do
    begin
        product := TProduct(productList[i]);
-       balance := Self.build(product) ;
-       if balance.getStock() >= 0 then
+       balance := Self.build(product);
+       if balance <> nil then
        begin
-            product.setBalance(balance);
-            dataBalance.edit(product);
+         product.setBalance(balance);
+         if not dataBalance.edit(product) then
+           DebugLn('[TBalanceBuilder.build] FAILED edit for id=' + IntToStr(product.getId()));
        end
        else
-       begin
-           ret:=ret+1;
-           balanceMessage:= balanceMessage + 'The product:'+ product.getName() +' has negative stock: '+ IntToStr(balance.getStock())+ Char(13) ;
-       end;
+         DebugLn('[TBalanceBuilder.build] NIL balance for id=' + IntToStr(product.getId()));
    end;
 
-   if ret > 0 then
-      build := false
-   else
-      build := true;
+   { Commit }
+   if DataModule1.SQLite3Connection1.Transaction.Active then
+     DataModule1.SQLite3Connection1.Transaction.Commit;
+
+   DebugLn('[TBalanceBuilder.build] Rebuild committed OK');
+   Result := true;
+   except
+     on E: Exception do
+     begin
+       DebugLn('[TBalanceBuilder.build] ERROR: ' + E.Message);
+       try
+         if DataModule1.SQLite3Connection1.Transaction.Active then
+           DataModule1.SQLite3Connection1.Transaction.Rollback;
+       except
+       end;
+     end;
+   end;
 end;
 
 function TBalanceBuilder.getBalanceMessage():String;

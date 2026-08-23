@@ -27,7 +27,7 @@ interface
 uses
 Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
 StdCtrls, Buttons, UCustomer, UDataCustomer, UDataModule, LCLType,
-UResourceString, DefaultTranslator, SqlDb, UPersonValidator;
+UResourceString, DefaultTranslator, SqlDb, UPersonValidator, LazLogger;
 
 type
 
@@ -73,11 +73,15 @@ implementation
 
 procedure TFormCustomer.FormShow(Sender: TObject);
 begin
+     try
      if customer <> nil then
      begin
           EditName.Text:= customer.getName();
           EditTelephone.Text:= customer.getTelephone();
           EditAddress.Text:= customer.getAddress();
+     end;
+     except
+       on E: Exception do DebugLn('[TFormCustomer.FormShow] ERROR: ' + E.Message);
      end;
 end;
 
@@ -90,6 +94,7 @@ procedure TFormCustomer.BitBtnOkClick(Sender: TObject);
 var
 dataCustomer : TDataCustomer;
 begin
+     try
      customer.setName(EditName.Text);
      customer.setTelephone(EditTelephone.Text);
      customer.setAddress(EditAddress.Text);
@@ -97,9 +102,9 @@ begin
      begin
      if customerValidator.validate() then
      begin
-          DataModule1.SQLite3Connection1.Transaction := TSQLTransaction.Create(nil);
+          DataModule1.EnsureTransaction;
           datacustomer := TDataCustomer.Create(DataModule1.SQLite3Connection1);
-          datacustomer.getTransaction().StartTransaction;
+if not           datacustomer.getTransaction().Active then           datacustomer.getTransaction().StartTransaction;
           if flagOperacion  = 1 then
           begin
                if datacustomer.new(customer) > 0 then
@@ -126,6 +131,9 @@ begin
      else
          Application.MessageBox(PChar(customerValidator.getMessage()), PChar(RS_Error), MB_ICONWARNING);
      end;
+     except
+       on E: Exception do DebugLn('[TFormCustomer.BitBtnOkClick] ERROR: ' + E.Message);
+     end;
 end;
 
 
@@ -137,27 +145,39 @@ end;
 
 procedure TFormCustomer.EditAddressExit(Sender: TObject);
 begin
+     try
      customer.setAddress(EditAddress.Text);
      customerValidator.setMessage('');
      if not customerValidator.hasAddress() then
         Application.MessageBox( PChar(customerValidator.getMessage()),PChar(RS_MSGWARNING),
                                 MB_ICONWARNING);
+     except
+       on E: Exception do DebugLn('[TFormCustomer.EditAddressExit] ERROR: ' + E.Message);
+     end;
 end;
 
 procedure TFormCustomer.EditNameExit(Sender: TObject);
 begin
+     try
      customer.setName(EditName.Text);
      customerValidator.setMessage('');
      if not customerValidator.hasName() then
         Application.MessageBox( PChar(customerValidator.getMessage()),PChar(RS_MSGWARNING), MB_ICONWARNING);
+     except
+       on E: Exception do DebugLn('[TFormCustomer.EditNameExit] ERROR: ' + E.Message);
+     end;
 end;
 
 procedure TFormCustomer.EditTelephoneExit(Sender: TObject);
 begin
+     try
      customer.setTelephone(EditTelephone.Text);
      customerValidator.setMessage('');
      if not customerValidator.hasTelephone() then
         Application.MessageBox( PChar(customerValidator.getMessage()),PChar(RS_MSGWARNING),MB_ICONWARNING);
+     except
+       on E: Exception do DebugLn('[TFormCustomer.EditTelephoneExit] ERROR: ' + E.Message);
+     end;
 end;
 
 procedure TFormCustomer.FormCreate(Sender: TObject);

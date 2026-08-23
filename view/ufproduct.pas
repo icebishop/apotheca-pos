@@ -28,7 +28,7 @@ uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, StdCtrls, Buttons, Uproduct, UDataProduct, UDataImage,
   UPngValidator, LCLType,
-  UDataModule, SqlDb, UProductValidator, UResourceString;
+  UDataModule, SqlDb, UProductValidator, UResourceString, LazLogger;
 
 type
 
@@ -91,6 +91,7 @@ var
   dataImage: TDataImage;
   imageId: Integer;
 begin
+  try
   product.setName(EditName.Text);
   product.setMinstock(StrToInt(EditMinStock.Text));
   product.setMaxstock(StrToInt(EditMaxStock.Text));
@@ -104,9 +105,9 @@ begin
 
   if productValidator.validate() then
   begin
-    DataModule1.SQLite3Connection1.Transaction := TSQLTransaction.Create(nil);
+    DataModule1.EnsureTransaction;
     dataProduct := TDataProducto.Create(DataModule1.SQLite3Connection1);
-    dataProduct.getTransaction().StartTransaction;
+if not     dataProduct.getTransaction().Active then     dataProduct.getTransaction().StartTransaction;
 
     if flagOperacion = 1 then
     begin
@@ -161,6 +162,9 @@ begin
   end
   else
     Application.MessageBox(PChar(productValidator.getMessage()), PChar(RS_Error), MB_ICONWARNING);
+  except
+    on E: Exception do DebugLn('[TFormProduct.BitBtnOkClick] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFormProduct.BtnSelectImageClick(Sender: TObject);
@@ -169,6 +173,7 @@ var
   FS: TFileStream;
   ValidationError: String;
 begin
+  try
   Dlg := TOpenDialog.Create(Self);
   try
     Dlg.Title := 'Select PNG image';
@@ -207,6 +212,9 @@ begin
   finally
     Dlg.Free;
   end;
+  except
+    on E: Exception do DebugLn('[TFormProduct.BtnSelectImageClick] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFormProduct.BitBtnCancelClick(Sender: TObject);
@@ -216,29 +224,41 @@ end;
 
 procedure TFormProduct.EditMaxStockExit(Sender: TObject);
 begin
+  try
   productValidator.setMessage('');
   if not productValidator.isNumber(EditMaxStock.Text) then
   begin
     Application.MessageBox(PChar(productValidator.getMessage()), PChar(RS_MSGWARNING), MB_ICONWARNING);
     EditMaxStock.Text := '0';
   end;
+  except
+    on E: Exception do DebugLn('[TFormProduct.EditMaxStockExit] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFormProduct.EditNameExit(Sender: TObject);
 begin
+  try
   productValidator.setMessage('');
   product.setName(EditName.Text);
   if not productValidator.hasName() then
     Application.MessageBox(PChar(productValidator.getMessage()), PChar(RS_MSGWARNING), MB_ICONWARNING);
+  except
+    on E: Exception do DebugLn('[TFormProduct.EditNameExit] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFormProduct.EditMinStockExit(Sender: TObject);
 begin
+  try
   productValidator.setMessage('');
   if not productValidator.isNumber(EditMinStock.Text) then
   begin
     Application.MessageBox(PChar(productValidator.getMessage()), PChar(RS_MSGWARNING), MB_ICONWARNING);
     EditMinStock.Text := '0';
+  end;
+  except
+    on E: Exception do DebugLn('[TFormProduct.EditMinStockExit] ERROR: ' + E.Message);
   end;
 end;
 
@@ -261,6 +281,7 @@ end;
 
 procedure TFormProduct.FormShow(Sender: TObject);
 begin
+  try
   if product <> nil then
   begin
     EditName.Text := product.getName();
@@ -279,6 +300,9 @@ begin
       LblImageStatus.Caption := '';
   end;
   productValidator.setProduct(product);
+  except
+    on E: Exception do DebugLn('[TFormProduct.FormShow] ERROR: ' + E.Message);
+  end;
 end;
 
 function TFormProduct.getProduct(): TProduct;

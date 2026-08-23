@@ -45,6 +45,7 @@ type
     procedure SeedReturnOperationTypes;
   public
     ImagesTableReady: Boolean;
+    procedure EnsureTransaction;
   end; 
 
 var
@@ -53,6 +54,27 @@ var
 implementation
 
 { TDataModule1 }
+
+procedure TDataModule1.EnsureTransaction;
+var
+  Trans: TSQLTransaction;
+begin
+  try
+    if SQLite3Connection1.Transaction = nil then
+    begin
+      Trans := TSQLTransaction.Create(nil);
+      Trans.DataBase := SQLite3Connection1;
+      SQLite3Connection1.Transaction := Trans;
+      DebugLn('[DataModule] EnsureTransaction: Created new transaction');
+    end
+    else
+      DebugLn('[DataModule] EnsureTransaction: Transaction already exists (Active=' +
+        BoolToStr(SQLite3Connection1.Transaction.Active, 'True', 'False') + ')');
+  except
+    on E: Exception do
+      DebugLn('[DataModule] EnsureTransaction ERROR: ' + E.Message);
+  end;
+end;
 
 procedure TDataModule1.SQLite3Connection1AfterConnect(Sender: TObject);
 begin

@@ -107,10 +107,10 @@ begin
     customer.setTelephone('');
     customer.setAddress('');
 
-    DataModule1.SQLite3Connection1.Transaction := TSQLTransaction.Create(nil);
+    DataModule1.EnsureTransaction;
     dataCustomer := TDataCustomer.Create(DataModule1.SQLite3Connection1);
     try
-      dataCustomer.getTransaction().StartTransaction;
+if not       dataCustomer.getTransaction().Active then       dataCustomer.getTransaction().StartTransaction;
 
       { Insert the customer }
       insertedId := dataCustomer.new(customer);

@@ -7,7 +7,8 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, ExtCtrls, UProduct, UDataProduct, UDataModule,
-  UItem, UTransaction, UDataTransaction, UBalanceBuilder, sqldb, UOperationType;
+  UItem, UTransaction, UDataTransaction, UBalanceBuilder, sqldb, UOperationType,
+  LazLogger;
 
 type
 
@@ -52,6 +53,7 @@ implementation
 
 procedure TFormInventoryAdjustment.FormCreate(Sender: TObject);
 begin
+  try
   Caption := 'Inventory Stock Adjustment (Entries / Outs)';
   ComboBoxAdjustmentType.Items.Clear;
   ComboBoxAdjustmentType.Items.Add('Entry (+) Stock Adjustment');
@@ -60,6 +62,9 @@ begin
 
   FDataProduct := TDataProducto.Create(DataModule1.SQLite3Connection1);
   LoadProducts;
+  except
+    on E: Exception do DebugLn('[TFormInventoryAdjustment.FormCreate] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFormInventoryAdjustment.FormDestroy(Sender: TObject);
@@ -99,11 +104,15 @@ procedure TFormInventoryAdjustment.ComboBoxProductChange(Sender: TObject);
 var
   Prod: TProduct;
 begin
+  try
   if (ComboBoxProduct.ItemIndex >= 0) and (ComboBoxProduct.ItemIndex < FProductList.Count) then
   begin
     Prod := TProduct(FProductList[ComboBoxProduct.ItemIndex]);
     EditPrice.Text := FloatToStr(Prod.getBalance().getPrice());
     EditCost.Text := FloatToStr(Prod.getBalance().getCost());
+  end;
+  except
+    on E: Exception do DebugLn('[TFormInventoryAdjustment.ComboBoxProductChange] ERROR: ' + E.Message);
   end;
 end;
 
@@ -119,6 +128,7 @@ var
   BalanceBld: TBalanceBuilder;
   Success: Boolean;
 begin
+  try
   if ComboBoxProduct.ItemIndex < 0 then
   begin
     ShowMessage('Please select a valid product.');
@@ -155,9 +165,9 @@ begin
 
   Tx.getItemList.Add(Item);
 
-  DataModule1.SQLite3Connection1.Transaction := TSQLTransaction.Create(nil);
+  DataModule1.EnsureTransaction;
   DataTx := TDataTransaction.Create(DataModule1.SQLite3Connection1);
-  DataTx.getTransaction().StartTransaction;
+if not   DataTx.getTransaction().Active then   DataTx.getTransaction().StartTransaction;
 
   Success := False;
   try
@@ -191,6 +201,9 @@ begin
   end;
 
   if Success then ModalResult := mrOk;
+  except
+    on E: Exception do DebugLn('[TFormInventoryAdjustment.ButtonSaveClick] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFormInventoryAdjustment.ButtonCancelClick(Sender: TObject);

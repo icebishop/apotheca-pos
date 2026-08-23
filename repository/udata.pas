@@ -5,7 +5,7 @@ unit UData;
 interface
 
 uses
-Classes, SysUtils, sqlite3conn, SqlDb;
+Classes, SysUtils, sqlite3conn, SqlDb, LazLogger;
 
 type
 TData = class(TObject)
@@ -30,11 +30,30 @@ end;
 implementation
 
 Constructor TData.Create(Connection: TSQLite3Connection);
+var
+  Trans: TSQLTransaction;
 begin
-Self.setQuery(TSQLQuery.Create(nil));
-self.SQLite3Connection := Connection;
-Self.Transaction := Self.SQLite3Connection.Transaction;
-Self.getQuery().DataBase := Connection;
+  Self.setQuery(TSQLQuery.Create(nil));
+  Self.SQLite3Connection := Connection;
+
+  try
+    { Ensure connection always has a usable transaction }
+    if Connection.Transaction = nil then
+    begin
+      Trans := TSQLTransaction.Create(nil);
+      Trans.DataBase := Connection;
+      Connection.Transaction := Trans;
+    end;
+    { Ensure transaction is active }
+    if not Connection.Transaction.Active then
+      Connection.Transaction.StartTransaction;
+  except
+    on E: Exception do
+      DebugLn('[TData.Create] ERROR setting up transaction: ' + E.Message);
+  end;
+
+  Self.Transaction := Connection.Transaction;
+  Self.getQuery().DataBase := Connection;
 end;
 
 procedure TData.setQuery(sqlQuery: TSQLQuery);

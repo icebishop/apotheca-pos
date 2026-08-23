@@ -83,9 +83,18 @@ type
 implementation
 
 constructor TReportEngine.Create(AConnection: TSQLite3Connection);
+var
+  Trans: TSQLTransaction;
 begin
   inherited Create;
   FConnection := AConnection;
+  { Ensure connection has a transaction }
+  if FConnection.Transaction = nil then
+  begin
+    Trans := TSQLTransaction.Create(nil);
+    Trans.DataBase := FConnection;
+    FConnection.Transaction := Trans;
+  end;
 end;
 
 function TReportEngine.GetIncomeUtilityReport(StartDate, EndDate: TDateTime; var TotalSales, TotalCosts, TotalUtility: Real): TList;
@@ -106,12 +115,12 @@ begin
     Exit;
   end;
 
-  Trans := TSQLTransaction.Create(nil);
+  { Use existing transaction }
   Query := TSQLQuery.Create(nil);
   try
-    Trans.DataBase := FConnection;
+    { Trans.DataBase handled by connection }
     Query.DataBase := FConnection;
-    Query.Transaction := Trans;
+    Query.Transaction := FConnection.Transaction;
 
     // Query for sales aggregated per operation (sale ID, date, customer, totals)
     Query.SQL.Text := 
@@ -129,7 +138,7 @@ begin
     Query.Params.ParamByName('start_date').AsFloat := Int(StartDate) + 2415018.5;
     Query.Params.ParamByName('end_date').AsFloat := Int(EndDate) + 2415019.49999;
     
-    Trans.StartTransaction;
+    if not FConnection.Transaction.Active then FConnection.Transaction.StartTransaction;
     Query.Open;
 
     while not Query.EOF do
@@ -151,16 +160,16 @@ begin
     end;
 
     Query.Close;
-    Trans.Commit;
+    { transaction stays open for reuse }
   except
     on E: Exception do
     begin
-      if Trans.Active then Trans.Rollback;
+      { error handled silently }
     end;
   end;
 
   Query.Free;
-  Trans.Free;
+  { transaction owned by connection }
 
   GetIncomeUtilityReport := ResultList;
 end;
@@ -182,12 +191,12 @@ begin
     Exit;
   end;
 
-  Trans := TSQLTransaction.Create(nil);
+  { Use existing transaction }
   Query := TSQLQuery.Create(nil);
   try
-    Trans.DataBase := FConnection;
+    { Trans.DataBase handled by connection }
     Query.DataBase := FConnection;
-    Query.Transaction := Trans;
+    Query.Transaction := FConnection.Transaction;
 
     Query.SQL.Text := 
       'SELECT p.id, p.name, p.minstock, p.maxstock, ' +
@@ -196,7 +205,7 @@ begin
       'LEFT JOIN balance b ON p.id = b.product ' +
       'ORDER BY p.name ASC';
 
-    Trans.StartTransaction;
+    if not FConnection.Transaction.Active then FConnection.Transaction.StartTransaction;
     Query.Open;
 
     while not Query.EOF do
@@ -219,16 +228,16 @@ begin
     end;
 
     Query.Close;
-    Trans.Commit;
+    { transaction stays open for reuse }
   except
     on E: Exception do
     begin
-      if Trans.Active then Trans.Rollback;
+      { error handled silently }
     end;
   end;
 
   Query.Free;
-  Trans.Free;
+  { transaction owned by connection }
 
   GetInventoryValuationReport := ResultList;
 end;
@@ -249,12 +258,12 @@ begin
     Exit;
   end;
 
-  Trans := TSQLTransaction.Create(nil);
+  { Use existing transaction }
   Query := TSQLQuery.Create(nil);
   try
-    Trans.DataBase := FConnection;
+    { Trans.DataBase handled by connection }
     Query.DataBase := FConnection;
-    Query.Transaction := Trans;
+    Query.Transaction := FConnection.Transaction;
 
     Query.SQL.Text :=
       'SELECT o.id AS op_id, o.date AS op_date, p.name AS supplier_name, ' +
@@ -271,7 +280,7 @@ begin
     Query.Params.ParamByName('start_date').AsFloat := Int(StartDate) + 2415018.5;
     Query.Params.ParamByName('end_date').AsFloat := Int(EndDate) + 2415019.49999;
 
-    Trans.StartTransaction;
+    if not FConnection.Transaction.Active then FConnection.Transaction.StartTransaction;
     Query.Open;
 
     while not Query.EOF do
@@ -293,16 +302,16 @@ begin
     end;
 
     Query.Close;
-    Trans.Commit;
+    { transaction stays open for reuse }
   except
     on E: Exception do
     begin
-      if Trans.Active then Trans.Rollback;
+      { error handled silently }
     end;
   end;
 
   Query.Free;
-  Trans.Free;
+  { transaction owned by connection }
 
   GetPurchaseReport := ResultList;
 end;
@@ -332,12 +341,12 @@ begin
     Exit;
   end;
 
-  Trans := TSQLTransaction.Create(nil);
+  { Use existing transaction }
   Query := TSQLQuery.Create(nil);
   try
-    Trans.DataBase := FConnection;
+    { Trans.DataBase handled by connection }
     Query.DataBase := FConnection;
-    Query.Transaction := Trans;
+    Query.Transaction := FConnection.Transaction;
 
     Query.SQL.Text :=
       'SELECT pr.id AS product_id, pr.name AS product_name, ' +
@@ -359,7 +368,7 @@ begin
     Query.Params.ParamByName('start_date').AsFloat := Int(StartDate) + 2415018.5;
     Query.Params.ParamByName('end_date').AsFloat := Int(EndDate) + 2415019.49999;
 
-    Trans.StartTransaction;
+    if not FConnection.Transaction.Active then FConnection.Transaction.StartTransaction;
     Query.Open;
 
     while not Query.EOF do
@@ -382,11 +391,11 @@ begin
     end;
 
     Query.Close;
-    Trans.Commit;
+    { transaction stays open for reuse }
   except
     on E: Exception do
     begin
-      if Trans.Active then Trans.Rollback;
+      { error handled silently }
       { On failure, clear any partially built results and zero totals }
       while ResultList.Count > 0 do
       begin
@@ -402,7 +411,7 @@ begin
   end;
 
   Query.Free;
-  Trans.Free;
+  { transaction owned by connection }
 
   GetUnitsSoldReport := ResultList;
 end;

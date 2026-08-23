@@ -5,7 +5,7 @@ unit UCartService;
 interface
 
 uses
-  Classes, SysUtils, UItem, UProduct, UCustomer, USale;
+  Classes, SysUtils, UItem, UProduct, UCustomer, USale, LazLogger;
 
 type
   TCartService = class(TObject)
@@ -67,19 +67,32 @@ procedure TCartService.AddProduct(product: TProduct);
 var
   idx: Integer;
   item: TItem;
+  availableStock: Integer;
+  currentQty: Integer;
 begin
+  try
   if product = nil then Exit;
+
+  // Get available stock from balance
+  availableStock := 0;
+  if product.getBalance() <> nil then
+    availableStock := product.getBalance().getStock();
 
   idx := FindProductIndex(product.getId());
   if idx >= 0 then
   begin
-    // Product already in cart, increment quantity
+    // Product already in cart, check if we can increment
     item := TItem(FItems[idx]);
-    item.setStock(item.getStock() + 1);
+    currentQty := item.getStock();
+    if currentQty >= availableStock then
+      Exit; // No more stock available
+    item.setStock(currentQty + 1);
   end
   else
   begin
-    // New product, add as new item
+    // New product, check stock > 0
+    if availableStock <= 0 then
+      Exit; // No stock available
     item := TItem.Create;
     item.setProduct(product);
     item.setStock(1);
@@ -89,6 +102,9 @@ begin
       item.setCost(product.getBalance().getCost());
     end;
     FItems.Add(item);
+  end;
+  except
+    on E: Exception do DebugLn('[TCartService.AddProduct] ERROR: ' + E.Message);
   end;
 end;
 
@@ -107,10 +123,18 @@ end;
 procedure TCartService.SetQuantity(index: Integer; qty: Integer);
 var
   item: TItem;
+  availableStock: Integer;
 begin
   if (index >= 0) and (index < FItems.Count) then
   begin
     item := TItem(FItems[index]);
+    availableStock := 0;
+    if (item.getProduct() <> nil) and (item.getProduct().getBalance() <> nil) then
+      availableStock := item.getProduct().getBalance().getStock();
+    if qty > availableStock then
+      qty := availableStock;
+    if qty < 1 then
+      qty := 1;
     item.setStock(qty);
   end;
 end;
@@ -184,6 +208,8 @@ var
   i: Integer;
   cartItem, saleItem: TItem;
 begin
+  Result := nil;
+  try
   sale := TSale.Create;
   sale.setCustomer(FCustomer);
   sale.setDate(Now);
@@ -202,6 +228,9 @@ begin
   sale.setItemList(saleItems);
 
   Result := sale;
+  except
+    on E: Exception do DebugLn('[TCartService.ToSale] ERROR: ' + E.Message);
+  end;
 end;
 
 end.

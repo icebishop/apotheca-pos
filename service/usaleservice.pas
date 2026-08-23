@@ -59,15 +59,15 @@ begin
   { Step 4: Calculate new balance (adjusts in-memory balance for each item) }
   sale.calculateNewBalance();
 
-  { Step 5: Create transaction and persist via TDataOut.new() }
-  DataModule1.SQLite3Connection1.Transaction := TSQLTransaction.Create(nil);
-  DataModule1.SQLite3Connection1.Transaction.DataBase := DataModule1.SQLite3Connection1;
+  { Step 5: Persist via TDataOut.new() }
+  DataModule1.EnsureTransaction;
+  if not DataModule1.SQLite3Connection1.Transaction.Active then
+    DataModule1.SQLite3Connection1.Transaction.StartTransaction;
   dataOut := TDataOut.Create(DataModule1.SQLite3Connection1);
-  dataOut.getTransaction().StartTransaction;
   try
     if dataOut.new(sale) > 0 then
     begin
-      dataOut.getTransaction().Commit;
+      DataModule1.SQLite3Connection1.Transaction.Commit;
       Result := True;
       if credit then
         LogSecurity('SaleService', 'CREDIT_SALE_CREATED',
@@ -78,20 +78,20 @@ begin
     end
     else
     begin
-      dataOut.getTransaction().Rollback;
+      if DataModule1.SQLite3Connection1.Transaction.Active then
+        DataModule1.SQLite3Connection1.Transaction.Rollback;
       FLastError := 'El objeto no ha sido Guardado';
       LogError('SaleService', 'SALE_SAVE_FAILED', 'reason=dataout_returned_zero');
     end;
   except
     on E: Exception do
     begin
-      dataOut.getTransaction().Rollback;
+      if DataModule1.SQLite3Connection1.Transaction.Active then
+        DataModule1.SQLite3Connection1.Transaction.Rollback;
       FLastError := 'El objeto no ha sido Guardado';
       LogError('SaleService', 'SALE_EXCEPTION', 'error=' + E.Message);
     end;
   end;
-  DataModule1.SQLite3Connection1.Transaction.Free;
-  DataModule1.SQLite3Connection1.Transaction := nil;
   dataOut.Free;
 end;
 

@@ -27,7 +27,7 @@ interface
 uses
 Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
 StdCtrls, Buttons,USupplier, UDataSupplier, UDataModule, LCLType, sqldb,
-UResourceString, UPersonValidator;
+UResourceString, UPersonValidator, LazLogger;
 
 type
 
@@ -72,7 +72,7 @@ procedure TFormSupplier.BitBtnOkClick(Sender: TObject);
 var
 dataSupplier : TDataSupplier;
 begin
-
+     try
      supplier.setName(EditName.Text);
      supplier.setTelephone(EditTelephone.Text);
      supplier.setAddress(EditAddress.Text);
@@ -81,9 +81,9 @@ begin
 
      if supplierValidator.validate() then
      begin
-     DataModule1.SQLite3Connection1.Transaction := TSQLTransaction.Create(nil);
+     DataModule1.EnsureTransaction;
      datasupplier := TDataSupplier.Create(DataModule1.SQLite3Connection1);
-     datasupplier.getTransaction().StartTransaction;
+if not      datasupplier.getTransaction().Active then      datasupplier.getTransaction().StartTransaction;
 
      if flagOperacion  = 1 then
      begin
@@ -113,6 +113,9 @@ begin
      end
      else
          Application.MessageBox(PChar(supplierValidator.getMessage()), PChar(RS_Error), MB_ICONWARNING);
+     except
+       on E: Exception do DebugLn('[TFormSupplier.BitBtnOkClick] ERROR: ' + E.Message);
+     end;
 end;
 
 procedure TFormSupplier.BitBtnCancelClick(Sender: TObject);
@@ -122,29 +125,41 @@ end;
 
 procedure TFormSupplier.EditNameExit(Sender: TObject);
 begin
+     try
      supplier.setName(EditName.Text);
      supplierValidator.setMessage('');
      if not supplierValidator.hasName() then
         Application.MessageBox( PChar(supplierValidator.getMessage()),PChar(RS_MSGWARNING),
                                 MB_ICONWARNING);
+     except
+       on E: Exception do DebugLn('[TFormSupplier.EditNameExit] ERROR: ' + E.Message);
+     end;
 end;
 
 procedure TFormSupplier.EditTelephoneExit(Sender: TObject);
 begin
+     try
      supplier.setTelephone(EditTelephone.Text);
      supplierValidator.setMessage('');
      if not supplierValidator.hasTelephone() then
         Application.MessageBox( PChar(supplierValidator.getMessage()),PChar(RS_MSGWARNING),
                                 MB_ICONWARNING);
+     except
+       on E: Exception do DebugLn('[TFormSupplier.EditTelephoneExit] ERROR: ' + E.Message);
+     end;
 end;
 
 procedure TFormSupplier.EditAddressExit(Sender: TObject);
 begin
+     try
      supplier.setAddress(EditAddress.Text);
      supplierValidator.setMessage('');
      if not supplierValidator.hasAddress() then
         Application.MessageBox( PChar(supplierValidator.getMessage()),PChar(RS_MSGWARNING),
                                 MB_ICONWARNING);
+     except
+       on E: Exception do DebugLn('[TFormSupplier.EditAddressExit] ERROR: ' + E.Message);
+     end;
 end;
 
 procedure TFormSupplier.FormCreate(Sender: TObject);
@@ -159,11 +174,15 @@ end;
 
 procedure TFormSupplier.FormShow(Sender: TObject);
 begin
+     try
      if supplier <> nil then
      begin
           EditName.Text:= supplier.getName();
           EditTelephone.Text:= supplier.getTelephone();
           EditAddress.Text:= supplier.getAddress();
+     end;
+     except
+       on E: Exception do DebugLn('[TFormSupplier.FormShow] ERROR: ' + E.Message);
      end;
 end;
 

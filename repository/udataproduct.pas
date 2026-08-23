@@ -7,7 +7,7 @@ interface
 
 
 uses
-  Classes, SysUtils, sqlite3conn, SqlDb, UProduct, UData, UDataBalance;
+  Classes, SysUtils, sqlite3conn, SqlDb, LazLogger, UProduct, UData, UDataBalance;
 
   type
     TDataProducto = class(TData)
@@ -198,10 +198,11 @@ implementation
        dataBalance : TDataBalance;
        query: TSQLQuery;
     begin
+      product := nil;
       try
-
          query := TSQLQuery.Create(nil);
          query.DataBase := self.getConnection();
+         query.Transaction := self.getConnection().Transaction;
          query.SQL.Text := 'select * from product where id = :id';
          query.Params.ParamByName('id').AsInteger := id;
          query.Open;
@@ -243,9 +244,14 @@ implementation
               query.Next;
          end;
          query.close;
+         query.Free;
          get := product;
       except
-         get := nil;
+         on E: Exception do
+         begin
+           DebugLn('[TDataProducto.get] ERROR id=' + IntToStr(id) + ': ' + E.Message);
+           get := nil;
+         end;
       end;
     end;
 

@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, Forms, Controls, StdCtrls, Grids, Buttons, ExtCtrls,
   ComCtrls, Dialogs, LCLType, LResources, UCartService, USaleService,
   UDataProduct, UDataModule, UProduct, UItem, UFFindCustomer,
-  UResourceString, sqldb, UGridUtils;
+  UResourceString, sqldb, UGridUtils, LazLogger;
 
 type
 
@@ -93,6 +93,7 @@ var
   product: TProduct;
   Trans: TSQLTransaction;
 begin
+  try
   TimerSearch.Enabled := False;
   searchText := Trim(EditSearch.Text);
 
@@ -106,9 +107,7 @@ begin
   end;
 
   { Query products in stock matching search text }
-  Trans := TSQLTransaction.Create(nil);
-  Trans.DataBase := DataModule1.SQLite3Connection1;
-  DataModule1.SQLite3Connection1.Transaction := Trans;
+  DataModule1.EnsureTransaction;
   dataProduct := TDataProducto.Create(DataModule1.SQLite3Connection1);
   try
     FSearchResults := dataProduct.findInStock('%' + searchText + '%');
@@ -127,6 +126,9 @@ begin
   end
   else
     ListBoxResults.Visible := False;
+  except
+    on E: Exception do DebugLn('[TFramePOS.OnTimerFire] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFramePOS.OnProductSelected(Sender: TObject);
@@ -134,6 +136,7 @@ var
   idx: Integer;
   product: TProduct;
 begin
+  try
   idx := ListBoxResults.ItemIndex;
   if (idx < 0) or (FSearchResults = nil) or (idx >= FSearchResults.Count) then
     Exit;
@@ -148,6 +151,9 @@ begin
 
   RefreshGrid;
   RefreshTotals;
+  except
+    on E: Exception do DebugLn('[TFramePOS.OnProductSelected] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFramePOS.OnGridEditingDone(Sender: TObject);
@@ -156,6 +162,7 @@ var
   newPrice: Real;
   item: TItem;
 begin
+  try
   row := GridCart.Row;
   if row < 1 then Exit;
   if (row - 1) >= FCartService.GetItemCount then Exit;
@@ -193,18 +200,25 @@ begin
     RefreshGrid;
     RefreshTotals;
   end;
+  except
+    on E: Exception do DebugLn('[TFramePOS.OnGridEditingDone] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFramePOS.OnRemoveItemClick(Sender: TObject);
 var
   row: Integer;
 begin
+  try
   row := GridCart.Row;
   if (row >= 1) and ((row - 1) < FCartService.GetItemCount) then
   begin
     FCartService.RemoveItem(row - 1);
     RefreshGrid;
     RefreshTotals;
+  end;
+  except
+    on E: Exception do DebugLn('[TFramePOS.OnRemoveItemClick] ERROR: ' + E.Message);
   end;
 end;
 
@@ -213,6 +227,7 @@ procedure TFramePOS.OnGridKeyDown(Sender: TObject; var Key: Word;
 var
   row: Integer;
 begin
+  try
   { Delete key removes selected item }
   if Key = VK_DELETE then
   begin
@@ -225,6 +240,9 @@ begin
     end;
     Key := 0;
   end;
+  except
+    on E: Exception do DebugLn('[TFramePOS.OnGridKeyDown] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFramePOS.OnCompleteSaleClick(Sender: TObject);
@@ -232,6 +250,7 @@ var
   parentForm: TCustomForm;
   statusBar: TStatusBar;
 begin
+  try
   { Validate cart }
   if FCartService.GetItemCount = 0 then
   begin
@@ -276,12 +295,16 @@ begin
     Application.MessageBox(
       PChar(FSaleService.GetLastError), PChar(RS_Error), MB_ICONHAND);
   end;
+  except
+    on E: Exception do DebugLn('[TFramePOS.OnCompleteSaleClick] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFramePOS.OnSelectCustomerClick(Sender: TObject);
 var
   formFindCustomer: TFormFindCustomer;
 begin
+  try
   formFindCustomer := TFormFindCustomer.Create(Self);
   try
     formFindCustomer.ShowModal;
@@ -292,6 +315,9 @@ begin
     end;
   finally
     formFindCustomer.Free;
+  end;
+  except
+    on E: Exception do DebugLn('[TFramePOS.OnSelectCustomerClick] ERROR: ' + E.Message);
   end;
 end;
 
@@ -351,6 +377,7 @@ end;
 
 procedure TFramePOS.ClearCart;
 begin
+  try
   FCartService.Clear;
   EditCustomer.Text := '';
   EditSearch.Text := '';
@@ -359,6 +386,9 @@ begin
   ListBoxResults.Visible := False;
   RefreshGrid;
   RefreshTotals;
+  except
+    on E: Exception do DebugLn('[TFramePOS.ClearCart] ERROR: ' + E.Message);
+  end;
 end;
 
 initialization

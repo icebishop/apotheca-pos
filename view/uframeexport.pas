@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, StdCtrls, Buttons, Dialogs,
-  UExportService, UDataModule;
+  UExportService, UDataModule, LazLogger;
 
 type
 
@@ -52,6 +52,7 @@ procedure TFrameExport.btnBrowseFileClick(Sender: TObject);
 var
   Dlg: TSaveDialog;
 begin
+  try
   Dlg := TSaveDialog.Create(Self);
   try
     Dlg.Title := 'Select JSON export file';
@@ -64,12 +65,16 @@ begin
   finally
     Dlg.Free;
   end;
+  except
+    on E: Exception do DebugLn('[TFrameExport.btnBrowseFileClick] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFrameExport.btnBrowseDirClick(Sender: TObject);
 var
   Dlg: TSelectDirectoryDialog;
 begin
+  try
   Dlg := TSelectDirectoryDialog.Create(Self);
   try
     Dlg.Title := 'Select image output directory';
@@ -80,6 +85,9 @@ begin
   finally
     Dlg.Free;
   end;
+  except
+    on E: Exception do DebugLn('[TFrameExport.btnBrowseDirClick] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFrameExport.btnExportClick(Sender: TObject);
@@ -89,6 +97,7 @@ var
   ExportSvc: TExportService;
   Msg: String;
 begin
+  try
   // Validate at least one checkbox is checked
   if (not chkProducts.Checked) and (not chkServices.Checked) then
   begin
@@ -103,6 +112,7 @@ begin
   Options.ImageOutputDir := edtImageDir.Text;
 
   // Execute export
+  DataModule1.EnsureTransaction;
   ExportSvc := TExportService.Create(DataModule1.SQLite3Connection1);
   try
     ExportResult := ExportSvc.Execute(Options);
@@ -120,6 +130,9 @@ begin
   end
   else
     lblStatus.Caption := 'Error: ' + ExportResult.ErrorMessage;
+  except
+    on E: Exception do DebugLn('[TFrameExport.btnExportClick] ERROR: ' + E.Message);
+  end;
 end;
 
 end.

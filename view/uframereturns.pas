@@ -29,7 +29,7 @@ uses
   Buttons, ComCtrls, Dialogs, LCLType,
   UItem, UOperationType, UPerson, UFFindCustomer, UFFindSupplier, UFFindProduct,
   UReturnService, UBalanceBuilder, UDataModule, UResourceString, UGridUtils,
-  UDataOperationType;
+  UDataOperationType, LazLogger;
 
 type
 
@@ -159,6 +159,7 @@ end;
 
 procedure TFrameReturns.ComboOpTypeChange(Sender: TObject);
 begin
+  try
   case ComboOpType.ItemIndex of
     0: FOperationDirection := 'in';   { Customer Devolution }
     1: FOperationDirection := 'out';  { Inventory Loss }
@@ -175,6 +176,9 @@ begin
     1: BtnSelectPerson.Enabled := False;  { Inventory Loss - no person }
     2: BtnSelectPerson.Enabled := True;   { Return to Provider - need supplier }
   end;
+  except
+    on E: Exception do DebugLn('[TFrameReturns.ComboOpTypeChange] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFrameReturns.BtnSelectPersonClick(Sender: TObject);
@@ -182,6 +186,7 @@ var
   formFindCustomer: TFormFindCustomer;
   formFindSupplier: TFormFindSupplier;
 begin
+  try
   case ComboOpType.ItemIndex of
     0: { Customer Devolution - open Find Customer }
     begin
@@ -212,6 +217,9 @@ begin
       end;
     end;
   end;
+  except
+    on E: Exception do DebugLn('[TFrameReturns.BtnSelectPersonClick] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFrameReturns.DateEditChange(Sender: TObject);
@@ -223,18 +231,26 @@ end;
 
 procedure TFrameReturns.BtnAddItemClick(Sender: TObject);
 begin
+  try
   FItems.Add(TItem.Create);
   LoadDataGrid;
+  except
+    on E: Exception do DebugLn('[TFrameReturns.BtnAddItemClick] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFrameReturns.BtnDeleteItemClick(Sender: TObject);
 begin
+  try
   if (FItems.Count > 0) and (GridItems.Row > 0) and
      (GridItems.Row <= FItems.Count) then
   begin
     TItem(FItems[GridItems.Row - 1]).Free;
     FItems.Delete(GridItems.Row - 1);
     LoadDataGrid;
+  end;
+  except
+    on E: Exception do DebugLn('[TFrameReturns.BtnDeleteItemClick] ERROR: ' + E.Message);
   end;
 end;
 
@@ -243,6 +259,7 @@ var
   formProduct: TFormFindProduct;
   item: TItem;
 begin
+  try
   if (GridItems.Row < 1) or (GridItems.Row > FItems.Count) then
     Exit;
 
@@ -261,6 +278,9 @@ begin
   finally
     formProduct.Free;
   end;
+  except
+    on E: Exception do DebugLn('[TFrameReturns.BtnSelectProductClick] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFrameReturns.GridItemsEditingDone(Sender: TObject);
@@ -269,6 +289,7 @@ var
   row: Integer;
   qty: Integer;
 begin
+  try
   row := GridItems.Row;
   if (row < 1) or (row > FItems.Count) then
     Exit;
@@ -281,6 +302,9 @@ begin
   item.setStock(qty);
 
   LoadDataGrid;
+  except
+    on E: Exception do DebugLn('[TFrameReturns.GridItemsEditingDone] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFrameReturns.GridItemsSelectCell(Sender: TObject; aCol,
@@ -288,6 +312,7 @@ procedure TFrameReturns.GridItemsSelectCell(Sender: TObject; aCol,
 var
   rect: TRect;
 begin
+  try
   if (aCol = 0) and (aRow > 0) then
   begin
     rect := GridItems.CellRect(aCol, aRow);
@@ -299,6 +324,9 @@ begin
   end
   else
     BtnSelectProduct.Visible := False;
+  except
+    on E: Exception do DebugLn('[TFrameReturns.GridItemsSelectCell] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFrameReturns.BtnSaveClick(Sender: TObject);
@@ -307,6 +335,7 @@ var
   opType: TOperationType;
   opDescription: String;
 begin
+  try
   StatusBarReturns.SimpleText := '';
 
   { Map combo index to DB description (English) }
@@ -342,13 +371,18 @@ begin
   begin
     StatusBarReturns.SimpleText := FReturnService.GetLastError;
   end;
+  except
+    on E: Exception do DebugLn('[TFrameReturns.BtnSaveClick] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFrameReturns.BtnRebuildClick(Sender: TObject);
 var
   balanceBuilder: TBalanceBuilder;
 begin
+  try
   StatusBarReturns.SimpleText := '';
+  DataModule1.EnsureTransaction;
 
   balanceBuilder := TBalanceBuilder.Create;
   try
@@ -362,6 +396,9 @@ begin
     end;
   finally
     balanceBuilder.Free;
+  end;
+  except
+    on E: Exception do DebugLn('[TFrameReturns.BtnRebuildClick] ERROR: ' + E.Message);
   end;
 end;
 

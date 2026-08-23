@@ -25,7 +25,7 @@ unit UExportService;
 interface
 
 uses
-  Classes, SysUtils, sqlite3conn, sqldb, UProduct, UJsonSerializer, UWebPConverter,
+  Classes, SysUtils, sqlite3conn, UProduct, UJsonSerializer, UWebPConverter,
   UPngValidator, UDataProduct, UDataImage, ULogger;
 
 type
@@ -117,15 +117,8 @@ var
   FilteredList: TList;
   i: Integer;
   Product: TProduct;
-  Trans: TSQLTransaction;
 begin
   FilteredList := TList.Create;
-  if FConnection.Transaction = nil then
-  begin
-    Trans := TSQLTransaction.Create(nil);
-    Trans.DataBase := FConnection;
-    FConnection.Transaction := Trans;
-  end;
   DataProducto := TDataProducto.Create(FConnection);
   try
     AllProducts := DataProducto.find('');
@@ -150,7 +143,6 @@ var
   DataImage: TDataImage;
   ImageData: TBytes;
   NormalizedName: String;
-  Trans: TSQLTransaction;
   OutputPath: String;
   FS: TFileStream;
 begin
@@ -159,12 +151,6 @@ begin
   if Product.getImageRef() <= 0 then
     Exit;
 
-  if FConnection.Transaction = nil then
-  begin
-    Trans := TSQLTransaction.Create(nil);
-    Trans.DataBase := FConnection;
-    FConnection.Transaction := Trans;
-  end;
   DataImage := TDataImage.Create(FConnection);
   try
     ImageData := DataImage.Get(Product.getImageRef());

@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Grids, StdCtrls, Buttons,
-  Dialogs, LCLType, SqlDb,
+  Dialogs, LCLType, SqlDb, LazLogger,
   UProduct, UDataProduct, UDataModule, UFProduct, UResourceString, UGridUtils;
 
 type
@@ -109,42 +109,45 @@ var
 begin
   FreeProductList;
 
-  Trans := TSQLTransaction.Create(nil);
-  Trans.DataBase := DataModule1.SQLite3Connection1;
-  DataModule1.SQLite3Connection1.Transaction := Trans;
-  DataProduct := TDataProducto.Create(DataModule1.SQLite3Connection1);
   try
-    if AFilter <> '' then
-      SearchParam := '%' + AFilter + '%'
-    else
-      SearchParam := '%%';
+    DataModule1.EnsureTransaction;
+    DataProduct := TDataProducto.Create(DataModule1.SQLite3Connection1);
+    try
+      if AFilter <> '' then
+        SearchParam := '%' + AFilter + '%'
+      else
+        SearchParam := '%%';
 
-    FProductList := DataProduct.getBalance(SearchParam);
+      FProductList := DataProduct.getBalance(SearchParam);
 
-    GridProducts.RowCount := 1; // header only
-    if (FProductList <> nil) and (FProductList.Count > 0) then
-    begin
-      GridProducts.RowCount := FProductList.Count + 1;
-      for I := 0 to FProductList.Count - 1 do
+      GridProducts.RowCount := 1; // header only
+      if (FProductList <> nil) and (FProductList.Count > 0) then
       begin
-        Product := TProduct(FProductList[I]);
-        GridProducts.Cells[0, I + 1] := Product.getName();
-        if Product.getBalance() <> nil then
+        GridProducts.RowCount := FProductList.Count + 1;
+        for I := 0 to FProductList.Count - 1 do
         begin
-          GridProducts.Cells[1, I + 1] := IntToStr(Product.getBalance().getStock());
-          GridProducts.Cells[2, I + 1] := FormatFloat('0.00', Product.getBalance().getCost());
-          GridProducts.Cells[3, I + 1] := FormatFloat('0.00', Product.getBalance().getPrice());
-        end
-        else
-        begin
-          GridProducts.Cells[1, I + 1] := '0';
-          GridProducts.Cells[2, I + 1] := '0.00';
-          GridProducts.Cells[3, I + 1] := '0.00';
+          Product := TProduct(FProductList[I]);
+          GridProducts.Cells[0, I + 1] := Product.getName();
+          if Product.getBalance() <> nil then
+          begin
+            GridProducts.Cells[1, I + 1] := IntToStr(Product.getBalance().getStock());
+            GridProducts.Cells[2, I + 1] := FormatFloat('0.00', Product.getBalance().getCost());
+            GridProducts.Cells[3, I + 1] := FormatFloat('0.00', Product.getBalance().getPrice());
+          end
+          else
+          begin
+            GridProducts.Cells[1, I + 1] := '0';
+            GridProducts.Cells[2, I + 1] := '0.00';
+            GridProducts.Cells[3, I + 1] := '0.00';
+          end;
         end;
       end;
+    finally
+      DataProduct.Free;
     end;
-  finally
-    DataProduct.Free;
+  except
+    on E: Exception do
+      DebugLn('[FrameProducts.LoadProducts] ERROR: ' + E.Message);
   end;
 end;
 
@@ -218,12 +221,10 @@ begin
   if Application.MessageBox(PChar(ConfirmMsg), PChar(RS_MESSAGE),
      MB_YESNO or MB_ICONQUESTION) = IDYES then
   begin
-    Trans := TSQLTransaction.Create(nil);
-    Trans.DataBase := DataModule1.SQLite3Connection1;
-    DataModule1.SQLite3Connection1.Transaction := Trans;
+    DataModule1.EnsureTransaction;
     DataProduct := TDataProducto.Create(DataModule1.SQLite3Connection1);
     try
-      DataProduct.getTransaction().StartTransaction;
+if not       DataProduct.getTransaction().Active then       DataProduct.getTransaction().StartTransaction;
       if DataProduct.delete(Product) then
       begin
         DataProduct.getTransaction().Commit;

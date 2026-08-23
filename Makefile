@@ -87,7 +87,6 @@ package: build
 	@cp -r res dist/$(PACKAGE_NAME)/
 	@cp -r languages dist/$(PACKAGE_NAME)/
 	@mkdir -p dist/$(PACKAGE_NAME)/db
-	@cp db/schema.sql dist/$(PACKAGE_NAME)/db/
 	@mkdir -p dist/$(PACKAGE_NAME)/logs
 	@echo "Creating archive..."
 	@cd dist && tar -czf $(PACKAGE_NAME)-$(VERSION)-linux-x86_64.tar.gz $(PACKAGE_NAME)

@@ -93,7 +93,7 @@ procedure TFormFindProduct.loadData();
 var
 dataProduct : TDataProducto;
 begin
-DataModule1.SQLite3Connection1.Transaction := TSQLTransaction.Create(nil);
+DataModule1.EnsureTransaction;
 dataProduct := TDataProducto.Create(DataModule1.SQLite3Connection1);
 if flagAllProducts then
    listproduct := dataProduct.find('%'+EditFind.Text+'%')

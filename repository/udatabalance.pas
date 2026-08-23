@@ -25,7 +25,7 @@ unit UDataBalance;
 interface
 
 uses
-Classes, SysUtils, sqlite3conn, SqlDb, UData, UBalance, UProduct;
+Classes, SysUtils, sqlite3conn, SqlDb, LazLogger, UData, UBalance, UProduct;
 
 type
 TDataBalance = class(TData)
@@ -80,12 +80,8 @@ end;
 end;
 
 function TDataBalance.edit(product:TProduct):Boolean;
-var
-test:String;
 begin
 try
-Self.getConnection().Transaction := Self.getTransaction();
-Self.getQuery().DataBase := Self.getConnection();
 Self.getQuery().SQL.Text := 'update balance '+
 '   set product = :product,'+
 '       units = :units,'+
@@ -99,12 +95,16 @@ Self.getQuery().Params.ParamByName('cost').AsFloat := product.getBalance.getCost
 Self.getQuery().Params.ParamByName('price').AsFloat := product.getBalance.getPrice();
 Self.getQuery().Params.ParamByName('balance').AsFloat := product.getBalance.getBalance();
 Self.getQuery().Params.ParamByName('id').AsInteger := product.getBalance.getId();
-test := Self.getQuery().SQL.Text;
 Self.getQuery().ExecSQL;
 
 edit := true;
 except
-edit := false;
+on E: Exception do
+begin
+  DebugLn('[TDataBalance.edit] ERROR product=' + IntToStr(product.getId()) +
+    ' balanceId=' + IntToStr(product.getBalance.getId()) + ': ' + E.Message);
+  edit := false;
+end;
 end;
 end;
 
@@ -129,6 +129,7 @@ function TDataBalance.get(productId:Integer):TBalance;
 var
 balance:TBalance;
 begin
+balance := TBalance.Create;
 try
 Self.getQuery().SQL.Text := 'select * from balance where product = :productId';
 Self.getQuery().Params.ParamByName('productId').AsInteger := productId;
@@ -137,7 +138,6 @@ Self.getQuery().Open;
 Self.getQuery().First;
 while not Self.getQuery().EOF do
 begin
-balance := TBalance.Create;
 balance.setId(Self.getQuery().FieldByName('id').AsInteger);
 balance.setStock(Self.getQuery().FieldByName('units').AsInteger);
 balance.setBalance(Self.getQuery().FieldByName('balance').AsFloat);
@@ -147,7 +147,7 @@ Self.getQuery().Next;
 end;
 get := balance;
 except
-get := nil;
+get := balance;
 end;
 end;
 

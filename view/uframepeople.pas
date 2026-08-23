@@ -28,7 +28,7 @@ uses
   Classes, SysUtils, Forms, Controls, ComCtrls, Grids, StdCtrls, Buttons,
   Dialogs, LCLType, SqlDb,
   UCustomer, USupplier, UDataCustomer, UDataSupplier, UDataModule,
-  UFCustomer, UFSupplier, UResourceString, UGridUtils;
+  UFCustomer, UFSupplier, UResourceString, UGridUtils, LazLogger;
 
 type
 
@@ -143,9 +143,8 @@ var
 begin
   FreeCustomerList;
 
-  Trans := TSQLTransaction.Create(nil);
-  Trans.DataBase := DataModule1.SQLite3Connection1;
-  DataModule1.SQLite3Connection1.Transaction := Trans;
+  DataModule1.EnsureTransaction;
+  { Transaction handled by TData.Create }
   DataCustomer := TDataCustomer.Create(DataModule1.SQLite3Connection1);
   try
     if AFilter <> '' then
@@ -182,9 +181,8 @@ var
 begin
   FreeSupplierList;
 
-  Trans := TSQLTransaction.Create(nil);
-  Trans.DataBase := DataModule1.SQLite3Connection1;
-  DataModule1.SQLite3Connection1.Transaction := Trans;
+  DataModule1.EnsureTransaction;
+  { Transaction handled by TData.Create }
   DataSupplier := TDataSupplier.Create(DataModule1.SQLite3Connection1);
   try
     if AFilter <> '' then
@@ -232,13 +230,21 @@ end;
 
 procedure TFramePeople.TabControlChange(Sender: TObject);
 begin
+  try
   EditSearch.Text := '';
   RefreshActiveGrid;
+  except
+    on E: Exception do DebugLn('[TFramePeople.TabControlChange] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFramePeople.EditSearchChange(Sender: TObject);
 begin
+  try
   RefreshActiveGrid;
+  except
+    on E: Exception do DebugLn('[TFramePeople.EditSearchChange] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFramePeople.BtnAddClick(Sender: TObject);
@@ -246,6 +252,7 @@ var
   FrmCustomer: TFormCustomer;
   FrmSupplier: TFormSupplier;
 begin
+  try
   if IsCustomersTab then
   begin
     FrmCustomer := TFormCustomer.Create(Application);
@@ -267,6 +274,9 @@ begin
     end;
   end;
   RefreshActiveGrid;
+  except
+    on E: Exception do DebugLn('[TFramePeople.BtnAddClick] ERROR: ' + E.Message);
+  end;
 end;
 
 function TFramePeople.GetSelectedCustomer: TCustomer;
@@ -296,6 +306,7 @@ var
   FrmCustomer: TFormCustomer;
   FrmSupplier: TFormSupplier;
 begin
+  try
   if IsCustomersTab then
   begin
     Customer := GetSelectedCustomer;
@@ -323,6 +334,9 @@ begin
     end;
   end;
   RefreshActiveGrid;
+  except
+    on E: Exception do DebugLn('[TFramePeople.BtnEditClick] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFramePeople.BtnDeleteClick(Sender: TObject);
@@ -340,9 +354,9 @@ var
   function HasOperations(APersonId: Integer): Integer;
   begin
     Result := 0;
-    Trans := TSQLTransaction.Create(nil);
+    DataModule1.EnsureTransaction;
     Trans.DataBase := DataModule1.SQLite3Connection1;
-    DataModule1.SQLite3Connection1.Transaction := Trans;
+    { Transaction handled by TData.Create }
     Query := TSQLQuery.Create(nil);
     Query.DataBase := DataModule1.SQLite3Connection1;
     Query.Transaction := Trans;
@@ -361,6 +375,7 @@ var
   end;
 
 begin
+  try
   if IsCustomersTab then
   begin
     Customer := GetSelectedCustomer;
@@ -380,12 +395,12 @@ begin
     if Application.MessageBox(PChar(ConfirmMsg), PChar(RS_MESSAGE),
        MB_YESNO or MB_ICONQUESTION) = IDYES then
     begin
-      Trans := TSQLTransaction.Create(nil);
+      DataModule1.EnsureTransaction;
       Trans.DataBase := DataModule1.SQLite3Connection1;
-      DataModule1.SQLite3Connection1.Transaction := Trans;
+      { Transaction handled by TData.Create }
       DataCustomer := TDataCustomer.Create(DataModule1.SQLite3Connection1);
       try
-        DataCustomer.getTransaction().StartTransaction;
+if not         DataCustomer.getTransaction().Active then         DataCustomer.getTransaction().StartTransaction;
         if DataCustomer.delete(Customer) then
         begin
           DataCustomer.getTransaction().Commit;
@@ -422,12 +437,12 @@ begin
     if Application.MessageBox(PChar(ConfirmMsg), PChar(RS_MESSAGE),
        MB_YESNO or MB_ICONQUESTION) = IDYES then
     begin
-      Trans := TSQLTransaction.Create(nil);
+      DataModule1.EnsureTransaction;
       Trans.DataBase := DataModule1.SQLite3Connection1;
-      DataModule1.SQLite3Connection1.Transaction := Trans;
+      { Transaction handled by TData.Create }
       DataSupplier := TDataSupplier.Create(DataModule1.SQLite3Connection1);
       try
-        DataSupplier.getTransaction().StartTransaction;
+if not         DataSupplier.getTransaction().Active then         DataSupplier.getTransaction().StartTransaction;
         if DataSupplier.delete(Supplier) then
         begin
           DataSupplier.getTransaction().Commit;
@@ -444,6 +459,9 @@ begin
       end;
       RefreshActiveGrid;
     end;
+  end;
+  except
+    on E: Exception do DebugLn('[TFramePeople.BtnDeleteClick] ERROR: ' + E.Message);
   end;
 end;
 

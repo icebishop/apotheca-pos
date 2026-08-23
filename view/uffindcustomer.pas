@@ -138,7 +138,7 @@ var
 dataCustomer : TDataCustomer;
 begin
 
-DataModule1.SQLite3Connection1.Transaction := TSQLTransaction.Create(nil);
+DataModule1.EnsureTransaction;
 dataCustomer := TDataCustomer.Create(DataModule1.SQLite3Connection1);
 listcustomer := dataCustomer.find('%'+EditFind.Text+'%');
 dataCustomer.free;

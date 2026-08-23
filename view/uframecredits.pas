@@ -28,7 +28,7 @@ uses
   Classes, SysUtils, Forms, Controls, StdCtrls, Grids, Buttons, ExtCtrls,
   ComCtrls, Dialogs, EditBtn,
   UCreditService, UDebtorInfo, UCreditSaleInfo, UPay, UGridUtils,
-  UResourceString;
+  UResourceString, LazLogger;
 
 type
 
@@ -276,6 +276,7 @@ var
   idx: Integer;
   debtor: TDebtorInfo;
 begin
+  try
   idx := aRow - 1;
   if (FDebtorsList = nil) or (idx < 0) or (idx >= FDebtorsList.Count) then
   begin
@@ -290,21 +291,36 @@ begin
   BtnRegisterPayment.Enabled := False;
   RefreshCreditSales;
   RefreshPayments;
+  except
+    on E: Exception do DebugLn('[TFrameCredits.OnDebtorSelected] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFrameCredits.OnDebtorClick(Sender: TObject);
 begin
+  try
   OnDebtorSelected(Sender, GridDebtors.Col, GridDebtors.Row);
+  except
+    on E: Exception do DebugLn('[TFrameCredits.OnDebtorClick] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFrameCredits.OnSearchChange(Sender: TObject);
 begin
+  try
   RefreshDebtors;
+  except
+    on E: Exception do DebugLn('[TFrameCredits.OnSearchChange] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFrameCredits.OnTabChange(Sender: TObject);
 begin
+  try
   ShowDetailTab;
+  except
+    on E: Exception do DebugLn('[TFrameCredits.OnTabChange] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFrameCredits.ShowDetailTab;
@@ -326,6 +342,7 @@ var
   amount: Real;
   payDate: TDateTime;
 begin
+  try
   { Validate debtor selected }
   if FSelectedPersonId < 0 then
   begin
@@ -370,6 +387,9 @@ begin
   begin
     MessageDlg(RS_Error, FCreditService.GetLastError, mtError, [mbOK], 0);
   end;
+  except
+    on E: Exception do DebugLn('[TFrameCredits.OnRegisterPayment] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFrameCredits.OnCreditSaleSelected(Sender: TObject; aCol, aRow: Integer);
@@ -377,6 +397,7 @@ var
   idx: Integer;
   saleInfo: TCreditSaleInfo;
 begin
+  try
   idx := aRow - 1;
   if (FCreditSalesList = nil) or (idx < 0) or (idx >= FCreditSalesList.Count) then
   begin
@@ -390,6 +411,9 @@ begin
   FSelectedOperationId := saleInfo.OperationId;
   BtnRegisterPayment.Enabled := True;
   RefreshPayments;
+  except
+    on E: Exception do DebugLn('[TFrameCredits.OnCreditSaleSelected] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFrameCredits.FreeDebtorsList;

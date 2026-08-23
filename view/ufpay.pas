@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, EditBtn, UPay, UFFindCustomer, UDataPay, UDataModule, sqldb,
-  LCLType, ComCtrls, UPayValidator, UResourceString;
+  LCLType, ComCtrls, UPayValidator, UResourceString, LazLogger;
 
 type
 
@@ -94,6 +94,7 @@ procedure TFormPay.BitBtnCustomerClick(Sender: TObject);
 var
    formFindCustomer : TFormFindCustomer;
 begin
+   try
    formFindCustomer := TFormFindCustomer.Create(Self);
    try
       formFindCustomer.ShowModal;
@@ -102,34 +103,48 @@ begin
    finally
       formFindCustomer.Free;
    end;
-
+   except
+     on E: Exception do DebugLn('[TFormPay.BitBtnCustomerClick] ERROR: ' + E.Message);
+   end;
 end;
 
 procedure TFormPay.DateEditExit(Sender: TObject);
 begin
+  try
   pay.setDate(DateEdit.Date);
   payValidator.setMessage('');
   StatusBarPay.SimpleText := payValidator.getMessage();
   if not payValidator.hasDate() then
      StatusBarPay.SimpleText := payValidator.getMessage();
+  except
+    on E: Exception do DebugLn('[TFormPay.DateEditExit] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFormPay.EditCustomerExit(Sender: TObject);
 begin
+  try
   payValidator.setMessage('');
   StatusBarPay.SimpleText := payValidator.getMessage();
   if not payValidator.hasCustomer() then
      StatusBarPay.SimpleText := payValidator.getMessage();
+  except
+    on E: Exception do DebugLn('[TFormPay.EditCustomerExit] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFormPay.EditValueExit(Sender: TObject);
 begin
+  try
   payValidator.setMessage('');
   StatusBarPay.SimpleText := payValidator.getMessage();
   if not payValidator.isNumber(EditValue.Text) then
   begin
      StatusBarPay.SimpleText := payValidator.getMessage();
      EditValue.Text:='0';
+  end;
+  except
+    on E: Exception do DebugLn('[TFormPay.EditValueExit] ERROR: ' + E.Message);
   end;
 end;
 
@@ -141,24 +156,29 @@ end;
 
 procedure TFormPay.FormShow(Sender: TObject);
 begin
+ try
  if pay.getPerson() <> nil then
    EditCustomer.Text:= pay.getPerson().getName();
  EditValue.Text:= FloatToStr(pay.getValue());
  DateEdit.Date:= pay.getDate();
+ except
+   on E: Exception do DebugLn('[TFormPay.FormShow] ERROR: ' + E.Message);
+ end;
 end;
 
 procedure TFormPay.BitBtnOkClick(Sender: TObject);
 var
    dataPay : TDataPay;
 begin
+   try
    pay.setDate(DateEdit.Date);
    pay.setValue(StrToFloat(EditValue.Text));
    if payValidator.validate() then
    begin
-   DataModule1.SQLite3Connection1.Transaction := TSQLTransaction.Create(nil);
+   DataModule1.EnsureTransaction;
    dataPay:= TDataPay.Create(DataModule1.SQLite3Connection1);
    try
-         dataPay.getTransaction().StartTransaction;
+if not          dataPay.getTransaction().Active then          dataPay.getTransaction().StartTransaction;
          if flagOperacion = 1 then
             if dataPay.new(pay) > 0 then
             begin
@@ -191,7 +211,9 @@ begin
    begin
         Application.MessageBox(PChar(payValidator.getMessage()), PChar(RS_Error), MB_ICONWARNING);
    end
-
+   except
+     on E: Exception do DebugLn('[TFormPay.BitBtnOkClick] ERROR: ' + E.Message);
+   end;
 end;
 
 procedure TFormPay.BitBtnCancelClick(Sender: TObject);
