@@ -122,7 +122,15 @@ begin
                       '  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,' +
                       '  name TEXT NOT NULL,' +
                       '  minstock INTEGER,' +
-                      '  maxstock INTEGER);';
+                      '  maxstock INTEGER,' +
+                      '  image_ref INTEGER DEFAULT 0,' +
+                      '  originalprice REAL DEFAULT 0.0,' +
+                      '  isservice INTEGER DEFAULT 0,' +
+                      '  category TEXT DEFAULT '''',' +
+                      '  description TEXT DEFAULT '''',' +
+                      '  brand TEXT DEFAULT '''',' +
+                      '  condition TEXT DEFAULT '''',' +
+                      '  google_product_category TEXT DEFAULT '''');';
     Query.ExecSQL;
 
     // Create balance table

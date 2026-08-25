@@ -46,13 +46,13 @@ type
   private
     FProductList: TList;
     procedure LoadProducts(const AFilter: String);
-    procedure RefreshGrid;
     procedure FreeProductList;
     procedure InitGrid;
     function GetSelectedProduct: TProduct;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure RefreshGrid;
   end;
 
 implementation
@@ -118,7 +118,7 @@ begin
       else
         SearchParam := '%%';
 
-      FProductList := DataProduct.getBalance(SearchParam);
+      FProductList := DataProduct.find(SearchParam);
 
       GridProducts.RowCount := 1; // header only
       if (FProductList <> nil) and (FProductList.Count > 0) then

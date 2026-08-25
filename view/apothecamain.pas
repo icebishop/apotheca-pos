@@ -219,9 +219,16 @@ begin
     stExport:    begin targetFrame := FFrameExport;    targetBtn := BtnExport; end;
   end;
 
-  { No-op if already on the requested frame }
+  { Always refresh the products grid when clicking the Products button }
+  if section = stProducts then
+    FFrameProducts.RefreshGrid;
+
+  { No-op if already on the requested frame (after refresh above) }
   if FActiveFrame = targetFrame then
+  begin
+    HighlightActiveButton(targetBtn);
     Exit;
+  end;
 
   if FActiveFrame <> nil then
     FActiveFrame.Visible := False;

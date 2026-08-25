@@ -58,6 +58,8 @@ type
     LabelGoogleCat: TLabel;
     LabelDescription: TLabel;
     LblImageStatus: TLabel;
+    GroupBoxPreview: TGroupBox;
+    ImagePreview: TImage;
     procedure BitBtnOkClick(Sender: TObject);
     procedure BitBtnCancelClick(Sender: TObject);
     procedure BtnSelectImageClick(Sender: TObject);
@@ -172,6 +174,8 @@ var
   Dlg: TOpenDialog;
   FS: TFileStream;
   ValidationError: String;
+  Stream: TBytesStream;
+  Png: TPortableNetworkGraphic;
 begin
   try
   Dlg := TOpenDialog.Create(Self);
@@ -194,6 +198,7 @@ begin
       on E: Exception do
       begin
         LblImageStatus.Caption := 'Error: ' + E.Message;
+        ImagePreview.Picture.Clear;
         Exit;
       end;
     end;
@@ -204,11 +209,33 @@ begin
       LblImageStatus.Caption := ValidationError;
       SetLength(FPendingImageData, 0);
       FHasPendingImage := False;
+      ImagePreview.Picture.Clear;
       Exit;
     end;
 
     FHasPendingImage := True;
     LblImageStatus.Caption := 'Image selected: ' + ExtractFileName(Dlg.FileName);
+
+    try
+      Stream := TBytesStream.Create(FPendingImageData);
+      try
+        Png := TPortableNetworkGraphic.Create;
+        try
+          Png.LoadFromStream(Stream);
+          ImagePreview.Picture.Graphic := Png;
+        finally
+          Png.Free;
+        end;
+      finally
+        Stream.Free;
+      end;
+    except
+      on E: Exception do
+      begin
+        LblImageStatus.Caption := 'Preview error: ' + E.Message;
+        ImagePreview.Picture.Clear;
+      end;
+    end;
   finally
     Dlg.Free;
   end;
@@ -274,12 +301,18 @@ begin
   flagAction := 0;
   FHasPendingImage := False;
   SetLength(FPendingImageData, 0);
+  ImagePreview.Picture.Clear;
   if product = nil then
     product := TProduct.Create;
   productValidator := TProductValidator.Create;
 end;
 
 procedure TFormProduct.FormShow(Sender: TObject);
+var
+  DataImage: TDataImage;
+  ImageData: TBytes;
+  Stream: TBytesStream;
+  Png: TPortableNetworkGraphic;
 begin
   try
   if product <> nil then
@@ -295,9 +328,37 @@ begin
     MemoDescription.Lines.Text := product.getDescription();
     ChkIsService.Checked := product.getIsService();
     if product.getImageRef() > 0 then
-      LblImageStatus.Caption := 'Image ID: ' + IntToStr(product.getImageRef())
+    begin
+      LblImageStatus.Caption := 'Image ID: ' + IntToStr(product.getImageRef());
+      DataImage := TDataImage.Create(DataModule1.SQLite3Connection1);
+      try
+        ImageData := DataImage.Get(product.getImageRef());
+        if Length(ImageData) > 0 then
+        begin
+          Stream := TBytesStream.Create(ImageData);
+          try
+            Png := TPortableNetworkGraphic.Create;
+            try
+              Png.LoadFromStream(Stream);
+              ImagePreview.Picture.Graphic := Png;
+            finally
+              Png.Free;
+            end;
+          finally
+            Stream.Free;
+          end;
+        end
+        else
+          ImagePreview.Picture.Clear;
+      finally
+        DataImage.getQuery().Free;
+      end;
+    end
     else
+    begin
       LblImageStatus.Caption := '';
+      ImagePreview.Picture.Clear;
+    end;
   end;
   productValidator.setProduct(product);
   except

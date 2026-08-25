@@ -1,11 +1,11 @@
 object FormProduct: TFormProduct
   Left = 456
-  Height = 480
+  Height = 580
   Top = 200
   Width = 520
   ActiveControl = EditName
   Caption = 'Products'
-  ClientHeight = 480
+  ClientHeight = 580
   ClientWidth = 520
   Position = poMainFormCenter
   OnCreate = FormCreate
@@ -191,7 +191,7 @@ object FormProduct: TFormProduct
   object BitBtnOk: TBitBtn
     Left = 348
     Height = 30
-    Top = 440
+    Top = 540
     Width = 80
     Anchors = [akRight, akBottom]
     Caption = '&Aceptar'
@@ -201,11 +201,31 @@ object FormProduct: TFormProduct
   object BitBtnCancel: TBitBtn
     Left = 432
     Height = 30
-    Top = 440
+    Top = 540
     Width = 80
     Anchors = [akRight, akBottom]
     Caption = '&Cancelar'
     OnClick = BitBtnCancelClick
     TabOrder = 12
+  end
+  object GroupBoxPreview: TGroupBox
+    Left = 140
+    Height = 130
+    Top = 400
+    Width = 130
+    Caption = 'Preview'
+    ClientHeight = 110
+    ClientWidth = 126
+    TabOrder = 13
+    object ImagePreview: TImage
+      Left = 2
+      Height = 106
+      Top = 2
+      Width = 122
+      Align = alClient
+      Center = True
+      Proportional = True
+      Stretch = True
+    end
   end
 end

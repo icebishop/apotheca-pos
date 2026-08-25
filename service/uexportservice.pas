@@ -143,8 +143,6 @@ var
   DataImage: TDataImage;
   ImageData: TBytes;
   NormalizedName: String;
-  OutputPath: String;
-  FS: TFileStream;
 begin
   Result := '';
 
@@ -164,22 +162,13 @@ begin
     end;
 
     NormalizedName := TWebPConverter.NormalizeProductName(Product.getName());
-    OutputPath := IncludeTrailingPathDelimiter(ImageDir) + NormalizedName + '.webp';
 
-    try
-      FS := TFileStream.Create(OutputPath, fmCreate);
-      try
-        FS.Write(ImageData[0], Length(ImageData));
-      finally
-        FS.Free;
-      end;
-      Result := '/' + NormalizedName + '.webp';
-    except
-      on E: Exception do
-        LogError('TExportService', 'IMAGE_WRITE_FAIL',
-          'Failed to write image for product ID=' + IntToStr(Product.getId()) +
-          ' Error=' + E.Message);
-    end;
+    if FConverter.Convert(ImageData, ImageDir, NormalizedName) then
+      Result := '/' + NormalizedName + '.webp'
+    else
+      LogError('TExportService', 'IMAGE_CONVERT_FAIL',
+        'Failed to convert image to WebP for product ID=' + IntToStr(Product.getId()) +
+        ' Error=' + FConverter.GetLastError());
   finally
     DataImage.getQuery().Free;
   end;
