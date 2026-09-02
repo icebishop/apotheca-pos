@@ -35,6 +35,13 @@ type
   TCreditService = class(TObject)
   private
     FLastError: String;
+    { Creates a query bound to the connection's shared transaction and ensures
+      that transaction is active. All read/write methods reuse the single
+      transaction managed by the connection, because SQLite only allows one
+      active transaction per connection. Creating a private transaction here
+      would clash with the one started by DataModule1.EnsureTransaction and the
+      resulting exception would be swallowed, producing empty result lists. }
+    function NewQuery: TSQLQuery;
   public
     function GetDebtors: TList;
     function GetAllCreditCustomers: TList;
@@ -52,21 +59,22 @@ type
 
 implementation
 
+function TCreditService.NewQuery: TSQLQuery;
+begin
+  DataModule1.EnsureTransaction;
+  Result := TSQLQuery.Create(nil);
+  Result.DataBase := DataModule1.SQLite3Connection1;
+  Result.Transaction := DataModule1.SQLite3Connection1.Transaction;
+end;
+
 function TCreditService.GetDebtors: TList;
 var
-  Trans: TSQLTransaction;
   Query: TSQLQuery;
   debtor: TDebtorInfo;
 begin
   Result := TList.Create;
-  Trans := TSQLTransaction.Create(nil);
-  Query := TSQLQuery.Create(nil);
+  Query := NewQuery;
   try
-    Trans.DataBase := DataModule1.SQLite3Connection1;
-    Query.DataBase := DataModule1.SQLite3Connection1;
-    Query.Transaction := Trans;
-    Trans.StartTransaction;
-
     Query.SQL.Text :=
       'SELECT ' +
       '  c.person AS person_id, ' +
@@ -106,34 +114,24 @@ begin
       Query.Next;
     end;
     Query.Close;
-
-    Trans.Commit;
   except
     on E: Exception do
     begin
-      if Trans.Active then Trans.Rollback;
+      LogError('CreditService', 'GET_DEBTORS_FAILED', 'error=' + E.Message);
       FLastError := E.Message;
     end;
   end;
   Query.Free;
-  Trans.Free;
 end;
 
 function TCreditService.GetAllCreditCustomers: TList;
 var
-  Trans: TSQLTransaction;
   Query: TSQLQuery;
   debtor: TDebtorInfo;
 begin
   Result := TList.Create;
-  Trans := TSQLTransaction.Create(nil);
-  Query := TSQLQuery.Create(nil);
+  Query := NewQuery;
   try
-    Trans.DataBase := DataModule1.SQLite3Connection1;
-    Query.DataBase := DataModule1.SQLite3Connection1;
-    Query.Transaction := Trans;
-    Trans.StartTransaction;
-
     Query.SQL.Text :=
       'SELECT ' +
       '  c.person AS person_id, ' +
@@ -172,41 +170,30 @@ begin
       Query.Next;
     end;
     Query.Close;
-
-    Trans.Commit;
   except
     on E: Exception do
     begin
-      if Trans.Active then Trans.Rollback;
+      LogError('CreditService', 'GET_ALL_CREDIT_CUSTOMERS_FAILED', 'error=' + E.Message);
       FLastError := E.Message;
     end;
   end;
   Query.Free;
-  Trans.Free;
 end;
 
 function TCreditService.GetAllCreditCustomersFiltered(const nameFilter: String): TList;
 var
-  Trans: TSQLTransaction;
   Query: TSQLQuery;
   debtor: TDebtorInfo;
 begin
-  Result := TList.Create;
   if nameFilter = '' then
   begin
-    Result.Free;
     Result := GetAllCreditCustomers;
     Exit;
   end;
 
-  Trans := TSQLTransaction.Create(nil);
-  Query := TSQLQuery.Create(nil);
+  Result := TList.Create;
+  Query := NewQuery;
   try
-    Trans.DataBase := DataModule1.SQLite3Connection1;
-    Query.DataBase := DataModule1.SQLite3Connection1;
-    Query.Transaction := Trans;
-    Trans.StartTransaction;
-
     Query.SQL.Text :=
       'SELECT ' +
       '  c.person AS person_id, ' +
@@ -247,41 +234,30 @@ begin
       Query.Next;
     end;
     Query.Close;
-
-    Trans.Commit;
   except
     on E: Exception do
     begin
-      if Trans.Active then Trans.Rollback;
+      LogError('CreditService', 'GET_ALL_CREDIT_CUSTOMERS_FILTERED_FAILED', 'error=' + E.Message);
       FLastError := E.Message;
     end;
   end;
   Query.Free;
-  Trans.Free;
 end;
 
 function TCreditService.GetDebtorsFiltered(const nameFilter: String): TList;
 var
-  Trans: TSQLTransaction;
   Query: TSQLQuery;
   debtor: TDebtorInfo;
 begin
-  Result := TList.Create;
   if nameFilter = '' then
   begin
-    Result.Free;
     Result := GetDebtors;
     Exit;
   end;
 
-  Trans := TSQLTransaction.Create(nil);
-  Query := TSQLQuery.Create(nil);
+  Result := TList.Create;
+  Query := NewQuery;
   try
-    Trans.DataBase := DataModule1.SQLite3Connection1;
-    Query.DataBase := DataModule1.SQLite3Connection1;
-    Query.Transaction := Trans;
-    Trans.StartTransaction;
-
     Query.SQL.Text :=
       'SELECT ' +
       '  c.person AS person_id, ' +
@@ -323,34 +299,24 @@ begin
       Query.Next;
     end;
     Query.Close;
-
-    Trans.Commit;
   except
     on E: Exception do
     begin
-      if Trans.Active then Trans.Rollback;
+      LogError('CreditService', 'GET_DEBTORS_FILTERED_FAILED', 'error=' + E.Message);
       FLastError := E.Message;
     end;
   end;
   Query.Free;
-  Trans.Free;
 end;
 
 function TCreditService.GetDebtBalance(personId: Integer): Real;
 var
-  Trans: TSQLTransaction;
   Query: TSQLQuery;
   balance: Real;
 begin
   Result := 0;
-  Trans := TSQLTransaction.Create(nil);
-  Query := TSQLQuery.Create(nil);
+  Query := NewQuery;
   try
-    Trans.DataBase := DataModule1.SQLite3Connection1;
-    Query.DataBase := DataModule1.SQLite3Connection1;
-    Query.Transaction := Trans;
-    Trans.StartTransaction;
-
     Query.SQL.Text :=
       'SELECT COALESCE( ' +
       '  (SELECT SUM(i.stock * i.price) ' +
@@ -375,34 +341,24 @@ begin
         Result := 0;
     end;
     Query.Close;
-
-    Trans.Commit;
   except
     on E: Exception do
     begin
-      if Trans.Active then Trans.Rollback;
+      LogError('CreditService', 'GET_DEBT_BALANCE_FAILED', 'personId=' + IntToStr(personId) + ' error=' + E.Message);
       FLastError := E.Message;
     end;
   end;
   Query.Free;
-  Trans.Free;
 end;
 
 function TCreditService.GetCreditSales(personId: Integer): TList;
 var
-  Trans: TSQLTransaction;
   Query: TSQLQuery;
   saleInfo: TCreditSaleInfo;
 begin
   Result := TList.Create;
-  Trans := TSQLTransaction.Create(nil);
-  Query := TSQLQuery.Create(nil);
+  Query := NewQuery;
   try
-    Trans.DataBase := DataModule1.SQLite3Connection1;
-    Query.DataBase := DataModule1.SQLite3Connection1;
-    Query.Transaction := Trans;
-    Trans.StartTransaction;
-
     Query.SQL.Text :=
       'SELECT o.id, o.date, SUM(i.stock * i.price) AS sale_total, ' +
       'COALESCE((SELECT SUM(p.val) FROM pay p WHERE p.operation = o.id), 0) AS total_paid ' +
@@ -426,34 +382,23 @@ begin
       Query.Next;
     end;
     Query.Close;
-
-    Trans.Commit;
   except
     on E: Exception do
     begin
       LogError('CreditService', 'GET_CREDIT_SALES_FAILED', 'personId=' + IntToStr(personId) + ' error=' + E.Message);
-      if Trans.Active then Trans.Rollback;
       FLastError := E.Message;
     end;
   end;
   Query.Free;
-  Trans.Free;
 end;
 
 function TCreditService.GetCreditSaleTotal(operationId: Integer): Real;
 var
-  Trans: TSQLTransaction;
   Query: TSQLQuery;
 begin
   Result := 0;
-  Trans := TSQLTransaction.Create(nil);
-  Query := TSQLQuery.Create(nil);
+  Query := NewQuery;
   try
-    Trans.DataBase := DataModule1.SQLite3Connection1;
-    Query.DataBase := DataModule1.SQLite3Connection1;
-    Query.Transaction := Trans;
-    Trans.StartTransaction;
-
     Query.SQL.Text :=
       'SELECT COALESCE(SUM(i.stock * i.price), 0) AS sale_total ' +
       'FROM item i ' +
@@ -465,35 +410,25 @@ begin
     if not Query.EOF then
       Result := Query.FieldByName('sale_total').AsFloat;
     Query.Close;
-
-    Trans.Commit;
   except
     on E: Exception do
     begin
-      if Trans.Active then Trans.Rollback;
+      LogError('CreditService', 'GET_CREDIT_SALE_TOTAL_FAILED', 'operationId=' + IntToStr(operationId) + ' error=' + E.Message);
       FLastError := E.Message;
     end;
   end;
   Query.Free;
-  Trans.Free;
 end;
 
 function TCreditService.GetPayments(operationId: Integer): TList;
 var
-  Trans: TSQLTransaction;
   Query: TSQLQuery;
   pay: TPay;
   person: TPerson;
 begin
   Result := TList.Create;
-  Trans := TSQLTransaction.Create(nil);
-  Query := TSQLQuery.Create(nil);
+  Query := NewQuery;
   try
-    Trans.DataBase := DataModule1.SQLite3Connection1;
-    Query.DataBase := DataModule1.SQLite3Connection1;
-    Query.Transaction := Trans;
-    Trans.StartTransaction;
-
     Query.SQL.Text :=
       'SELECT id, person, val, date FROM pay ' +
       'WHERE operation = :operationId ' +
@@ -514,33 +449,23 @@ begin
       Query.Next;
     end;
     Query.Close;
-
-    Trans.Commit;
   except
     on E: Exception do
     begin
-      if Trans.Active then Trans.Rollback;
+      LogError('CreditService', 'GET_PAYMENTS_FAILED', 'operationId=' + IntToStr(operationId) + ' error=' + E.Message);
       FLastError := E.Message;
     end;
   end;
   Query.Free;
-  Trans.Free;
 end;
 
 function TCreditService.GetTotalPayments(operationId: Integer): Real;
 var
-  Trans: TSQLTransaction;
   Query: TSQLQuery;
 begin
   Result := 0;
-  Trans := TSQLTransaction.Create(nil);
-  Query := TSQLQuery.Create(nil);
+  Query := NewQuery;
   try
-    Trans.DataBase := DataModule1.SQLite3Connection1;
-    Query.DataBase := DataModule1.SQLite3Connection1;
-    Query.Transaction := Trans;
-    Trans.StartTransaction;
-
     Query.SQL.Text :=
       'SELECT COALESCE(SUM(val), 0) AS total_payments ' +
       'FROM pay ' +
@@ -552,22 +477,18 @@ begin
     if not Query.EOF then
       Result := Query.FieldByName('total_payments').AsFloat;
     Query.Close;
-
-    Trans.Commit;
   except
     on E: Exception do
     begin
-      if Trans.Active then Trans.Rollback;
+      LogError('CreditService', 'GET_TOTAL_PAYMENTS_FAILED', 'operationId=' + IntToStr(operationId) + ' error=' + E.Message);
       FLastError := E.Message;
     end;
   end;
   Query.Free;
-  Trans.Free;
 end;
 
 function TCreditService.RegisterPayment(personId: Integer; operationId: Integer; amount: Real; payDate: TDateTime): Boolean;
 var
-  Trans: TSQLTransaction;
   Query: TSQLQuery;
 begin
   Result := False;
@@ -585,14 +506,8 @@ begin
   LogInfo('CreditService', 'PAYMENT_ATTEMPT',
     'personId=' + IntToStr(personId) + ' operationId=' + IntToStr(operationId));
 
-  Trans := TSQLTransaction.Create(nil);
-  Query := TSQLQuery.Create(nil);
+  Query := NewQuery;
   try
-    Trans.DataBase := DataModule1.SQLite3Connection1;
-    Query.DataBase := DataModule1.SQLite3Connection1;
-    Query.Transaction := Trans;
-    Trans.StartTransaction;
-
     Query.SQL.Text :=
       'INSERT INTO pay (person, val, date, operation) VALUES (:person, :val, :paydate, :operation)';
     Query.Params.ParamByName('person').AsInteger := personId;
@@ -601,37 +516,30 @@ begin
     Query.Params.ParamByName('operation').AsInteger := operationId;
     Query.ExecSQL;
 
-    Trans.Commit;
+    DataModule1.SQLite3Connection1.Transaction.Commit;
     Result := True;
     LogSecurity('CreditService', 'PAYMENT_REGISTERED',
       'personId=' + IntToStr(personId) + ' operationId=' + IntToStr(operationId) + ' date=' + DateToStr(payDate));
   except
     on E: Exception do
     begin
-      if Trans.Active then Trans.Rollback;
+      if DataModule1.SQLite3Connection1.Transaction.Active then
+        DataModule1.SQLite3Connection1.Transaction.Rollback;
       FLastError := 'Error al guardar el pago: ' + E.Message;
       LogError('CreditService', 'PAYMENT_FAILED',
         'personId=' + IntToStr(personId) + ' operationId=' + IntToStr(operationId) + ' error=' + E.Message);
     end;
   end;
   Query.Free;
-  Trans.Free;
 end;
 
 function TCreditService.GetTotalOutstandingDebt: Real;
 var
-  Trans: TSQLTransaction;
   Query: TSQLQuery;
 begin
   Result := 0;
-  Trans := TSQLTransaction.Create(nil);
-  Query := TSQLQuery.Create(nil);
+  Query := NewQuery;
   try
-    Trans.DataBase := DataModule1.SQLite3Connection1;
-    Query.DataBase := DataModule1.SQLite3Connection1;
-    Query.Transaction := Trans;
-    Trans.StartTransaction;
-
     Query.SQL.Text :=
       'SELECT COALESCE(SUM(debt_balance), 0) AS total_debt FROM ( ' +
       '  SELECT ' +
@@ -658,17 +566,14 @@ begin
     if not Query.EOF then
       Result := Query.FieldByName('total_debt').AsFloat;
     Query.Close;
-
-    Trans.Commit;
   except
     on E: Exception do
     begin
-      if Trans.Active then Trans.Rollback;
+      LogError('CreditService', 'GET_TOTAL_OUTSTANDING_DEBT_FAILED', 'error=' + E.Message);
       FLastError := E.Message;
     end;
   end;
   Query.Free;
-  Trans.Free;
 end;
 
 function TCreditService.GetLastError: String;

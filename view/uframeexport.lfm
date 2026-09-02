@@ -70,10 +70,19 @@ object FrameExport: TFrameExport
     Left = 16
     Height = 35
     Top = 176
-    Width = 120
-    Caption = 'Export'
+    Width = 200
+    Caption = 'Update Web Catalog'
     OnClick = btnExportClick
     TabOrder = 6
+  end
+  object btnPublishInstagram: TBitBtn
+    Left = 232
+    Height = 35
+    Top = 176
+    Width = 200
+    Caption = 'Instagram Publication'
+    OnClick = btnPublishInstagramClick
+    TabOrder = 7
   end
   object lblStatus: TLabel
     Left = 16
@@ -82,5 +91,27 @@ object FrameExport: TFrameExport
     Width = 608
     Anchors = [akTop, akLeft, akRight]
     Caption = ''
+  end
+  object ProgressBar: TProgressBar
+    Left = 16
+    Height = 20
+    Top = 256
+    Width = 608
+    Anchors = [akTop, akLeft, akRight]
+    Min = 0
+    Max = 100
+    Position = 0
+    TabOrder = 8
+    Visible = False
+  end
+  object MemoLog: TMemo
+    Left = 16
+    Height = 180
+    Top = 288
+    Width = 608
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ReadOnly = True
+    ScrollBars = ssAutoVertical
+    TabOrder = 9
   end
 end

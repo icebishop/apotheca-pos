@@ -1,0 +1,74 @@
+object FormPublishPreview: TFormPublishPreview
+  Left = 300
+  Height = 470
+  Top = 200
+  Width = 560
+  BorderStyle = bsDialog
+  Caption = 'Confirm Instagram Publication'
+  ClientHeight = 470
+  ClientWidth = 560
+  Position = poMainFormCenter
+  LCLVersion = '0.9.28.2'
+  object lblHeader: TLabel
+    Left = 16
+    Height = 20
+    Top = 12
+    Width = 528
+    Caption = 'The following items will be published:'
+    ParentColor = False
+  end
+  object GridItems: TStringGrid
+    Left = 16
+    Height = 340
+    Top = 40
+    Width = 528
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
+    RowCount = 1
+    TabOrder = 0
+    OnCheckboxToggled = GridItemsCheckboxToggled
+  end
+  object btnSelectAll: TBitBtn
+    Left = 16
+    Height = 30
+    Top = 388
+    Width = 100
+    Anchors = [akLeft, akBottom]
+    Caption = 'Select all'
+    OnClick = btnSelectAllClick
+    TabOrder = 1
+  end
+  object btnSelectNone: TBitBtn
+    Left = 124
+    Height = 30
+    Top = 388
+    Width = 100
+    Anchors = [akLeft, akBottom]
+    Caption = 'Select none'
+    OnClick = btnSelectNoneClick
+    TabOrder = 2
+  end
+  object btnPublish: TBitBtn
+    Left = 320
+    Height = 34
+    Top = 426
+    Width = 110
+    Anchors = [akRight, akBottom]
+    Caption = 'Publish'
+    Default = True
+    OnClick = btnPublishClick
+    TabOrder = 3
+  end
+  object btnCancel: TBitBtn
+    Left = 436
+    Height = 34
+    Top = 426
+    Width = 108
+    Anchors = [akRight, akBottom]
+    Cancel = True
+    Caption = 'Cancel'
+    OnClick = btnCancelClick
+    TabOrder = 4
+  end
+end

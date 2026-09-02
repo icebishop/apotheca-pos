@@ -36,7 +36,7 @@ implementation
          Self.getQuery().SQL.Text := 'select id from product ';
          if name <> '' then
          begin
-            Self.getQuery().SQL.Text := Self.getQuery().SQL.Text + 'where name like :name';
+            Self.getQuery().SQL.Text := Self.getQuery().SQL.Text + 'where name like :name order by product.name';
             Self.getQuery().Params.ParamByName('name').AsString := name;
          end;
          Self.getQuery().Open;
@@ -131,13 +131,27 @@ implementation
                  product.setId(Self.getQuery().FieldByName('id').AsInteger);
                  Self.getQuery().Next;
             end;
+            { Guard against a mis-configured schema where the id is not a rowid
+              alias (would yield 0/NULL and corrupt later operations). }
+            if product.getId() <= 0 then
+            begin
+              DebugLn('[TDataProducto.new] ERROR: insert did not return a valid id '
+                + '(product.id is likely not INTEGER PRIMARY KEY)');
+              new := 0;
+              Exit;
+            end;
+
             dataBalance := TDataBalance.Create(Self.getConnection());
             product.getBalance().setId(dataBalance.new(product));
             new := product.getId();
 
 
          except
-               new := 0;
+            on E: Exception do
+            begin
+              DebugLn('[TDataProducto.new] ERROR: ' + E.Message);
+              new := 0;
+            end;
          end;
     end;
 

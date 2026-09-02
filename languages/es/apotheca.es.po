@@ -2,6 +2,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
 
 #: uresourcestring.rs_fmaindeletecustomer
 msgid "Delete Customer"
@@ -68,7 +69,6 @@ msgid "New Purchase"
 msgstr "Nueva Compra"
 
 #: uresourcestring.rs_fmainnewsale
-msgctxt "uresourcestring.rs_fmainnewsale"
 msgid "New Sale"
 msgstr "Nueva Venta"
 
@@ -110,15 +110,15 @@ msgstr "Buscar Productos"
 
 #: uresourcestring.rs_lmaxstock
 msgid "Max Stock"
-msgstr "Existencia Max"
+msgstr "Stock Máximo"
 
 #: uresourcestring.rs_lminstock
 msgid "Min Stock"
-msgstr "Existencia Min"
+msgstr "Stock Mínimo"
 
 #: uresourcestring.rs_lname
 msgid "Name"
-msgstr "Nombres"
+msgstr "Nombre"
 
 #: uresourcestring.rs_lproducts
 msgid "Products"
@@ -141,13 +141,12 @@ msgid "Total"
 msgstr "Total"
 
 #: uresourcestring.rs_msgcustomer
-msgctxt "uresourcestring.rs_msgcustomer"
 msgid "Customer"
 msgstr "Cliente"
 
 #: uresourcestring.rs_msgmorethan0
 msgid "%sValue must be greater than 0%s"
-msgstr "%sEl Valor debe ser mayor que 0%s"
+msgstr "%sEl valor debe ser mayor que 0%s"
 
 #: uresourcestring.rs_msgsupplier
 msgid "Supplier"
@@ -155,7 +154,7 @@ msgstr "Proveedor"
 
 #: uresourcestring.rs_msgvalcbox
 msgid "Are you sure you want to perform this operation?"
-msgstr "Esta seguro de realizar la operación"
+msgstr "¿Está seguro de que desea realizar esta operación?"
 
 #: uresourcestring.rs_msgvaldate
 msgid "%sYou must select a date"
@@ -171,15 +170,15 @@ msgstr "La lista de productos tiene los siguientes errores: %s"
 
 #: uresourcestring.rs_msgvalnumeric
 msgid "%sValue must be numeric%s"
-msgstr "%sEl Valor debe ser numérico%s"
+msgstr "%sEl valor debe ser numérico%s"
 
 #: uresourcestring.rs_msgvalnumitem
 msgid "%sItem No%s"
-msgstr "%sItem No%s"
+msgstr "%sÍtem No%s"
 
 #: uresourcestring.rs_msgvalpaycust
 msgid "%sPayment must have a customer%s"
-msgstr "%sEl Pago debe tener un cliente%s"
+msgstr "%sEl pago debe tener un cliente%s"
 
 #: uresourcestring.rs_msgvalpaydate
 msgid "%sPayment must have a date%s"
@@ -187,15 +186,15 @@ msgstr "%sEl pago debe tener una fecha%s"
 
 #: uresourcestring.rs_msgvalpayvalue
 msgid "%sPayment must be greater than 0%s"
-msgstr "%sEl Pago debe ser mayor que 0%s"
+msgstr "%sEl pago debe ser mayor que 0%s"
 
 #: uresourcestring.rs_msgvalperaddress
 msgid "%s%s must have an address%s"
-msgstr "%sEl %s debe tener una dirección%s"
+msgstr "%s%s debe tener una dirección%s"
 
 #: uresourcestring.rs_msgvalpername
 msgid "%s%s must have a name%s"
-msgstr "%sEl %s debe tener un nombre%s"
+msgstr "%s%s debe tener un nombre%s"
 
 #: uresourcestring.rs_msgvalperson
 msgid "%sYou must select a Supplier/Customer"
@@ -258,44 +257,40 @@ msgid "&Products"
 msgstr "&Productos"
 
 #: uresourcestring.rs_fmainstringgrid100
-msgctxt "uresourcestring.rs_fmainstringgrid100"
 msgid "ID"
 msgstr "ID"
 
 #: uresourcestring.rs_fmainstringgrid110
-msgctxt "uresourcestring.rs_fmainstringgrid110"
 msgid "Name"
 msgstr "Nombre"
 
 #: uresourcestring.rs_fmainstringgrid120
 msgid "Last Purchase"
-msgstr "Ultima Compra"
+msgstr "Última Compra"
 
 #: uresourcestring.rs_fmainstringgrid130
 msgid "Last Payment"
-msgstr "Ultimo Pago"
+msgstr "Último Pago"
 
 #: uresourcestring.rs_fmainstringgrid140
 msgid "Paid"
-msgstr "Abonado"
+msgstr "Pagado"
 
 #: uresourcestring.rs_fmainstringgrid150
 msgid "Balance"
 msgstr "Saldo"
 
 #: uresourcestring.rs_fmainstringgrid200
-msgctxt "uresourcestring.rs_fmainstringgrid200"
 msgid "ID"
 msgstr "ID"
 
 #: uresourcestring.rs_fmainstringgrid210
-msgctxt "uresourcestring.rs_fmainstringgrid210"
 msgid "Name"
 msgstr "Nombre"
 
 #: uresourcestring.rs_fmainstringgrid220
 msgid "Unit Price"
-msgstr "Valor U"
+msgstr "Precio Unitario"
 
 #: uresourcestring.rs_fmainstringgrid230
 msgid "Quantity"
@@ -311,19 +306,19 @@ msgstr "Precio"
 
 #: uresourcestring.rs_fmainstringgrid260
 msgid "Sale Price"
-msgstr "Precio Venta"
+msgstr "Precio de Venta"
 
 #: uresourcestring.rs_fmainmenuhelp
 msgid "&Help"
-msgstr "&Ayuda"
+msgstr "A&yuda"
 
 #: uresourcestring.rs_fmainmenuabout
 msgid "&About"
-msgstr "A&cerca de"
+msgstr "&Acerca de"
 
 #: uresourcestring.rs_fmainmenuhelpindex
 msgid "&Help Index"
-msgstr "&Indice de Ayuda"
+msgstr "Índice de A&yuda"
 
 #: uresourcestring.rs_find
 msgid "&Find"
@@ -331,7 +326,7 @@ msgstr "&Buscar"
 
 #: uresourcestring.rs_msgvalpertel
 msgid "%s%s must have a telephone number%s"
-msgstr "%sEl %s debe tener un numero telefónico%s"
+msgstr "%s%s debe tener un número de teléfono%s"
 
 #: uresourcestring.rs_msgvalprodmaxstock
 msgid "%sMax stock must be greater than min stock"
@@ -339,19 +334,19 @@ msgstr "%sEl stock máximo debe ser mayor que el stock mínimo"
 
 #: uresourcestring.rs_msgvalprodminstock
 msgid "%sProduct must have a minimum stock"
-msgstr "%sEl producto debe tener stock minimo"
+msgstr "%sEl producto debe tener un stock mínimo"
 
 #: uresourcestring.rs_msgvalprodname
 msgid "%sProduct must have a Name"
-msgstr "%sEl Producto debe tener un Nombre"
+msgstr "%sEl producto debe tener un Nombre"
 
 #: uresourcestring.rs_msgvalprodstock
 msgid "%sOnly %s units of product %s are available"
-msgstr "%s Solo Existen %s unidades del producto %s"
+msgstr "%sSolo hay %s unidades disponibles del producto %s"
 
 #: uresourcestring.rs_msgwarning
 msgid "Warning"
-msgstr "Atención"
+msgstr "Advertencia"
 
 #: uresourcestring.rs_ok
 msgid "&OK"
@@ -362,7 +357,6 @@ msgid "&Cancel"
 msgstr "&Cancelar"
 
 #: uresourcestring.rs_new
-msgctxt "uresourcestring.rs_new"
 msgid "&New"
 msgstr "&Nuevo"
 
@@ -376,11 +370,11 @@ msgstr "&Eliminar"
 
 #: uresourcestring.rs_objectnotsave
 msgid "Object was not saved"
-msgstr "El objeto no ha sido Guardado"
+msgstr "El objeto no fue guardado"
 
 #: uresourcestring.rs_objectsave
 msgid "Object was saved"
-msgstr "El objeto ha sido Guardado"
+msgstr "El objeto fue guardado"
 
 #: uresourcestring.rs_message
 msgid "Message"
@@ -391,12 +385,10 @@ msgid "Error"
 msgstr "Error"
 
 #: uresourcestring.rs_tabcustomer
-msgctxt "uresourcestring.rs_tabcustomer"
 msgid "Customers"
 msgstr "Clientes"
 
 #: uresourcestring.rs_tabproduct
-msgctxt "uresourcestring.rs_tabproduct"
 msgid "Products"
 msgstr "Productos"
 
@@ -425,7 +417,6 @@ msgid "Find Transaction"
 msgstr "Buscar Transacción"
 
 #: uresourcestring.rs_dialogpurchase
-msgctxt "uresourcestring.rs_dialogpurchase"
 msgid "Purchases"
 msgstr "Compras"
 
@@ -435,22 +426,21 @@ msgstr "%sProducto: %s"
 
 #: uresourcestring.rs_itemvalidatorproductselect
 msgid "%s You must select a product"
-msgstr "%s Debe Seleccionar un producto"
+msgstr "%s Debe seleccionar un producto"
 
 #: uresourcestring.rs_itemvalidatorproductcost
 msgid "%s You must specify the product cost"
-msgstr "%s Debe indicar el costo del producto"
+msgstr "%s Debe especificar el costo del producto"
 
 #: uresourcestring.rs_itemvalidatorproductprice
 msgid "%s You must specify the product price"
-msgstr "%s Debe indicar el precio del producto"
+msgstr "%s Debe especificar el precio del producto"
 
 #: uresourcestring.rs_itemvalidatorproductstock
 msgid "%s You must specify the product quantity"
-msgstr "%s Debe indicar la cantidad del producto"
+msgstr "%s Debe especificar la cantidad del producto"
 
 #: uresourcestring.rs_nav_sales
-msgctxt "uresourcestring.rs_nav_sales"
 msgid "Sales"
 msgstr "Ventas"
 
@@ -459,12 +449,10 @@ msgid "Credits"
 msgstr "Créditos"
 
 #: uresourcestring.rs_nav_purchases
-msgctxt "uresourcestring.rs_nav_purchases"
 msgid "Purchases"
 msgstr "Compras"
 
 #: uresourcestring.rs_nav_products
-msgctxt "uresourcestring.rs_nav_products"
 msgid "Products"
 msgstr "Productos"
 
@@ -497,16 +485,14 @@ msgid "Total: $%s"
 msgstr "Total: $%s"
 
 #: uresourcestring.rs_pos_grid_product
-msgctxt "uresourcestring.rs_pos_grid_product"
 msgid "Product"
 msgstr "Producto"
 
 #: uresourcestring.rs_pos_grid_price
 msgid "Unit Price"
-msgstr "Precio U"
+msgstr "Precio Unitario"
 
 #: uresourcestring.rs_pos_grid_qty
-msgctxt "uresourcestring.rs_pos_grid_qty"
 msgid "Quantity"
 msgstr "Cantidad"
 
@@ -527,27 +513,22 @@ msgid "You must select a customer for credit sales"
 msgstr "Debe seleccionar un cliente para ventas a crédito"
 
 #: uresourcestring.rs_purchase_title
-msgctxt "uresourcestring.rs_purchase_title"
 msgid "Purchases"
 msgstr "Compras"
 
 #: uresourcestring.rs_purchase_supplier
-msgctxt "uresourcestring.rs_purchase_supplier"
 msgid "Supplier"
 msgstr "Proveedor"
 
 #: uresourcestring.rs_purchase_date
-msgctxt "uresourcestring.rs_purchase_date"
 msgid "Date"
 msgstr "Fecha"
 
 #: uresourcestring.rs_purchase_add
-msgctxt "uresourcestring.rs_purchase_add"
 msgid "&Add"
 msgstr "&Agregar"
 
 #: uresourcestring.rs_purchase_delete_item
-msgctxt "uresourcestring.rs_purchase_delete_item"
 msgid "&Delete"
 msgstr "&Eliminar"
 
@@ -568,7 +549,6 @@ msgid "You must add at least one complete item"
 msgstr "Debe agregar al menos un ítem completo"
 
 #: uresourcestring.rs_purchase_grid_product
-msgctxt "uresourcestring.rs_purchase_grid_product"
 msgid "Product"
 msgstr "Producto"
 
@@ -586,19 +566,17 @@ msgstr "%% Utilidad"
 
 #: uresourcestring.rs_purchase_grid_unitcost
 msgid "Unit Cost"
-msgstr "Costo Unit."
+msgstr "Costo Unitario"
 
 #: uresourcestring.rs_purchase_grid_price
-msgctxt "uresourcestring.rs_purchase_grid_price"
 msgid "Sale Price"
-msgstr "Precio Venta"
+msgstr "Precio de Venta"
 
 #: uresourcestring.rs_products_search_hint
 msgid "Search by name..."
 msgstr "Buscar por nombre..."
 
 #: uresourcestring.rs_products_btn_new
-msgctxt "uresourcestring.rs_products_btn_new"
 msgid "&New"
 msgstr "&Nuevo"
 
@@ -611,60 +589,50 @@ msgid "De&lete"
 msgstr "E&liminar"
 
 #: uresourcestring.rs_products_grid_name
-msgctxt "uresourcestring.rs_products_grid_name"
 msgid "Name"
 msgstr "Nombre"
 
 #: uresourcestring.rs_products_grid_stock
 msgid "Stock"
-msgstr "Existencia"
+msgstr "Stock"
 
 #: uresourcestring.rs_products_grid_cost
-msgctxt "uresourcestring.rs_products_grid_cost"
 msgid "Cost"
 msgstr "Costo"
 
 #: uresourcestring.rs_products_grid_price
-msgctxt "uresourcestring.rs_products_grid_price"
 msgid "Price"
 msgstr "Precio"
 
 #: uresourcestring.rs_products_delete_confirm
 msgid "Delete Product: %s?"
-msgstr "Eliminar Producto: %s?"
+msgstr "¿Eliminar Producto: %s?"
 
 #: uresourcestring.rs_people_tab_customers
-msgctxt "uresourcestring.rs_people_tab_customers"
 msgid "Customers"
 msgstr "Clientes"
 
 #: uresourcestring.rs_people_tab_suppliers
-msgctxt "uresourcestring.rs_people_tab_suppliers"
 msgid "Suppliers"
 msgstr "Proveedores"
 
 #: uresourcestring.rs_people_search_hint
-msgctxt "uresourcestring.rs_people_search_hint"
 msgid "Search by name..."
 msgstr "Buscar por nombre..."
 
 #: uresourcestring.rs_people_btn_new
-msgctxt "uresourcestring.rs_people_btn_new"
 msgid "&New"
 msgstr "&Nuevo"
 
 #: uresourcestring.rs_people_btn_edit
-msgctxt "uresourcestring.rs_people_btn_edit"
 msgid "&Edit"
 msgstr "&Editar"
 
 #: uresourcestring.rs_people_btn_delete
-msgctxt "uresourcestring.rs_people_btn_delete"
 msgid "De&lete"
 msgstr "E&liminar"
 
 #: uresourcestring.rs_people_grid_name
-msgctxt "uresourcestring.rs_people_grid_name"
 msgid "Name"
 msgstr "Nombre"
 
@@ -673,7 +641,6 @@ msgid "Phone"
 msgstr "Teléfono"
 
 #: uresourcestring.rs_people_grid_address
-msgctxt "uresourcestring.rs_people_grid_address"
 msgid "Address"
 msgstr "Dirección"
 
@@ -703,10 +670,9 @@ msgstr "Ingresos y Utilidad"
 
 #: uresourcestring.rs_reports_tab_valuation
 msgid "Inventory Valuation"
-msgstr "Valoración Inventario"
+msgstr "Valoración de Inventario"
 
 #: uresourcestring.rs_reports_tab_purchases
-msgctxt "uresourcestring.rs_reports_tab_purchases"
 msgid "Purchases"
 msgstr "Compras"
 
@@ -714,12 +680,43 @@ msgstr "Compras"
 msgid "Report exported successfully to: %s"
 msgstr "Reporte exportado exitosamente a: %s"
 
+#: uresourcestring.rs_reports_tab_units_sold
+msgid "Units Sold"
+msgstr "Unidades Vendidas"
+
+#: uresourcestring.rs_reports_units_col_product
+msgid "Product"
+msgstr "Producto"
+
+#: uresourcestring.rs_reports_units_col_units
+msgid "Units Sold"
+msgstr "Unidades Vendidas"
+
+#: uresourcestring.rs_reports_units_col_revenue
+msgid "Revenue"
+msgstr "Ingresos"
+
+#: uresourcestring.rs_reports_units_col_cost
+msgid "Cost"
+msgstr "Costo"
+
+#: uresourcestring.rs_reports_units_col_utility
+msgid "Utility"
+msgstr "Utilidad"
+
+#: uresourcestring.rs_reports_units_total
+msgid "TOTAL"
+msgstr "TOTAL"
+
+#: uresourcestring.rs_reports_export_error
+msgid "Error exporting CSV: %s"
+msgstr "Error al exportar CSV: %s"
+
 #: uresourcestring.rs_credits_title
 msgid "Debtors"
 msgstr "Deudores"
 
 #: uresourcestring.rs_credits_search_hint
-msgctxt "uresourcestring.rs_credits_search_hint"
 msgid "Search by name..."
 msgstr "Buscar por nombre..."
 
@@ -728,40 +725,34 @@ msgid "Total Debt: $%s"
 msgstr "Deuda Total: $%s"
 
 #: uresourcestring.rs_credits_grid_name
-msgctxt "uresourcestring.rs_credits_grid_name"
 msgid "Name"
 msgstr "Nombre"
 
 #: uresourcestring.rs_credits_grid_sales
 msgid "Credit Sales"
-msgstr "Ventas Crédito"
+msgstr "Ventas a Crédito"
 
 #: uresourcestring.rs_credits_grid_payments
-msgctxt "uresourcestring.rs_credits_grid_payments"
 msgid "Payments"
 msgstr "Pagos"
 
 #: uresourcestring.rs_credits_grid_balance
-msgctxt "uresourcestring.rs_credits_grid_balance"
 msgid "Balance"
 msgstr "Saldo"
 
 #: uresourcestring.rs_credits_tab_sales
 msgid "Credit Sales"
-msgstr "Ventas Crédito"
+msgstr "Ventas a Crédito"
 
 #: uresourcestring.rs_credits_tab_payments
-msgctxt "uresourcestring.rs_credits_tab_payments"
 msgid "Payments"
 msgstr "Pagos"
 
 #: uresourcestring.rs_credits_sale_date
-msgctxt "uresourcestring.rs_credits_sale_date"
 msgid "Date"
 msgstr "Fecha"
 
 #: uresourcestring.rs_credits_sale_total
-msgctxt "uresourcestring.rs_credits_sale_total"
 msgid "Total"
 msgstr "Total"
 
@@ -770,7 +761,6 @@ msgid "Operation ID"
 msgstr "ID Operación"
 
 #: uresourcestring.rs_credits_pay_date
-msgctxt "uresourcestring.rs_credits_pay_date"
 msgid "Date"
 msgstr "Fecha"
 
@@ -808,7 +798,7 @@ msgstr "Ingrese un monto válido"
 
 #: uresourcestring.rs_credits_amount_zero
 msgid "Amount must be greater than zero"
-msgstr "El monto debe ser mayor a cero"
+msgstr "El monto debe ser mayor que cero"
 
 #: uresourcestring.rs_credits_pay_success
 msgid "Payment registered successfully"
@@ -818,133 +808,386 @@ msgstr "Pago registrado exitosamente"
 msgid "Credit"
 msgstr "Crédito"
 
-#: uresourcestring.rs_reports_tab_units_sold
-msgid "Units Sold"
-msgstr "Unidades Vendidas"
-
-#: uresourcestring.rs_reports_units_col_product
-msgctxt "uresourcestring.rs_reports_units_col_product"
-msgid "Product"
-msgstr "Producto"
-
-#: uresourcestring.rs_reports_units_col_units
-msgctxt "uresourcestring.rs_reports_units_col_units"
-msgid "Units Sold"
-msgstr "Unidades Vendidas"
-
-#: uresourcestring.rs_reports_units_col_revenue
-msgid "Revenue"
-msgstr "Ingresos"
-
-#: uresourcestring.rs_reports_units_col_cost
-msgctxt "uresourcestring.rs_reports_units_col_cost"
-msgid "Cost"
-msgstr "Costo"
-
-#: uresourcestring.rs_reports_units_col_utility
-msgid "Utility"
-msgstr "Utilidad"
-
-#: uresourcestring.rs_reports_units_total
-msgid "TOTAL"
-msgstr "TOTAL"
-
-#: uresourcestring.rs_reports_export_error
-msgid "Error exporting CSV: %s"
-msgstr "Error al exportar CSV: %s"
-
 #: uresourcestring.rs_nav_returns
-msgid "Returns"
+msgid "Devoluciones"
 msgstr "Devoluciones"
 
 #: uresourcestring.rs_returns_title
-msgid "Returns / Losses"
+msgid "Devoluciones / Pérdidas"
 msgstr "Devoluciones / Pérdidas"
 
 #: uresourcestring.rs_returns_op_type
-msgid "Operation Type"
+msgid "Tipo de Operación"
 msgstr "Tipo de Operación"
 
 #: uresourcestring.rs_returns_person
-msgid "Person"
+msgid "Persona"
 msgstr "Persona"
 
 #: uresourcestring.rs_returns_date
-msgid "Date"
+msgid "Fecha"
 msgstr "Fecha"
 
 #: uresourcestring.rs_returns_add
-msgid "Add Item"
-msgstr "Agregar Ítem"
+msgid "&Agregar"
+msgstr "&Agregar"
 
 #: uresourcestring.rs_returns_delete
-msgid "Delete Item"
-msgstr "Eliminar Ítem"
+msgid "&Eliminar"
+msgstr "&Eliminar"
 
 #: uresourcestring.rs_returns_save
-msgid "Save"
-msgstr "Guardar"
+msgid "&Guardar"
+msgstr "&Guardar"
 
 #: uresourcestring.rs_returns_rebuild
-msgid "Rebuild Balances"
+msgid "Reconstruir Saldos"
 msgstr "Reconstruir Saldos"
 
 #: uresourcestring.rs_returns_grid_product
-msgctxt "uresourcestring.rs_returns_grid_product"
-msgid "Product"
+msgid "Producto"
 msgstr "Producto"
 
 #: uresourcestring.rs_returns_grid_qty
-msgctxt "uresourcestring.rs_returns_grid_qty"
-msgid "Quantity"
+msgid "Cantidad"
 msgstr "Cantidad"
 
 #: uresourcestring.rs_returns_grid_cost
-msgid "Unit Cost"
+msgid "Costo Unitario"
 msgstr "Costo Unitario"
 
-#: uresourcestring.rs_returns_no_items
-msgid "You must add at least one item with a product"
-msgstr "Debe agregar al menos un ítem con un producto"
-
-#: uresourcestring.rs_returns_no_customer
-msgctxt "uresourcestring.rs_returns_no_customer"
-msgid "You must select a customer"
-msgstr "Debe seleccionar un cliente"
-
-#: uresourcestring.rs_returns_no_supplier
-msgctxt "uresourcestring.rs_returns_no_supplier"
-msgid "You must select a supplier"
-msgstr "Debe seleccionar un proveedor"
-
-#: uresourcestring.rs_returns_insufficient_stock
-msgid "Insufficient stock for: %s (available: %d)"
-msgstr "Stock insuficiente para: %s (disponible: %d)"
-
-#: uresourcestring.rs_returns_save_error
-msgid "Operation was not saved"
-msgstr "La operación no fue guardada"
-
-#: uresourcestring.rs_returns_save_success
-msgid "Operation saved successfully"
-msgstr "Operación guardada exitosamente"
-
-#: uresourcestring.rs_returns_rebuild_success
-msgid "Balances rebuilt successfully"
-msgstr "Saldos reconstruidos exitosamente"
-
-#: uresourcestring.rs_returns_rebuild_warning
-msgid "Some products have negative stock"
-msgstr "Algunos productos tienen stock negativo"
-
 #: uresourcestring.rs_returns_combo_devolution
-msgid "Customer Devolution"
+msgid "Devolución de Cliente"
 msgstr "Devolución de Cliente"
 
 #: uresourcestring.rs_returns_combo_loss
-msgid "Inventory Loss"
+msgid "Pérdida de Inventario"
 msgstr "Pérdida de Inventario"
 
 #: uresourcestring.rs_returns_combo_provider
-msgid "Return to Provider"
+msgid "Devolución a Proveedor"
 msgstr "Devolución a Proveedor"
+
+#: uresourcestring.rs_returns_no_items
+msgid "Debe agregar al menos un ítem con un producto"
+msgstr "Debe agregar al menos un ítem con un producto"
+
+#: uresourcestring.rs_returns_no_customer
+msgid "Debe seleccionar un cliente"
+msgstr "Debe seleccionar un cliente"
+
+#: uresourcestring.rs_returns_no_supplier
+msgid "Debe seleccionar un proveedor"
+msgstr "Debe seleccionar un proveedor"
+
+#: uresourcestring.rs_returns_insufficient_stock
+msgid "Stock insuficiente para: %s (disponible: %d)"
+msgstr "Stock insuficiente para: %s (disponible: %d)"
+
+#: uresourcestring.rs_returns_save_error
+msgid "La operación no fue guardada"
+msgstr "La operación no fue guardada"
+
+#: uresourcestring.rs_returns_save_success
+msgid "Operación guardada exitosamente"
+msgstr "Operación guardada exitosamente"
+
+#: uresourcestring.rs_returns_rebuild_success
+msgid "Saldos reconstruidos exitosamente"
+msgstr "Saldos reconstruidos exitosamente"
+
+#: uresourcestring.rs_returns_rebuild_warning
+msgid "Algunos productos tienen stock negativo después de reconstruir"
+msgstr "Algunos productos tienen stock negativo después de reconstruir"
+
+#: uresourcestring.rs_nav_export
+msgid "Export"
+msgstr "Exportar"
+
+#: uresourcestring.rs_nav_settings
+msgid "Settings"
+msgstr "Configuración"
+
+#: uresourcestring.rs_export_products
+msgid "Export Products"
+msgstr "Exportar Productos"
+
+#: uresourcestring.rs_export_services
+msgid "Export Services"
+msgstr "Exportar Servicios"
+
+#: uresourcestring.rs_export_browse
+msgid "Browse..."
+msgstr "Examinar..."
+
+#: uresourcestring.rs_export_update_catalog
+msgid "Update Web Catalog"
+msgstr "Actualizar Catálogo Web"
+
+#: uresourcestring.rs_export_publish_instagram
+msgid "Instagram Publication"
+msgstr "Publicación en Instagram"
+
+#: uresourcestring.rs_export_dlg_json_title
+msgid "Select JSON export file"
+msgstr "Seleccionar archivo JSON de exportación"
+
+#: uresourcestring.rs_export_dlg_json_filter
+msgid "JSON files (*.json)|*.json"
+msgstr "Archivos JSON (*.json)|*.json"
+
+#: uresourcestring.rs_export_dlg_dir_title
+msgid "Select image output directory"
+msgstr "Seleccionar carpeta de salida de imágenes"
+
+#: uresourcestring.rs_export_err_select_option
+msgid "Error: Select at least one export option (Products or Services)."
+msgstr "Error: Seleccione al menos una opción de exportación (Productos o Servicios)."
+
+#: uresourcestring.rs_export_complete
+msgid "Export complete: %d products, %d services exported."
+msgstr "Exportación completa: %d productos, %d servicios exportados."
+
+#: uresourcestring.rs_export_warn_no_image
+msgid "  WARNING: %d product(s) and %d service(s) have no image."
+msgstr "  ADVERTENCIA: %d producto(s) y %d servicio(s) sin imagen."
+
+#: uresourcestring.rs_export_dlg_missing_title
+msgid "Missing images"
+msgstr "Imágenes faltantes"
+
+#: uresourcestring.rs_export_dlg_missing_msg
+msgid "Export finished, but %d product(s) and %d service(s) were exported without an image.\n\nAssign images to these items (Products screen) for a complete catalog."
+msgstr "La exportación finalizó, pero %d producto(s) y %d servicio(s) se exportaron sin imagen.\n\nAsigne imágenes a estos elementos (pantalla de Productos) para un catálogo completo."
+
+#: uresourcestring.rs_export_err_prefix
+msgid "Error: %s"
+msgstr "Error: %s"
+
+#: uresourcestring.rs_pub_err_select_option
+msgid "Error: Select at least one option (Products or Services)."
+msgstr "Error: Seleccione al menos una opción (Productos o Servicios)."
+
+#: uresourcestring.rs_pub_nothing
+msgid "Nothing to publish: no new products or services."
+msgstr "Nada que publicar: no hay productos o servicios nuevos."
+
+#: uresourcestring.rs_pub_cancelled
+msgid "Publication cancelled (%d item(s) pending)."
+msgstr "Publicación cancelada (%d elemento(s) pendiente(s))."
+
+#: uresourcestring.rs_pub_none_selected
+msgid "No items selected; nothing published."
+msgstr "Ningún elemento seleccionado; no se publicó nada."
+
+#: uresourcestring.rs_pub_publishing
+msgid "Publishing %d selected item(s) to Instagram..."
+msgstr "Publicando %d elemento(s) seleccionado(s) en Instagram..."
+
+#: uresourcestring.rs_pub_result_ok
+msgid "Instagram Publication: %d published, %d skipped, %d failed."
+msgstr "Publicación en Instagram: %d publicados, %d omitidos, %d fallidos."
+
+#: uresourcestring.rs_pub_result_stopped
+msgid "Instagram Publication stopped (see log): %d published, %d skipped, %d failed."
+msgstr "Publicación en Instagram detenida (ver registro): %d publicados, %d omitidos, %d fallidos."
+
+#: uresourcestring.rs_pubpreview_title
+msgid "Confirm Instagram Publication"
+msgstr "Confirmar Publicación en Instagram"
+
+#: uresourcestring.rs_pubpreview_header
+msgid "The following items will be published:"
+msgstr "Se publicarán los siguientes elementos:"
+
+#: uresourcestring.rs_pubpreview_col_publish
+msgid "Publish"
+msgstr "Publicar"
+
+#: uresourcestring.rs_pubpreview_col_id
+msgid "Id"
+msgstr "Id"
+
+#: uresourcestring.rs_pubpreview_col_name
+msgid "Name"
+msgstr "Nombre"
+
+#: uresourcestring.rs_pubpreview_col_image
+msgid "Image"
+msgstr "Imagen"
+
+#: uresourcestring.rs_pubpreview_img_ok
+msgid "OK"
+msgstr "OK"
+
+#: uresourcestring.rs_pubpreview_img_missing
+msgid "MISSING"
+msgstr "FALTANTE"
+
+#: uresourcestring.rs_pubpreview_btn_publish
+msgid "Publish"
+msgstr "Publicar"
+
+#: uresourcestring.rs_pubpreview_btn_cancel
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: uresourcestring.rs_pubpreview_btn_select_all
+msgid "Select all"
+msgstr "Seleccionar todo"
+
+#: uresourcestring.rs_pubpreview_btn_select_none
+msgid "Select none"
+msgstr "Deseleccionar todo"
+
+#: uresourcestring.rs_pubpreview_selected
+msgid "%d of %d item(s) selected to publish to Instagram.%s"
+msgstr "%d de %d elemento(s) seleccionado(s) para publicar en Instagram.%s"
+
+#: uresourcestring.rs_pubpreview_warn_no_image
+msgid "  -  WARNING: %d item(s) have no image and cannot be published."
+msgstr "  -  ADVERTENCIA: %d elemento(s) sin imagen no se pueden publicar."
+
+#: uresourcestring.rs_settings_col_param
+msgid "Parameter"
+msgstr "Parámetro"
+
+#: uresourcestring.rs_settings_col_value
+msgid "Value"
+msgstr "Valor"
+
+#: uresourcestring.rs_settings_col_credential
+msgid "Credential"
+msgstr "Credencial"
+
+#: uresourcestring.rs_settings_col_desc
+msgid "Description"
+msgstr "Descripción"
+
+#: uresourcestring.rs_settings_select_hint
+msgid "(select a parameter)"
+msgstr "(seleccione un parámetro)"
+
+#: uresourcestring.rs_settings_yes
+msgid "Yes"
+msgstr "Sí"
+
+#: uresourcestring.rs_settings_no
+msgid "No"
+msgstr "No"
+
+#: uresourcestring.rs_settings_lbl_param
+msgid "Parameter:"
+msgstr "Parámetro:"
+
+#: uresourcestring.rs_settings_lbl_value
+msgid "Value:"
+msgstr "Valor:"
+
+#: uresourcestring.rs_settings_lbl_value_cred
+msgid "New value (credential, hidden):"
+msgstr "Nuevo valor (credencial, oculto):"
+
+#: uresourcestring.rs_settings_btn_save
+msgid "Save"
+msgstr "Guardar"
+
+#: uresourcestring.rs_settings_btn_refresh
+msgid "Refresh"
+msgstr "Actualizar"
+
+#: uresourcestring.rs_settings_msg_select_first
+msgid "Select a parameter first."
+msgstr "Seleccione un parámetro primero."
+
+#: uresourcestring.rs_settings_msg_cred_blank
+msgid "Enter a new value to change this credential (blank leaves it unchanged)."
+msgstr "Ingrese un nuevo valor para cambiar esta credencial (en blanco la deja sin cambios)."
+
+#: uresourcestring.rs_settings_msg_save_error
+msgid "Error saving: %s"
+msgstr "Error al guardar: %s"
+
+#: uresourcestring.rs_settings_msg_saved
+msgid "Saved: %s"
+msgstr "Guardado: %s"
+
+#: uresourcestring.rs_settings_msg_reloaded
+msgid "Reloaded."
+msgstr "Recargado."
+
+#: uresourcestring.rs_settings_msg_error
+msgid "Error: %s"
+msgstr "Error: %s"
+
+#: uresourcestring.rs_settings_db_changed
+msgid "Database changed and reconnected: %s"
+msgstr "Base de datos cambiada y reconectada: %s"
+
+#: uresourcestring.rs_settings_db_not_switched_status
+msgid "Saved, but could not switch database: %s"
+msgstr "Guardado, pero no se pudo cambiar la base de datos: %s"
+
+#: uresourcestring.rs_settings_db_not_switched_title
+msgid "Database not switched"
+msgstr "Base de datos no cambiada"
+
+#: uresourcestring.rs_settings_db_not_switched_msg
+msgid "The db.file value was saved, but the application could not connect to:\n%s\n\n%s\nStill using: %s"
+msgstr "El valor db.file fue guardado, pero la aplicación no pudo conectarse a:\n%s\n\n%s\nSe sigue usando: %s"
+
+#: uresourcestring.rs_product_lbl_original_price
+msgid "Original Price"
+msgstr "Precio Original"
+
+#: uresourcestring.rs_product_lbl_category
+msgid "Category"
+msgstr "Categoría"
+
+#: uresourcestring.rs_product_lbl_brand
+msgid "Brand"
+msgstr "Marca"
+
+#: uresourcestring.rs_product_lbl_condition
+msgid "Condition"
+msgstr "Condición"
+
+#: uresourcestring.rs_product_lbl_google_cat
+msgid "Google Category"
+msgstr "Categoría Google"
+
+#: uresourcestring.rs_product_chk_is_service
+msgid "Is Service"
+msgstr "Es Servicio"
+
+#: uresourcestring.rs_product_btn_select_image
+msgid "Select Image..."
+msgstr "Seleccionar Imagen..."
+
+#: uresourcestring.rs_product_group_preview
+msgid "Preview"
+msgstr "Vista Previa"
+
+#: uresourcestring.rs_product_dlg_png_title
+msgid "Select PNG image"
+msgstr "Seleccionar imagen PNG"
+
+#: uresourcestring.rs_product_dlg_png_filter
+msgid "PNG images (*.png)|*.png"
+msgstr "Imágenes PNG (*.png)|*.png"
+
+#: uresourcestring.rs_product_img_error
+msgid "Error: %s"
+msgstr "Error: %s"
+
+#: uresourcestring.rs_product_img_selected
+msgid "Image selected: %s"
+msgstr "Imagen seleccionada: %s"
+
+#: uresourcestring.rs_product_img_preview_error
+msgid "Preview error: %s"
+msgstr "Error de vista previa: %s"
+
+#: uresourcestring.rs_product_img_id
+msgid "Image ID: %d"
+msgstr "ID Imagen: %d"

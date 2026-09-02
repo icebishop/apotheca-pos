@@ -1,0 +1,90 @@
+object FrameSettings: TFrameSettings
+  Left = 0
+  Height = 480
+  Top = 0
+  Width = 640
+  ClientHeight = 480
+  ClientWidth = 640
+  TabOrder = 0
+  DesignLeft = 0
+  DesignTop = 0
+  object GridParams: TStringGrid
+    Left = 8
+    Height = 300
+    Top = 8
+    Width = 624
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ColCount = 4
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSelect, goSmoothScroll]
+    RowCount = 1
+    TabOrder = 0
+    OnSelection = GridParamsSelection
+  end
+  object PanelEdit: TPanel
+    Left = 8
+    Height = 120
+    Top = 316
+    Width = 624
+    Anchors = [akLeft, akRight, akBottom]
+    BevelOuter = bvNone
+    ClientHeight = 120
+    ClientWidth = 624
+    TabOrder = 1
+    object lblKey: TLabel
+      Left = 0
+      Height = 20
+      Top = 4
+      Width = 70
+      Caption = 'Parameter:'
+    end
+    object lblKeyValue: TLabel
+      Left = 80
+      Height = 20
+      Top = 4
+      Width = 200
+      Caption = '(select a parameter)'
+    end
+    object lblValue: TLabel
+      Left = 0
+      Height = 20
+      Top = 34
+      Width = 40
+      Caption = 'Value:'
+    end
+    object edtValue: TEdit
+      Left = 80
+      Height = 27
+      Top = 30
+      Width = 400
+      Anchors = [akTop, akLeft, akRight]
+      TabOrder = 0
+    end
+    object btnSave: TBitBtn
+      Left = 80
+      Height = 32
+      Top = 70
+      Width = 110
+      Caption = 'Save'
+      OnClick = btnSaveClick
+      TabOrder = 1
+    end
+    object btnRefresh: TBitBtn
+      Left = 200
+      Height = 32
+      Top = 70
+      Width = 110
+      Caption = 'Refresh'
+      OnClick = btnRefreshClick
+      TabOrder = 2
+    end
+  end
+  object lblStatus: TLabel
+    Left = 8
+    Height = 20
+    Top = 452
+    Width = 624
+    Anchors = [akLeft, akRight, akBottom]
+    Caption = ''
+  end
+end

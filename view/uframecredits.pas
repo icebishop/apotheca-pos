@@ -28,7 +28,7 @@ uses
   Classes, SysUtils, Forms, Controls, StdCtrls, Grids, Buttons, ExtCtrls,
   ComCtrls, Dialogs, EditBtn,
   UCreditService, UDebtorInfo, UCreditSaleInfo, UPay, UGridUtils,
-  UResourceString, LazLogger;
+  UResourceString, UDataModule, LazLogger;
 
 type
 
@@ -77,6 +77,9 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    { Reloads the credit data. Called when the frame is entered/shown so the
+      debtor and credit sales grids always reflect the current database state. }
+    procedure RefreshData;
   end;
 
 implementation
@@ -115,6 +118,21 @@ begin
   FreePaymentsList;
   FCreditService.Free;
   inherited Destroy;
+end;
+
+procedure TFrameCredits.RefreshData;
+begin
+  try
+    FSelectedPersonId := -1;
+    FSelectedOperationId := -1;
+    BtnRegisterPayment.Enabled := False;
+    EditSearch.Text := '';
+    RefreshDebtors;
+    RefreshCreditSales;
+    RefreshPayments;
+  except
+    on E: Exception do DebugLn('[TFrameCredits.RefreshData] ERROR: ' + E.Message);
+  end;
 end;
 
 procedure TFrameCredits.InitGrids;
@@ -156,6 +174,7 @@ var
   searchText: String;
 begin
   FreeDebtorsList;
+  DataModule1.EnsureTransaction;
 
   searchText := Trim(EditSearch.Text);
   if searchText = '' then
@@ -195,6 +214,7 @@ var
   saleInfo: TCreditSaleInfo;
 begin
   FreeCreditSalesList;
+  DataModule1.EnsureTransaction;
 
   if FSelectedPersonId < 0 then
   begin
@@ -234,6 +254,7 @@ var
   totalPayments: Real;
 begin
   FreePaymentsList;
+  DataModule1.EnsureTransaction;
 
   if FSelectedOperationId < 0 then
   begin

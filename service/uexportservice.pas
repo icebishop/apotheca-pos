@@ -25,7 +25,8 @@ unit UExportService;
 interface
 
 uses
-  Classes, SysUtils, sqlite3conn, UProduct, UJsonSerializer, UWebPConverter,
+  Classes, SysUtils, sqlite3conn, FPimage, FPReadPNG, FPWriteJPEG,
+  UProduct, UJsonSerializer, UWebPConverter,
   UPngValidator, UDataProduct, UDataImage, ULogger;
 
 type
@@ -33,16 +34,23 @@ type
     Success: Boolean;
     ProductCount: Integer;
     ServiceCount: Integer;
+    ProductsWithoutImage: Integer;
+    ServicesWithoutImage: Integer;
     ProductFile: String;
     ServiceFile: String;
     ErrorMessage: String;
   end;
+
+  { Progress callback: Current/Total items processed, plus a status/error line.
+    Total <= 0 means indeterminate. }
+  TExportProgress = procedure(Current, Total: Integer; const Msg: String) of object;
 
   TExportOptions = record
     ExportProducts: Boolean;
     ExportServices: Boolean;
     OutputFilePath: String;
     ImageOutputDir: String;
+    OnProgress: TExportProgress;  { optional; may be nil }
   end;
 
   TStringArray = array of String;
@@ -55,6 +63,9 @@ type
     function DeriveFilePaths(const BasePath: String; Both: Boolean): TStringArray;
     function QueryProducts(IsService: Boolean): TList;
     function ProcessImage(Product: TProduct; const ImageDir: String): String;
+    { Writes a JPEG copy of PNG image bytes to OutDir/NormalizedName.jpeg
+      (for Instagram, which only accepts JPEG). Returns True on success. }
+    function WriteJpeg(const PngData: TBytes; const OutDir, NormalizedName: String): Boolean;
     function SerializeProductList(Products: TList; const ImagePaths: array of String): String;
     function SerializeServiceList(Services: TList; const ImagePaths: array of String): String;
     function WriteJsonToFile(const FilePath: String; const JsonContent: String): Boolean;
@@ -117,6 +128,7 @@ var
   FilteredList: TList;
   i: Integer;
   Product: TProduct;
+  HasStock, HasImage: Boolean;
 begin
   FilteredList := TList.Create;
   DataProducto := TDataProducto.Create(FConnection);
@@ -127,8 +139,31 @@ begin
       for i := 0 to AllProducts.Count - 1 do
       begin
         Product := TProduct(AllProducts[i]);
-        if Product.getIsService() = IsService then
-          FilteredList.Add(Product);
+        if Product.getIsService() <> IsService then
+          Continue;
+
+        { Only export items with available stock AND an image (image from the
+          database). Items without stock or without an image are skipped. }
+        HasStock := (Product.getBalance() <> nil) and
+                    (Product.getBalance().getStock() > 0);
+        HasImage := Product.getImageRef() > 0;
+
+        if HasStock and HasImage then
+          FilteredList.Add(Product)
+        else
+        begin
+          if not HasStock then
+            LogWarn('TExportService', 'SKIP_NO_STOCK',
+              'Skipped from export (no stock) ID=' + IntToStr(Product.getId()) +
+              ' Name=' + Product.getName());
+          if not HasImage then
+            LogWarn('TExportService', 'SKIP_NO_IMAGE',
+              'Skipped from export (no image) ID=' + IntToStr(Product.getId()) +
+              ' Name=' + Product.getName());
+          { Free the product objects we are not keeping (find() owns them all;
+            we take ownership of the kept ones and free the rest here). }
+          Product.Free;
+        end;
       end;
       AllProducts.Free;
     end;
@@ -163,6 +198,12 @@ begin
 
     NormalizedName := TWebPConverter.NormalizeProductName(Product.getName());
 
+    { Write a JPEG copy alongside the WebP (Instagram publishing needs JPEG;
+      the web store uses WebP). Failure here is non-fatal for the catalog. }
+    if not WriteJpeg(ImageData, ImageDir, NormalizedName) then
+      LogWarn('TExportService', 'JPEG_WRITE_FAIL',
+        'Failed to write JPEG for product ID=' + IntToStr(Product.getId()));
+
     if FConverter.Convert(ImageData, ImageDir, NormalizedName) then
       Result := '/' + NormalizedName + '.webp'
     else
@@ -171,6 +212,79 @@ begin
         ' Error=' + FConverter.GetLastError());
   finally
     DataImage.getQuery().Free;
+  end;
+end;
+
+function TExportService.WriteJpeg(const PngData: TBytes;
+  const OutDir, NormalizedName: String): Boolean;
+const
+  MIN_ASPECT = 0.8;    { 4:5 portrait }
+  MAX_ASPECT = 1.91;   { 1.91:1 landscape }
+var
+  Img, Cropped: TFPMemoryImage;
+  Reader: TFPReaderPNG;
+  Writer: TFPWriterJPEG;
+  InStream: TBytesStream;
+  OutPath: String;
+  Ratio: Double;
+  NewW, NewH, Left, Top, X, Y: Integer;
+begin
+  Result := False;
+  if Length(PngData) = 0 then
+    Exit;
+  Img := TFPMemoryImage.Create(0, 0);
+  InStream := TBytesStream.Create(PngData);
+  Reader := TFPReaderPNG.Create;
+  Writer := TFPWriterJPEG.Create;
+  try
+    try
+      InStream.Position := 0;
+      Img.LoadFromStream(InStream, Reader);
+      if (Img.Width = 0) or (Img.Height = 0) then
+        Exit;
+
+      { Crop to Instagram's supported aspect-ratio range (4:5 .. 1.91:1) so the
+        deployed JPEG is accepted for publishing (avoids error 36003). }
+      Ratio := Img.Width / Img.Height;
+      NewW := Img.Width; NewH := Img.Height; Left := 0; Top := 0;
+      if Ratio < MIN_ASPECT then
+      begin
+        NewH := Round(Img.Width / MIN_ASPECT);
+        Top := (Img.Height - NewH) div 2;
+      end
+      else if Ratio > MAX_ASPECT then
+      begin
+        NewW := Round(Img.Height * MAX_ASPECT);
+        Left := (Img.Width - NewW) div 2;
+      end;
+
+      Writer.CompressionQuality := 85;
+      OutPath := IncludeTrailingPathDelimiter(OutDir) + NormalizedName + '.jpeg';
+      if (NewW = Img.Width) and (NewH = Img.Height) then
+        Img.SaveToFile(OutPath, Writer)
+      else
+      begin
+        Cropped := TFPMemoryImage.Create(NewW, NewH);
+        try
+          for Y := 0 to NewH - 1 do
+            for X := 0 to NewW - 1 do
+              Cropped.Colors[X, Y] := Img.Colors[Left + X, Top + Y];
+          Cropped.SaveToFile(OutPath, Writer);
+        finally
+          Cropped.Free;
+        end;
+      end;
+      Result := True;
+    except
+      on E: Exception do
+        LogError('TExportService', 'JPEG_CONVERT_FAIL',
+          'name=' + NormalizedName + ' error=' + E.Message);
+    end;
+  finally
+    Writer.Free;
+    Reader.Free;
+    InStream.Free;
+    Img.Free;
   end;
 end;
 
@@ -267,6 +381,8 @@ begin
   Result.Success := False;
   Result.ProductCount := 0;
   Result.ServiceCount := 0;
+  Result.ProductsWithoutImage := 0;
+  Result.ServicesWithoutImage := 0;
   Result.ProductFile := '';
   Result.ServiceFile := '';
   Result.ErrorMessage := '';
@@ -308,12 +424,28 @@ begin
   begin
     ProductList := QueryProducts(False);
     try
+      if Assigned(Options.OnProgress) then
+        Options.OnProgress(0, ProductList.Count, Format('Exporting %d products...',
+          [ProductList.Count]));
       SetLength(ProductImagePaths, ProductList.Count);
       for i := 0 to ProductList.Count - 1 do
       begin
         Product := TProduct(ProductList[i]);
         ImagePath := ProcessImage(Product, Options.ImageOutputDir);
         ProductImagePaths[i] := ImagePath;
+        if ImagePath = '' then
+        begin
+          Inc(Result.ProductsWithoutImage);
+          LogWarn('TExportService', 'PRODUCT_NO_IMAGE',
+            'Product exported without image ID=' + IntToStr(Product.getId()) +
+            ' Name=' + Product.getName());
+          if Assigned(Options.OnProgress) then
+            Options.OnProgress(i + 1, ProductList.Count,
+              'Image conversion failed: ' + Product.getName());
+        end
+        else if Assigned(Options.OnProgress) then
+          Options.OnProgress(i + 1, ProductList.Count,
+            'Exported product: ' + Product.getName());
       end;
 
       ProductJson := SerializeProductList(ProductList, ProductImagePaths);
@@ -334,12 +466,28 @@ begin
   begin
     ServiceList := QueryProducts(True);
     try
+      if Assigned(Options.OnProgress) then
+        Options.OnProgress(0, ServiceList.Count, Format('Exporting %d services...',
+          [ServiceList.Count]));
       SetLength(ServiceImagePaths, ServiceList.Count);
       for i := 0 to ServiceList.Count - 1 do
       begin
         Product := TProduct(ServiceList[i]);
         ImagePath := ProcessImage(Product, Options.ImageOutputDir);
         ServiceImagePaths[i] := ImagePath;
+        if ImagePath = '' then
+        begin
+          Inc(Result.ServicesWithoutImage);
+          LogWarn('TExportService', 'SERVICE_NO_IMAGE',
+            'Service exported without image ID=' + IntToStr(Product.getId()) +
+            ' Name=' + Product.getName());
+          if Assigned(Options.OnProgress) then
+            Options.OnProgress(i + 1, ServiceList.Count,
+              'Image conversion failed: ' + Product.getName());
+        end
+        else if Assigned(Options.OnProgress) then
+          Options.OnProgress(i + 1, ServiceList.Count,
+            'Exported service: ' + Product.getName());
       end;
 
       ServiceJson := SerializeServiceList(ServiceList, ServiceImagePaths);

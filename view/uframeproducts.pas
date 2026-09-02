@@ -79,11 +79,13 @@ procedure TFrameProducts.InitGrid;
 begin
   GridProducts.RowCount := 1;
   GridProducts.FixedRows := 1;
-  GridProducts.Cells[0, 0] := 'Nombre';
-  GridProducts.Cells[1, 0] := 'Existencia';
-  GridProducts.Cells[2, 0] := 'Costo';
-  GridProducts.Cells[3, 0] := 'Precio';
-  DistributeColumns(GridProducts, [40, 15, 20, 25]);
+  GridProducts.ColCount := 5;
+  GridProducts.Cells[0, 0] := 'ID';
+  GridProducts.Cells[1, 0] := 'Nombre';
+  GridProducts.Cells[2, 0] := 'Existencia';
+  GridProducts.Cells[3, 0] := 'Costo';
+  GridProducts.Cells[4, 0] := 'Precio';
+  DistributeColumns(GridProducts, [8, 37, 15, 20, 20]);
 end;
 
 procedure TFrameProducts.FreeProductList;
@@ -127,18 +129,19 @@ begin
         for I := 0 to FProductList.Count - 1 do
         begin
           Product := TProduct(FProductList[I]);
-          GridProducts.Cells[0, I + 1] := Product.getName();
+          GridProducts.Cells[0, I + 1] := IntToStr(Product.getId());
+          GridProducts.Cells[1, I + 1] := Product.getName();
           if Product.getBalance() <> nil then
           begin
-            GridProducts.Cells[1, I + 1] := IntToStr(Product.getBalance().getStock());
-            GridProducts.Cells[2, I + 1] := FormatFloat('0.00', Product.getBalance().getCost());
-            GridProducts.Cells[3, I + 1] := FormatFloat('0.00', Product.getBalance().getPrice());
+            GridProducts.Cells[2, I + 1] := IntToStr(Product.getBalance().getStock());
+            GridProducts.Cells[3, I + 1] := FormatFloat('0.00', Product.getBalance().getCost());
+            GridProducts.Cells[4, I + 1] := FormatFloat('0.00', Product.getBalance().getPrice());
           end
           else
           begin
-            GridProducts.Cells[1, I + 1] := '0';
-            GridProducts.Cells[2, I + 1] := '0.00';
+            GridProducts.Cells[2, I + 1] := '0';
             GridProducts.Cells[3, I + 1] := '0.00';
+            GridProducts.Cells[4, I + 1] := '0.00';
           end;
         end;
       end;

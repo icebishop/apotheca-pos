@@ -92,7 +92,7 @@ var
 begin
   balance := Product.getBalance();
 
-  idStr := '"p' + IntToStr(Product.getId()) + '"';
+  idStr := '"' + IntToStr(Product.getId()) + '"';
   nameStr := '"' + EscapeJsonString(Product.getName()) + '"';
   categoryStr := '"' + EscapeJsonString(Product.getCategory()) + '"';
   priceStr := IntToStr(RoundHalfUp(balance.getPrice()));
@@ -143,7 +143,7 @@ var
 begin
   balance := Product.getBalance();
 
-  idStr := '"s' + IntToStr(Product.getId()) + '"';
+  idStr := '"' + IntToStr(Product.getId()) + '"';
   nameStr := '"' + EscapeJsonString(Product.getName()) + '"';
   categoryStr := '"' + EscapeJsonString(Product.getCategory()) + '"';
   priceStr := IntToStr(RoundHalfUp(balance.getPrice()));

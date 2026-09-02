@@ -8,10 +8,10 @@ uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Buttons, ExtCtrls,
   ComCtrls, FileUtil,
   UFramePOS, UFramePurchase, UFrameProducts, UFramePeople, UFrameReports,
-  UFrameCredits, UFrameReturns, UFrameExport, UResourceString;
+  UFrameCredits, UFrameReturns, UFrameExport, UFrameSettings, UResourceString;
 
 type
-  TSectionType = (stPOS, stCredits, stPurchases, stProducts, stPeople, stReports, stReturns, stExport);
+  TSectionType = (stPOS, stCredits, stPurchases, stProducts, stPeople, stReports, stReturns, stExport, stSettings);
 
   { TFormPrincipal }
 
@@ -24,6 +24,7 @@ type
     BtnReports: TBitBtn;
     BtnReturns: TBitBtn;
     BtnExport: TBitBtn;
+    BtnSettings: TBitBtn;
     PanelSidebar: TPanel;
     PanelContent: TPanel;
     StatusBar: TStatusBar;
@@ -35,6 +36,7 @@ type
     procedure BtnReportsClick(Sender: TObject);
     procedure BtnReturnsClick(Sender: TObject);
     procedure BtnExportClick(Sender: TObject);
+    procedure BtnSettingsClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
     FFramePOS: TFramePOS;
@@ -45,6 +47,7 @@ type
     FFrameReports: TFrameReports;
     FFrameReturns: TFrameReturns;
     FFrameExport: TFrameExport;
+    FFrameSettings: TFrameSettings;
     FActiveFrame: TFrame;
     FActiveButton: TBitBtn;
     procedure CreateFrames;
@@ -94,7 +97,8 @@ begin
   BtnPeople.Caption := RS_NAV_PEOPLE;
   BtnReports.Caption := RS_NAV_REPORTS;
   BtnReturns.Caption := RS_NAV_RETURNS;
-  BtnExport.Caption := 'Export';
+  BtnExport.Caption := RS_NAV_EXPORT;
+  BtnSettings.Caption := RS_NAV_SETTINGS;
 
   { Load sidebar icons (24px white for dark background) }
   LoadButtonIcon(BtnPOS, 'ventas_24.png');
@@ -105,6 +109,7 @@ begin
   LoadButtonIcon(BtnReports, 'reportes_24.png');
   LoadButtonIcon(BtnReturns, 'devoluciones_24.png');
   LoadButtonIcon(BtnExport, 'export_24.png');
+  LoadButtonIcon(BtnSettings, 'settings_24.png');
 
   CreateFrames;
 
@@ -201,6 +206,11 @@ begin
   FFrameExport.Parent := PanelContent;
   FFrameExport.Align := alClient;
   FFrameExport.Visible := False;
+
+  FFrameSettings := TFrameSettings.Create(Self);
+  FFrameSettings.Parent := PanelContent;
+  FFrameSettings.Align := alClient;
+  FFrameSettings.Visible := False;
 end;
 
 procedure TFormPrincipal.NavigateTo(section: TSectionType);
@@ -217,11 +227,16 @@ begin
     stReports:   begin targetFrame := FFrameReports;   targetBtn := BtnReports; end;
     stReturns:   begin targetFrame := FFrameReturns;   targetBtn := BtnReturns; end;
     stExport:    begin targetFrame := FFrameExport;    targetBtn := BtnExport; end;
+    stSettings:  begin targetFrame := FFrameSettings;  targetBtn := BtnSettings; end;
   end;
 
   { Always refresh the products grid when clicking the Products button }
   if section = stProducts then
     FFrameProducts.RefreshGrid;
+
+  { Always refresh the credit data when clicking the Credits button }
+  if section = stCredits then
+    FFrameCredits.RefreshData;
 
   { No-op if already on the requested frame (after refresh above) }
   if FActiveFrame = targetFrame then
@@ -258,6 +273,7 @@ begin
   BtnReports.Color := COLOR_SIDEBAR;
   BtnReturns.Color := COLOR_SIDEBAR;
   BtnExport.Color := COLOR_SIDEBAR;
+  BtnSettings.Color := COLOR_SIDEBAR;
 
   { Highlight the active button }
   btn.Color := COLOR_ACTIVE;
@@ -302,6 +318,11 @@ end;
 procedure TFormPrincipal.BtnExportClick(Sender: TObject);
 begin
   NavigateTo(stExport);
+end;
+
+procedure TFormPrincipal.BtnSettingsClick(Sender: TObject);
+begin
+  NavigateTo(stSettings);
 end;
 
 initialization

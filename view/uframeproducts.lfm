@@ -5,18 +5,19 @@ object FrameProducts: TFrameProducts
   Width = 640
   ClientHeight = 480
   ClientWidth = 640
+  LCLVersion = '4.8.0.0'
   TabOrder = 0
-  DesignLeft = 0
-  DesignTop = 0
+  DesignLeft = 1917
+  DesignTop = -30
   object EditSearch: TEdit
     Left = 8
-    Height = 27
+    Height = 32
     Top = 12
     Width = 300
     Anchors = [akTop, akLeft, akRight]
-    OnChange = EditSearchChange
     TabOrder = 0
     TextHint = 'Buscar por nombre...'
+    OnChange = EditSearchChange
   end
   object GridProducts: TStringGrid
     Left = 8
@@ -24,46 +25,46 @@ object FrameProducts: TFrameProducts
     Top = 48
     Width = 624
     Anchors = [akTop, akLeft, akRight, akBottom]
-    ColCount = 4
     FixedCols = 0
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRowSelect, goSmoothScroll]
     RowCount = 2
     TabOrder = 1
     ColWidths = (
-      220
-      100
+      60
+      200
+      80
       130
       130
     )
   end
   object BtnAdd: TBitBtn
-    Left = 370
+    Left = 336
     Height = 30
-    Top = 10
+    Top = 12
     Width = 90
     Anchors = [akTop, akRight]
     Caption = '&Nuevo'
-    OnClick = BtnAddClick
     TabOrder = 2
+    OnClick = BtnAddClick
   end
   object BtnEdit: TBitBtn
-    Left = 464
+    Left = 432
     Height = 30
-    Top = 10
+    Top = 12
     Width = 90
     Anchors = [akTop, akRight]
     Caption = '&Editar'
-    OnClick = BtnEditClick
     TabOrder = 3
+    OnClick = BtnEditClick
   end
   object BtnDelete: TBitBtn
-    Left = 558
+    Left = 528
     Height = 30
-    Top = 10
+    Top = 12
     Width = 90
     Anchors = [akTop, akRight]
     Caption = 'E&liminar'
-    OnClick = BtnDeleteClick
     TabOrder = 4
+    OnClick = BtnDeleteClick
   end
 end

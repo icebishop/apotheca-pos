@@ -31,10 +31,14 @@ LazarusResources.Add('TFormPrincipal','FORMDATA',[
   +'ick'#10'ParentFont'#8#8'TabOrder'#2#6#0#0#7'TBitBtn'#9'BtnExport'#4'Left'#2
   +#0#6'Height'#2'0'#3'Top'#3'P'#1#5'Width'#3#180#0#5'Align'#7#5'alTop'#7'Capti'
   +'on'#6#6'Export'#10'Font.Color'#7#7'clWhite'#11'Font.Height'#2#241#7'OnClick'
-  +#7#14'BtnExportClick'#10'ParentFont'#8#8'TabOrder'#2#7#0#0#0#6'TPanel'#12'Pa'
-  +'nelContent'#4'Left'#3#180#0#6'Height'#3#167#2#3'Top'#2#0#5'Width'#3'L'#3#5
-  +'Align'#7#8'alClient'#10'BevelOuter'#7#6'bvNone'#7'Caption'#6#0#12'ClientHei'
-  +'ght'#3#167#2#11'ClientWidth'#3'L'#3#5'Color'#7#8'clWindow'#11'ParentColor'#8
-  +#8'TabOrder'#2#1#0#0#10'TStatusBar'#9'StatusBar'#4'Left'#2#0#6'Height'#2#21#3
-  +'Top'#3#167#2#5'Width'#3#0#4#6'Panels'#14#0#11'SimplePanel'#9#0#0#0
+  +#7#14'BtnExportClick'#10'ParentFont'#8#8'TabOrder'#2#7#0#0#7'TBitBtn'#11'Btn'
+  +'Settings'#4'Left'#2#0#6'Height'#2'0'#3'Top'#3#128#1#5'Width'#3#180#0#5'Alig'
+  +'n'#7#5'alTop'#7'Caption'#6#8'Settings'#10'Font.Color'#7#7'clWhite'#11'Font.'
+  +'Height'#2#241#7'OnClick'#7#16'BtnSettingsClick'#10'ParentFont'#8#8'TabOrder'
+  +#2#8#0#0#0#6'TPanel'#12'PanelContent'#4'Left'#3#180#0#6'Height'#3#167#2#3'To'
+  +'p'#2#0#5'Width'#3'L'#3#5'Align'#7#8'alClient'#10'BevelOuter'#7#6'bvNone'#7
+  +'Caption'#6#0#12'ClientHeight'#3#167#2#11'ClientWidth'#3'L'#3#5'Color'#7#8'c'
+  +'lWindow'#11'ParentColor'#8#8'TabOrder'#2#1#0#0#10'TStatusBar'#9'StatusBar'#4
+  +'Left'#2#0#6'Height'#2#21#3'Top'#3#167#2#5'Width'#3#0#4#6'Panels'#14#0#11'Si'
+  +'mplePanel'#9#0#0#0
 ]);

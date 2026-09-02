@@ -146,12 +146,14 @@ object FormProduct: TFormProduct
     TabOrder = 6
     Text = 'new'
   end
-  object EditGoogleCat: TEdit
+  object EditGoogleCat: TComboBox
     Left = 140
     Height = 27
     Top = 240
     Width = 370
     Anchors = [akTop, akLeft, akRight]
+    ItemHeight = 20
+    Style = csDropDown
     TabOrder = 7
   end
   object MemoDescription: TMemo

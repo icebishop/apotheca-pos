@@ -128,6 +128,7 @@ begin
   TabControl.TabIndex := 0;
 
   try
+    DataModule1.EnsureTransaction;
     FReportEngine := TReportEngine.Create(DataModule1.SQLite3Connection1);
     SetupIncomeGridHeaders;
     LoadIncomeUtilityReport;
@@ -284,6 +285,7 @@ end;
 procedure TFrameReports.BtnRefreshClick(Sender: TObject);
 begin
   try
+    DataModule1.EnsureTransaction;
     case TabControl.TabIndex of
       0: LoadIncomeUtilityReport;
       1: LoadInventoryValuationReport;
@@ -299,6 +301,7 @@ end;
 procedure TFrameReports.TabControlChange(Sender: TObject);
 begin
   try
+    DataModule1.EnsureTransaction;
     case TabControl.TabIndex of
       0: begin ShowDetailGrid(False); LoadIncomeUtilityReport; end;
       1: begin ShowDetailGrid(False); LoadInventoryValuationReport; end;

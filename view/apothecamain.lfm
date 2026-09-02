@@ -125,6 +125,19 @@ object FormPrincipal: TFormPrincipal
       ParentFont = False
       TabOrder = 7
     end
+    object BtnSettings: TBitBtn
+      Left = 0
+      Height = 48
+      Top = 384
+      Width = 180
+      Align = alTop
+      Caption = 'Settings'
+      Font.Color = clWhite
+      Font.Height = -15
+      OnClick = BtnSettingsClick
+      ParentFont = False
+      TabOrder = 8
+    end
   end
   object PanelContent: TPanel
     Left = 180

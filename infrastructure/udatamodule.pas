@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, sqlite3conn, sqldb, FileUtil, LResources, Forms, Controls,
-  Dialogs, LazLogger, ULogger;
+  Dialogs, LazLogger, ULogger, USettingsService;
 
 type
 
@@ -41,11 +41,27 @@ type
     procedure MigrateCreditColumn;
     procedure MigratePayOperationColumn;
     procedure MigrateProductExportColumns;
+    procedure MigrateProductIdColumn;
     procedure CreateImagesTable;
+    procedure CreatePublicationTable;
+    procedure CreateParametersTable;
+    procedure CreateGoogleCategoryTable;
+    procedure SeedParameters(const DbPath: String);
     procedure SeedReturnOperationTypes;
+    function ResolveDefaultDbPath: String;
+    { Connects to DbPath and runs all schema init / migrations / seeding.
+      Returns True on success. }
+    function OpenDatabase(const DbPath: String): Boolean;
   public
     ImagesTableReady: Boolean;
     procedure EnsureTransaction;
+    { Reconnects the data module to a different database file (e.g. after the
+      db.file parameter changes in Settings), running migrations on the new file.
+      Returns True on success; on failure the connection is left closed and the
+      previous path is reported in ErrorMsg. }
+    function ReopenDatabase(const NewDbPath: String; out ErrorMsg: String): Boolean;
+    { The database file the module is currently connected to. }
+    function CurrentDbPath: String;
   end; 
 
 var
@@ -65,11 +81,10 @@ begin
       Trans := TSQLTransaction.Create(nil);
       Trans.DataBase := SQLite3Connection1;
       SQLite3Connection1.Transaction := Trans;
-      DebugLn('[DataModule] EnsureTransaction: Created new transaction');
-    end
-    else
-      DebugLn('[DataModule] EnsureTransaction: Transaction already exists (Active=' +
-        BoolToStr(SQLite3Connection1.Transaction.Active, 'True', 'False') + ')');
+    end;
+    { Always ensure the transaction is active for reads/writes }
+    if not SQLite3Connection1.Transaction.Active then
+      SQLite3Connection1.Transaction.StartTransaction;
   except
     on E: Exception do
       DebugLn('[DataModule] EnsureTransaction ERROR: ' + E.Message);
@@ -425,6 +440,97 @@ begin
   Trans.Free;
 end;
 
+procedure TDataModule1.MigrateProductIdColumn;
+var
+  Trans: TSQLTransaction;
+  Query: TSQLQuery;
+  IdIsRowidAlias: Boolean;
+begin
+  { The product.id must be an INTEGER PRIMARY KEY (a rowid alias) so inserts
+    auto-assign the id. Some databases ended up with 'id INT' (no autoincrement),
+    which makes new products get a NULL id and corrupts subsequent operations.
+    Detect that and rebuild the table preserving all data and ids. }
+  Trans := TSQLTransaction.Create(nil);
+  Query := TSQLQuery.Create(nil);
+  try
+    Trans.DataBase := SQLite3Connection1;
+    Query.DataBase := SQLite3Connection1;
+    Query.Transaction := Trans;
+    Trans.StartTransaction;
+
+    { PRAGMA table_info reports pk=1 AND type='INTEGER' for a rowid alias. }
+    IdIsRowidAlias := False;
+    Query.SQL.Text := 'PRAGMA table_info(product)';
+    Query.Open;
+    while not Query.EOF do
+    begin
+      if Query.FieldByName('name').AsString = 'id' then
+      begin
+        IdIsRowidAlias :=
+          (Query.FieldByName('pk').AsInteger = 1) and
+          (UpperCase(Trim(Query.FieldByName('type').AsString)) = 'INTEGER');
+        Break;
+      end;
+      Query.Next;
+    end;
+    Query.Close;
+
+    if IdIsRowidAlias then
+    begin
+      Trans.Commit;
+      Exit; { already correct }
+    end;
+
+    LogWarn('DataModule', 'MIGRATE_PRODUCT_ID_START',
+      'product.id is not a rowid alias; rebuilding table to fix autoincrement');
+
+    { Rebuild: create a corrected table, copy data, swap. Column set matches
+      InitDefaultDatabaseSchema (plus the export columns). }
+    Query.SQL.Text := 'CREATE TABLE product_new (' +
+      'id INTEGER PRIMARY KEY, ' +
+      'name TEXT NOT NULL, ' +
+      'minstock INTEGER, ' +
+      'maxstock INTEGER, ' +
+      'image_ref INTEGER DEFAULT 0, ' +
+      'originalprice REAL DEFAULT 0.0, ' +
+      'isservice INTEGER DEFAULT 0, ' +
+      'category TEXT DEFAULT '''', ' +
+      'description TEXT DEFAULT '''', ' +
+      'brand TEXT DEFAULT '''', ' +
+      'condition TEXT DEFAULT '''', ' +
+      'google_product_category TEXT DEFAULT '''')';
+    Query.ExecSQL;
+
+    Query.SQL.Text := 'INSERT INTO product_new ' +
+      '(id, name, minstock, maxstock, image_ref, originalprice, isservice, ' +
+      ' category, description, brand, condition, google_product_category) ' +
+      'SELECT ' +
+      ' COALESCE(id, rowid), name, minstock, maxstock, ' +
+      ' COALESCE(image_ref,0), COALESCE(originalprice,0.0), COALESCE(isservice,0), ' +
+      ' COALESCE(category,''''), COALESCE(description,''''), COALESCE(brand,''''), ' +
+      ' COALESCE(condition,''''), COALESCE(google_product_category,'''') ' +
+      'FROM product';
+    Query.ExecSQL;
+
+    Query.SQL.Text := 'DROP TABLE product';
+    Query.ExecSQL;
+    Query.SQL.Text := 'ALTER TABLE product_new RENAME TO product';
+    Query.ExecSQL;
+
+    Trans.Commit;
+    LogSecurity('DataModule', 'MIGRATE_PRODUCT_ID_DONE',
+      'product table rebuilt with INTEGER PRIMARY KEY');
+  except
+    on E: Exception do
+    begin
+      if Trans.Active then Trans.Rollback;
+      LogError('DataModule', 'MIGRATE_PRODUCT_ID_FAILED', 'error=' + E.Message);
+    end;
+  end;
+  Query.Free;
+  Trans.Free;
+end;
+
 procedure TDataModule1.CreateImagesTable;
 var
   Trans: TSQLTransaction;
@@ -461,32 +567,232 @@ begin
   Trans.Free;
 end;
 
-procedure TDataModule1.DataModuleCreate(Sender: TObject);
+procedure TDataModule1.CreatePublicationTable;
 var
-  DbPath: String;
-  DbDir: String;
+  Trans: TSQLTransaction;
+  Query: TSQLQuery;
+  HasLegacy, HasPublication, HasInstagramCol: Boolean;
 begin
-  { Resolve database path: try relative to executable first, then CWD }
-  DbPath := ExtractFilePath(ParamStr(0)) + 'db' + PathDelim + 'invcar';
-  DebugLn('[DataModule] ParamStr(0) = ', ParamStr(0));
-  DebugLn('[DataModule] ExtractFilePath = ', ExtractFilePath(ParamStr(0)));
-  DebugLn('[DataModule] Initial DbPath = ', DbPath);
-  DebugLn('[DataModule] FileExists(DbPath) = ', BoolToStr(FileExists(DbPath), 'True', 'False'));
+  Trans := TSQLTransaction.Create(nil);
+  Query := TSQLQuery.Create(nil);
+  try
+    Trans.DataBase := SQLite3Connection1;
+    Query.DataBase := SQLite3Connection1;
+    Query.Transaction := Trans;
+    Trans.StartTransaction;
 
-  if not FileExists(DbPath) then
-  begin
-    DebugLn('[DataModule] DbPath not found, trying CWD fallback...');
-    if FileExists('db' + PathDelim + 'invcar') then
+    { Detect existing tables. }
+    HasLegacy := False;
+    HasPublication := False;
+    Query.SQL.Text := 'SELECT name FROM sqlite_master WHERE type=''table'' ' +
+                      'AND name IN (''instagram_publication'', ''publication'')';
+    Query.Open;
+    while not Query.EOF do
     begin
-      DbPath := ExpandFileName('db' + PathDelim + 'invcar');
-      DebugLn('[DataModule] CWD fallback found: ', DbPath);
-    end
-    else
-      DebugLn('[DataModule] CWD fallback also not found');
+      if Query.FieldByName('name').AsString = 'instagram_publication' then
+        HasLegacy := True
+      else if Query.FieldByName('name').AsString = 'publication' then
+        HasPublication := True;
+      Query.Next;
+    end;
+    Query.Close;
+
+    { Rename the legacy instagram_publication table to publication. }
+    if HasLegacy and (not HasPublication) then
+    begin
+      Query.SQL.Text := 'ALTER TABLE instagram_publication RENAME TO publication';
+      Query.ExecSQL;
+      HasPublication := True;
+    end;
+
+    { Publication: one row per published catalog product.
+      product_id is a FK to product.id; published_at is ISO 8601 UTC text;
+      instagram is a flag (1 = published to Instagram). }
+    Query.SQL.Text := 'CREATE TABLE IF NOT EXISTS publication (' +
+                      'id INTEGER PRIMARY KEY AUTOINCREMENT, ' +
+                      'product_id INTEGER NOT NULL UNIQUE, ' +
+                      'item_name TEXT NOT NULL, ' +
+                      'media_id TEXT NOT NULL, ' +
+                      'published_at TEXT NOT NULL, ' +
+                      'instagram INTEGER NOT NULL DEFAULT 1, ' +
+                      'FOREIGN KEY(product_id) REFERENCES product(id))';
+    Query.ExecSQL;
+
+    { Add the instagram flag column if migrating an older publication table. }
+    HasInstagramCol := False;
+    Query.SQL.Text := 'PRAGMA table_info(publication)';
+    Query.Open;
+    while not Query.EOF do
+    begin
+      if Query.FieldByName('name').AsString = 'instagram' then
+        HasInstagramCol := True;
+      Query.Next;
+    end;
+    Query.Close;
+    if not HasInstagramCol then
+    begin
+      Query.SQL.Text := 'ALTER TABLE publication ADD COLUMN instagram INTEGER NOT NULL DEFAULT 1';
+      Query.ExecSQL;
+    end;
+
+    { Refresh the index name for the renamed table. }
+    Query.SQL.Text := 'DROP INDEX IF EXISTS idx_pub_product';
+    Query.ExecSQL;
+    Query.SQL.Text := 'CREATE INDEX IF NOT EXISTS idx_publication_product ' +
+                      'ON publication(product_id)';
+    Query.ExecSQL;
+
+    Trans.Commit;
+  except
+    on E: Exception do
+    begin
+      if Trans.Active then Trans.Rollback;
+      LogError('DataModule', 'CREATE_PUBLICATION_TABLE_FAILED', 'error=' + E.Message);
+    end;
+  end;
+  Query.Free;
+  Trans.Free;
+end;
+
+procedure TDataModule1.CreateParametersTable;
+var
+  Trans: TSQLTransaction;
+  Query: TSQLQuery;
+begin
+  Trans := TSQLTransaction.Create(nil);
+  Query := TSQLQuery.Create(nil);
+  try
+    Trans.DataBase := SQLite3Connection1;
+    Query.DataBase := SQLite3Connection1;
+    Query.Transaction := Trans;
+    Trans.StartTransaction;
+
+    { Application parameters: key/value settings. is_credential flags rows whose
+      value is stored encrypted and must be masked in the UI. }
+    Query.SQL.Text := 'CREATE TABLE IF NOT EXISTS parameters (' +
+                      'id INTEGER PRIMARY KEY AUTOINCREMENT, ' +
+                      'key TEXT NOT NULL UNIQUE, ' +
+                      'value TEXT DEFAULT '''', ' +
+                      'is_credential INTEGER NOT NULL DEFAULT 0, ' +
+                      'description TEXT DEFAULT '''')';
+    Query.ExecSQL;
+
+    Query.SQL.Text := 'CREATE INDEX IF NOT EXISTS idx_parameters_key ' +
+                      'ON parameters(key)';
+    Query.ExecSQL;
+
+    Trans.Commit;
+  except
+    on E: Exception do
+    begin
+      if Trans.Active then Trans.Rollback;
+      LogError('DataModule', 'CREATE_PARAMETERS_TABLE_FAILED', 'error=' + E.Message);
+    end;
+  end;
+  Query.Free;
+  Trans.Free;
+end;
+
+procedure TDataModule1.CreateGoogleCategoryTable;
+var
+  Trans: TSQLTransaction;
+  Query: TSQLQuery;
+
+  procedure SeedCat(const Cat: String);
+  begin
+    Query.SQL.Text := 'INSERT OR IGNORE INTO google_category (category) VALUES (:c)';
+    Query.Params.ParamByName('c').AsString := Cat;
+    Query.ExecSQL;
   end;
 
+begin
+  Trans := TSQLTransaction.Create(nil);
+  Query := TSQLQuery.Create(nil);
+  try
+    Trans.DataBase := SQLite3Connection1;
+    Query.DataBase := SQLite3Connection1;
+    Query.Transaction := Trans;
+    Trans.StartTransaction;
+
+    Query.SQL.Text := 'CREATE TABLE IF NOT EXISTS google_category (' +
+                      'id INTEGER PRIMARY KEY AUTOINCREMENT, ' +
+                      'category TEXT NOT NULL UNIQUE)';
+    Query.ExecSQL;
+
+    { Seed the billiard-relevant Google product categories (only if absent). }
+    SeedCat('Sporting Goods > Billiards');
+    SeedCat('Sporting Goods > Billiards > Billiard Chalk');
+    SeedCat('Sporting Goods > Billiards > Billiard Cue Accessories');
+    SeedCat('Sporting Goods > Billiards > Billiard Cue Accessories > Billiard Cue Tips');
+    SeedCat('Sporting Goods > Billiards > Billiard Cue Cases');
+    SeedCat('Sporting Goods > Billiards > Billiard Cues');
+    SeedCat('Sporting Goods > Billiards > Billiard Gloves');
+    SeedCat('Sporting Goods > Billiards > Billiard Tables');
+
+    { Also import any categories already present on products so the list stays
+      complete even if a product used a value not in the seed set. }
+    Query.SQL.Text := 'INSERT OR IGNORE INTO google_category (category) ' +
+      'SELECT DISTINCT google_product_category FROM product ' +
+      'WHERE COALESCE(google_product_category,'''') <> ''''';
+    Query.ExecSQL;
+
+    Trans.Commit;
+  except
+    on E: Exception do
+    begin
+      if Trans.Active then Trans.Rollback;
+      LogError('DataModule', 'CREATE_GOOGLE_CATEGORY_TABLE_FAILED', 'error=' + E.Message);
+    end;
+  end;
+  Query.Free;
+  Trans.Free;
+end;
+
+procedure TDataModule1.SeedParameters(const DbPath: String);
+var
+  Svc: TSettingsService;
+  AppDir, ResBase: String;
+begin
+  try
+    EnsureTransaction;
+    AppDir := ExtractFilePath(ParamStr(0));
+    ResBase := AppDir + '..' + PathDelim + 'don-pilido-app' + PathDelim +
+               'src' + PathDelim + 'res' + PathDelim;
+    Svc := TSettingsService.Create(SQLite3Connection1);
+    try
+      Svc.SeedDefaults(
+        DbPath,
+        ResBase + 'products.json',
+        ResBase + 'services.json',
+        AppDir + '..' + PathDelim + 'don-pilido-app' + PathDelim + 'public');
+    finally
+      Svc.Free;
+    end;
+  except
+    on E: Exception do
+      LogError('DataModule', 'SEED_PARAMETERS_FAILED', 'error=' + E.Message);
+  end;
+end;
+
+function TDataModule1.ResolveDefaultDbPath: String;
+begin
+  { Try relative to executable first, then CWD. }
+  Result := ExtractFilePath(ParamStr(0)) + 'db' + PathDelim + 'invcar';
+  if not FileExists(Result) then
+  begin
+    if FileExists('db' + PathDelim + 'invcar') then
+      Result := ExpandFileName('db' + PathDelim + 'invcar');
+  end;
+end;
+
+function TDataModule1.OpenDatabase(const DbPath: String): Boolean;
+var
+  DbDir: String;
+begin
+  Result := False;
+
   DbDir := ExtractFilePath(DbPath);
-  if not DirectoryExists(DbDir) then
+  if (DbDir <> '') and (not DirectoryExists(DbDir)) then
   begin
     DebugLn('[DataModule] Creating directory: ', DbDir);
     ForceDirectories(DbDir);
@@ -496,23 +802,131 @@ begin
   SQLite3Connection1.DatabaseName := DbPath;
   DebugLn('[DataModule] DatabaseName set to: ', SQLite3Connection1.DatabaseName);
 
+  SQLite3Connection1.Connected := True;
+  DebugLn('[DataModule] Connected successfully!');
+  LogInfo('DataModule', 'DB_CONNECTED', 'path=' + SQLite3Connection1.DatabaseName);
+
+  InitDefaultDatabaseSchema;
+  MigrateCreditColumn;
+  MigratePayOperationColumn;
+  SeedReturnOperationTypes;
+  MigrateProductExportColumns;
+  MigrateProductIdColumn;
+  CreateImagesTable;
+  CreatePublicationTable;
+  CreateParametersTable;
+  CreateGoogleCategoryTable;
+  SeedParameters(DbPath);
+  LogInfo('DataModule', 'DB_MIGRATIONS_COMPLETE', 'All migrations applied path=' + DbPath);
+  Result := True;
+end;
+
+function TDataModule1.CurrentDbPath: String;
+begin
+  Result := SQLite3Connection1.DatabaseName;
+end;
+
+function TDataModule1.ReopenDatabase(const NewDbPath: String;
+  out ErrorMsg: String): Boolean;
+var
+  PrevPath: String;
+begin
+  Result := False;
+  ErrorMsg := '';
+  PrevPath := SQLite3Connection1.DatabaseName;
+
+  if Trim(NewDbPath) = '' then
+  begin
+    ErrorMsg := 'Empty database path';
+    Exit;
+  end;
+  if SameFileName(ExpandFileName(NewDbPath), ExpandFileName(PrevPath)) then
+  begin
+    { Same file: nothing to do. }
+    Result := True;
+    Exit;
+  end;
+  if not FileExists(NewDbPath) then
+  begin
+    { Only reopen onto an existing database file; do not silently create a new,
+      empty one from a mistyped path. }
+    ErrorMsg := 'Database file does not exist: ' + NewDbPath;
+    Exit;
+  end;
+
   try
-    SQLite3Connection1.Connected := True;
-    DebugLn('[DataModule] Connected successfully!');
-    LogInfo('DataModule', 'DB_CONNECTED', 'path=' + SQLite3Connection1.DatabaseName);
-    InitDefaultDatabaseSchema;
-    DebugLn('[DataModule] Schema initialized');
-    MigrateCreditColumn;
-    DebugLn('[DataModule] Credit column migration complete');
-    MigratePayOperationColumn;
-    DebugLn('[DataModule] Pay operation column migration complete');
-    SeedReturnOperationTypes;
-    DebugLn('[DataModule] Return operation types seeding complete');
-    MigrateProductExportColumns;
-    DebugLn('[DataModule] Product export columns migration complete');
-    CreateImagesTable;
-    DebugLn('[DataModule] Images table creation complete');
-    LogInfo('DataModule', 'DB_MIGRATIONS_COMPLETE', 'All migrations applied');
+    { Detach any active transaction before switching files. }
+    if (SQLite3Connection1.Transaction <> nil) and
+       SQLite3Connection1.Transaction.Active then
+      SQLite3Connection1.Transaction.Commit;
+  except
+    on E: Exception do
+      DebugLn('[DataModule] ReopenDatabase commit warning: ' + E.Message);
+  end;
+
+  try
+    if OpenDatabase(NewDbPath) then
+    begin
+      LogSecurity('DataModule', 'DB_REOPENED',
+        'from=' + PrevPath + ' to=' + NewDbPath);
+      Result := True;
+    end;
+  except
+    on E: Exception do
+    begin
+      ErrorMsg := E.Message;
+      LogError('DataModule', 'DB_REOPEN_FAILED',
+        'to=' + NewDbPath + ' error=' + E.Message);
+      { Attempt to fall back to the previous database so the app stays usable. }
+      try
+        if PrevPath <> '' then
+          OpenDatabase(PrevPath);
+      except
+        on E2: Exception do
+          DebugLn('[DataModule] Fallback reopen failed: ' + E2.Message);
+      end;
+    end;
+  end;
+end;
+
+procedure TDataModule1.DataModuleCreate(Sender: TObject);
+var
+  DbPath, ConfiguredPath: String;
+  Svc: TSettingsService;
+begin
+  DbPath := ResolveDefaultDbPath;
+  DebugLn('[DataModule] Initial DbPath = ', DbPath);
+
+  try
+    if not OpenDatabase(DbPath) then
+      Exit;
+
+    { The db.file parameter can redirect to another database file. It lives in
+      the parameters table of the just-opened DB; if it points to a different,
+      existing file, switch to it (and run migrations there). }
+    ConfiguredPath := '';
+    try
+      EnsureTransaction;
+      Svc := TSettingsService.Create(SQLite3Connection1);
+      try
+        ConfiguredPath := Svc.GetValue(PARAM_DB_FILE, '');
+      finally
+        Svc.Free;
+      end;
+    except
+      on E: Exception do
+      begin
+        ConfiguredPath := '';
+        DebugLn('[DataModule] read db.file param failed: ' + E.Message);
+      end;
+    end;
+
+    if (ConfiguredPath <> '') and FileExists(ConfiguredPath) and
+       (not SameFileName(ExpandFileName(ConfiguredPath), ExpandFileName(DbPath))) then
+    begin
+      DebugLn('[DataModule] db.file parameter redirects to: ', ConfiguredPath);
+      OpenDatabase(ConfiguredPath);
+    end;
   except
     on E: Exception do
     begin

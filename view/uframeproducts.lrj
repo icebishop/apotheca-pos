@@ -1,0 +1,6 @@
+{"version":1,"strings":[
+{"hash":140875470,"name":"tframeproducts.editsearch.texthint","sourcebytes":[66,117,115,99,97,114,32,112,111,114,32,110,111,109,98,114,101,46,46,46],"value":"Buscar por nombre..."},
+{"hash":45464783,"name":"tframeproducts.btnadd.caption","sourcebytes":[38,78,117,101,118,111],"value":"&Nuevo"},
+{"hash":180030114,"name":"tframeproducts.btnedit.caption","sourcebytes":[38,69,100,105,116,97,114],"value":"&Editar"},
+{"hash":50578258,"name":"tframeproducts.btndelete.caption","sourcebytes":[69,38,108,105,109,105,110,97,114],"value":"E&liminar"}
+]}

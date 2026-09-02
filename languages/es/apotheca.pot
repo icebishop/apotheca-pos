@@ -1,0 +1,19 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: tframeproducts.btnadd.caption
+msgid "&Nuevo"
+msgstr ""
+
+#: tframeproducts.btndelete.caption
+msgid "E&liminar"
+msgstr ""
+
+#: tframeproducts.btnedit.caption
+msgid "&Editar"
+msgstr ""
+
+#: tframeproducts.editsearch.texthint
+msgid "Buscar por nombre..."
+msgstr ""
+

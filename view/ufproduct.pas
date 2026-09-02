@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, StdCtrls, Buttons, Uproduct, UDataProduct, UDataImage,
-  UPngValidator, LCLType,
+  UDataGoogleCategory, UPngValidator, LCLType,
   UDataModule, SqlDb, UProductValidator, UResourceString, LazLogger;
 
 type
@@ -46,7 +46,7 @@ type
     EditCategory: TEdit;
     EditBrand: TEdit;
     EditCondition: TEdit;
-    EditGoogleCat: TEdit;
+    EditGoogleCat: TComboBox;
     MemoDescription: TMemo;
     LabelName: TLabel;
     LabelMinStock: TLabel;
@@ -75,6 +75,7 @@ type
     productValidator: TProductValidator;
     FPendingImageData: TBytes;
     FHasPendingImage: Boolean;
+    procedure LoadGoogleCategories;
   public
     function getProduct(): TProduct;
     procedure setProduct(newProduct: TProduct);
@@ -102,6 +103,14 @@ begin
   product.setBrand(EditBrand.Text);
   product.setProductCondition(EditCondition.Text);
   product.setGoogleProductCategory(EditGoogleCat.Text);
+  { Persist a newly typed category so it appears in the list next time. }
+  if Trim(EditGoogleCat.Text) <> '' then
+    with TDataGoogleCategory.Create(DataModule1.SQLite3Connection1) do
+      try
+        EnsureExists(EditGoogleCat.Text);
+      finally
+        Destroy;
+      end;
   product.setDescription(MemoDescription.Lines.Text);
   product.setIsService(ChkIsService.Checked);
 
@@ -180,8 +189,8 @@ begin
   try
   Dlg := TOpenDialog.Create(Self);
   try
-    Dlg.Title := 'Select PNG image';
-    Dlg.Filter := 'PNG images (*.png)|*.png';
+    Dlg.Title := RS_PRODUCT_DLG_PNG_TITLE;
+    Dlg.Filter := RS_PRODUCT_DLG_PNG_FILTER;
     if not Dlg.Execute then
       Exit;
 
@@ -197,7 +206,7 @@ begin
     except
       on E: Exception do
       begin
-        LblImageStatus.Caption := 'Error: ' + E.Message;
+        LblImageStatus.Caption := Format(RS_PRODUCT_IMG_ERROR, [E.Message]);
         ImagePreview.Picture.Clear;
         Exit;
       end;
@@ -214,7 +223,7 @@ begin
     end;
 
     FHasPendingImage := True;
-    LblImageStatus.Caption := 'Image selected: ' + ExtractFileName(Dlg.FileName);
+    LblImageStatus.Caption := Format(RS_PRODUCT_IMG_SELECTED, [ExtractFileName(Dlg.FileName)]);
 
     try
       Stream := TBytesStream.Create(FPendingImageData);
@@ -232,7 +241,7 @@ begin
     except
       on E: Exception do
       begin
-        LblImageStatus.Caption := 'Preview error: ' + E.Message;
+        LblImageStatus.Caption := Format(RS_PRODUCT_IMG_PREVIEW_ERROR, [E.Message]);
         ImagePreview.Picture.Clear;
       end;
     end;
@@ -289,14 +298,50 @@ begin
   end;
 end;
 
+procedure TFormProduct.LoadGoogleCategories;
+var
+  DataCat: TDataGoogleCategory;
+  Cats: TStringList;
+begin
+  try
+    DataModule1.EnsureTransaction;
+    DataCat := TDataGoogleCategory.Create(DataModule1.SQLite3Connection1);
+    try
+      Cats := DataCat.FindAll();
+      try
+        EditGoogleCat.Items.Assign(Cats);
+      finally
+        Cats.Free;
+      end;
+    finally
+      DataCat.Destroy;  { avoid TData's shadowing free() on the shared txn }
+    end;
+  except
+    on E: Exception do
+      DebugLn('[TFormProduct.LoadGoogleCategories] ERROR: ' + E.Message);
+  end;
+end;
+
 procedure TFormProduct.FormCreate(Sender: TObject);
 begin
   BitBtnOk.Caption := RS_OK;
   BitBtnCancel.Caption := RS_CANCEL;
-  LabelName.Caption := RS_LDESCRIPTION;
-  LabelMaxStock.Caption := RS_LMAXSTOCK;
+  LabelName.Caption := RS_LNAME;
   LabelMinStock.Caption := RS_LMINSTOCK;
+  LabelMaxStock.Caption := RS_LMAXSTOCK;
+  LabelOriginalPrice.Caption := RS_PRODUCT_LBL_ORIGINAL_PRICE;
+  LabelCategory.Caption := RS_PRODUCT_LBL_CATEGORY;
+  LabelBrand.Caption := RS_PRODUCT_LBL_BRAND;
+  LabelCondition.Caption := RS_PRODUCT_LBL_CONDITION;
+  LabelGoogleCat.Caption := RS_PRODUCT_LBL_GOOGLE_CAT;
+  LabelDescription.Caption := RS_LDESCRIPTION;
+  ChkIsService.Caption := RS_PRODUCT_CHK_IS_SERVICE;
+  BtnSelectImage.Caption := RS_PRODUCT_BTN_SELECT_IMAGE;
+  GroupBoxPreview.Caption := RS_PRODUCT_GROUP_PREVIEW;
   Self.Caption := RS_LPRODUCTS;
+
+  { Populate the Google category combobox from the database. }
+  LoadGoogleCategories;
 
   flagAction := 0;
   FHasPendingImage := False;
@@ -329,7 +374,7 @@ begin
     ChkIsService.Checked := product.getIsService();
     if product.getImageRef() > 0 then
     begin
-      LblImageStatus.Caption := 'Image ID: ' + IntToStr(product.getImageRef());
+      LblImageStatus.Caption := Format(RS_PRODUCT_IMG_ID, [product.getImageRef()]);
       DataImage := TDataImage.Create(DataModule1.SQLite3Connection1);
       try
         ImageData := DataImage.Get(product.getImageRef());

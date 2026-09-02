@@ -284,6 +284,91 @@ RS_RETURNS_SAVE_SUCCESS = 'Operación guardada exitosamente';
 RS_RETURNS_REBUILD_SUCCESS = 'Saldos reconstruidos exitosamente';
 RS_RETURNS_REBUILD_WARNING = 'Algunos productos tienen stock negativo después de reconstruir';
 
+// Sidebar navigation (added)
+RS_NAV_EXPORT = 'Export';
+RS_NAV_SETTINGS = 'Settings';
+
+// Export / Update Web Catalog frame
+RS_EXPORT_PRODUCTS = 'Export Products';
+RS_EXPORT_SERVICES = 'Export Services';
+RS_EXPORT_BROWSE = 'Browse...';
+RS_EXPORT_UPDATE_CATALOG = 'Update Web Catalog';
+RS_EXPORT_PUBLISH_INSTAGRAM = 'Instagram Publication';
+RS_EXPORT_DLG_JSON_TITLE = 'Select JSON export file';
+RS_EXPORT_DLG_JSON_FILTER = 'JSON files (*.json)|*.json';
+RS_EXPORT_DLG_DIR_TITLE = 'Select image output directory';
+RS_EXPORT_ERR_SELECT_OPTION = 'Error: Select at least one export option (Products or Services).';
+RS_EXPORT_COMPLETE = 'Export complete: %d products, %d services exported.';
+RS_EXPORT_WARN_NO_IMAGE = '  WARNING: %d product(s) and %d service(s) have no image.';
+RS_EXPORT_DLG_MISSING_TITLE = 'Missing images';
+RS_EXPORT_DLG_MISSING_MSG = 'Export finished, but %d product(s) and %d service(s) were exported without an image.' + sLineBreak + sLineBreak + 'Assign images to these items (Products screen) for a complete catalog.';
+RS_EXPORT_ERR_PREFIX = 'Error: %s';
+
+// Instagram Publication (frame + flow)
+RS_PUB_ERR_SELECT_OPTION = 'Error: Select at least one option (Products or Services).';
+RS_PUB_NOTHING = 'Nothing to publish: no new products or services.';
+RS_PUB_CANCELLED = 'Publication cancelled (%d item(s) pending).';
+RS_PUB_NONE_SELECTED = 'No items selected; nothing published.';
+RS_PUB_PUBLISHING = 'Publishing %d selected item(s) to Instagram...';
+RS_PUB_RESULT_OK = 'Instagram Publication: %d published, %d skipped, %d failed.';
+RS_PUB_RESULT_STOPPED = 'Instagram Publication stopped (see log): %d published, %d skipped, %d failed.';
+
+// Instagram Publication preview dialog
+RS_PUBPREVIEW_TITLE = 'Confirm Instagram Publication';
+RS_PUBPREVIEW_HEADER = 'The following items will be published:';
+RS_PUBPREVIEW_COL_PUBLISH = 'Publish';
+RS_PUBPREVIEW_COL_ID = 'Id';
+RS_PUBPREVIEW_COL_NAME = 'Name';
+RS_PUBPREVIEW_COL_IMAGE = 'Image';
+RS_PUBPREVIEW_IMG_OK = 'OK';
+RS_PUBPREVIEW_IMG_MISSING = 'MISSING';
+RS_PUBPREVIEW_BTN_PUBLISH = 'Publish';
+RS_PUBPREVIEW_BTN_CANCEL = 'Cancel';
+RS_PUBPREVIEW_BTN_SELECT_ALL = 'Select all';
+RS_PUBPREVIEW_BTN_SELECT_NONE = 'Select none';
+RS_PUBPREVIEW_SELECTED = '%d of %d item(s) selected to publish to Instagram.%s';
+RS_PUBPREVIEW_WARN_NO_IMAGE = '  -  WARNING: %d item(s) have no image and cannot be published.';
+
+// Settings frame
+RS_SETTINGS_COL_PARAM = 'Parameter';
+RS_SETTINGS_COL_VALUE = 'Value';
+RS_SETTINGS_COL_CREDENTIAL = 'Credential';
+RS_SETTINGS_COL_DESC = 'Description';
+RS_SETTINGS_SELECT_HINT = '(select a parameter)';
+RS_SETTINGS_YES = 'Yes';
+RS_SETTINGS_NO = 'No';
+RS_SETTINGS_LBL_PARAM = 'Parameter:';
+RS_SETTINGS_LBL_VALUE = 'Value:';
+RS_SETTINGS_LBL_VALUE_CRED = 'New value (credential, hidden):';
+RS_SETTINGS_BTN_SAVE = 'Save';
+RS_SETTINGS_BTN_REFRESH = 'Refresh';
+RS_SETTINGS_MSG_SELECT_FIRST = 'Select a parameter first.';
+RS_SETTINGS_MSG_CRED_BLANK = 'Enter a new value to change this credential (blank leaves it unchanged).';
+RS_SETTINGS_MSG_SAVE_ERROR = 'Error saving: %s';
+RS_SETTINGS_MSG_SAVED = 'Saved: %s';
+RS_SETTINGS_MSG_RELOADED = 'Reloaded.';
+RS_SETTINGS_MSG_ERROR = 'Error: %s';
+RS_SETTINGS_DB_CHANGED = 'Database changed and reconnected: %s';
+RS_SETTINGS_DB_NOT_SWITCHED_STATUS = 'Saved, but could not switch database: %s';
+RS_SETTINGS_DB_NOT_SWITCHED_TITLE = 'Database not switched';
+RS_SETTINGS_DB_NOT_SWITCHED_MSG = 'The db.file value was saved, but the application could not connect to:' + sLineBreak + '%s' + sLineBreak + sLineBreak + '%s' + sLineBreak + 'Still using: %s';
+
+// Product form
+RS_PRODUCT_LBL_ORIGINAL_PRICE = 'Original Price';
+RS_PRODUCT_LBL_CATEGORY = 'Category';
+RS_PRODUCT_LBL_BRAND = 'Brand';
+RS_PRODUCT_LBL_CONDITION = 'Condition';
+RS_PRODUCT_LBL_GOOGLE_CAT = 'Google Category';
+RS_PRODUCT_CHK_IS_SERVICE = 'Is Service';
+RS_PRODUCT_BTN_SELECT_IMAGE = 'Select Image...';
+RS_PRODUCT_GROUP_PREVIEW = 'Preview';
+RS_PRODUCT_DLG_PNG_TITLE = 'Select PNG image';
+RS_PRODUCT_DLG_PNG_FILTER = 'PNG images (*.png)|*.png';
+RS_PRODUCT_IMG_ERROR = 'Error: %s';
+RS_PRODUCT_IMG_SELECTED = 'Image selected: %s';
+RS_PRODUCT_IMG_PREVIEW_ERROR = 'Preview error: %s';
+RS_PRODUCT_IMG_ID = 'Image ID: %d';
+
 
 implementation
 
