@@ -48,6 +48,7 @@ type
     procedure LoadProducts(const AFilter: String);
     procedure FreeProductList;
     procedure InitGrid;
+    procedure ApplyTranslations;
     function GetSelectedProduct: TProduct;
   public
     constructor Create(AOwner: TComponent); override;
@@ -65,8 +66,17 @@ constructor TFrameProducts.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FProductList := nil;
+  ApplyTranslations;
   InitGrid;
   LoadProducts('');
+end;
+
+procedure TFrameProducts.ApplyTranslations;
+begin
+  EditSearch.TextHint := RS_PRODUCTS_SEARCH_HINT;
+  BtnAdd.Caption := RS_PRODUCTS_BTN_NEW;
+  BtnEdit.Caption := RS_PRODUCTS_BTN_EDIT;
+  BtnDelete.Caption := RS_PRODUCTS_BTN_DELETE;
 end;
 
 destructor TFrameProducts.Destroy;
@@ -80,11 +90,11 @@ begin
   GridProducts.RowCount := 1;
   GridProducts.FixedRows := 1;
   GridProducts.ColCount := 5;
-  GridProducts.Cells[0, 0] := 'ID';
-  GridProducts.Cells[1, 0] := 'Nombre';
-  GridProducts.Cells[2, 0] := 'Existencia';
-  GridProducts.Cells[3, 0] := 'Costo';
-  GridProducts.Cells[4, 0] := 'Precio';
+  GridProducts.Cells[0, 0] := RS_FMAINSTRINGGRID200;
+  GridProducts.Cells[1, 0] := RS_PRODUCTS_GRID_NAME;
+  GridProducts.Cells[2, 0] := RS_PRODUCTS_GRID_STOCK;
+  GridProducts.Cells[3, 0] := RS_PRODUCTS_GRID_COST;
+  GridProducts.Cells[4, 0] := RS_PRODUCTS_GRID_PRICE;
   DistributeColumns(GridProducts, [8, 37, 15, 20, 20]);
 end;
 
@@ -220,7 +230,7 @@ begin
   Product := GetSelectedProduct;
   if Product = nil then Exit;
 
-  ConfirmMsg := 'Eliminar Producto: ' + Product.getName() + '?';
+  ConfirmMsg := Format(RS_PRODUCTS_DELETE_CONFIRM, [Product.getName()]);
   if Application.MessageBox(PChar(ConfirmMsg), PChar(RS_MESSAGE),
      MB_YESNO or MB_ICONQUESTION) = IDYES then
   begin

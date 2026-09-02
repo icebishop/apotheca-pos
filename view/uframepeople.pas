@@ -53,6 +53,7 @@ type
     procedure LoadCustomers(const AFilter: String);
     procedure LoadSuppliers(const AFilter: String);
     procedure RefreshActiveGrid;
+    procedure ApplyTranslations;
     procedure FreeCustomerList;
     procedure FreeSupplierList;
     procedure InitGrids;
@@ -75,7 +76,21 @@ begin
   inherited Create(AOwner);
   FCustomerList := nil;
   FSupplierList := nil;
+  ApplyTranslations;
   InitGrids;
+end;
+
+procedure TFramePeople.ApplyTranslations;
+begin
+  if TabControl.Tabs.Count >= 2 then
+  begin
+    TabControl.Tabs[0] := RS_PEOPLE_TAB_CUSTOMERS;
+    TabControl.Tabs[1] := RS_PEOPLE_TAB_SUPPLIERS;
+  end;
+  EditSearch.TextHint := RS_PEOPLE_SEARCH_HINT;
+  BtnAdd.Caption := RS_PEOPLE_BTN_NEW;
+  BtnEdit.Caption := RS_PEOPLE_BTN_EDIT;
+  BtnDelete.Caption := RS_PEOPLE_BTN_DELETE;
 end;
 
 destructor TFramePeople.Destroy;
@@ -89,16 +104,16 @@ procedure TFramePeople.InitGrids;
 begin
   GridCustomers.RowCount := 1;
   GridCustomers.FixedRows := 1;
-  GridCustomers.Cells[0, 0] := 'Nombre';
-  GridCustomers.Cells[1, 0] := 'Teléfono';
-  GridCustomers.Cells[2, 0] := 'Dirección';
+  GridCustomers.Cells[0, 0] := RS_PEOPLE_GRID_NAME;
+  GridCustomers.Cells[1, 0] := RS_PEOPLE_GRID_PHONE;
+  GridCustomers.Cells[2, 0] := RS_PEOPLE_GRID_ADDRESS;
   DistributeColumns(GridCustomers, [40, 25, 35]);
 
   GridSuppliers.RowCount := 1;
   GridSuppliers.FixedRows := 1;
-  GridSuppliers.Cells[0, 0] := 'Nombre';
-  GridSuppliers.Cells[1, 0] := 'Teléfono';
-  GridSuppliers.Cells[2, 0] := 'Dirección';
+  GridSuppliers.Cells[0, 0] := RS_PEOPLE_GRID_NAME;
+  GridSuppliers.Cells[1, 0] := RS_PEOPLE_GRID_PHONE;
+  GridSuppliers.Cells[2, 0] := RS_PEOPLE_GRID_ADDRESS;
   DistributeColumns(GridSuppliers, [40, 25, 35]);
 end;
 

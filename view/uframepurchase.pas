@@ -48,6 +48,7 @@ type
     procedure CalculateTotal;
     procedure CalculateRowPrices(ARow: Integer);
     procedure InitPurchase;
+    procedure ApplyTranslations;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -70,7 +71,26 @@ begin
   BtnSelectProduct.Parent := GridItems;
   BtnSelectProduct.Visible := False;
 
+  ApplyTranslations;
   InitPurchase;
+end;
+
+procedure TFramePurchase.ApplyTranslations;
+begin
+  LabelTitle.Caption := RS_PURCHASE_TITLE;
+  LabelSupplier.Caption := RS_PURCHASE_SUPPLIER;
+  LabelDate.Caption := RS_PURCHASE_DATE;
+  BtnAddItem.Caption := RS_PURCHASE_ADD;
+  BtnDeleteItem.Caption := RS_PURCHASE_DELETE_ITEM;
+  BtnSavePurchase.Caption := RS_PURCHASE_SAVE;
+
+  { Grid headers (fixed row; survives GridItems.Clean([gzNormal])) }
+  GridItems.Cells[0, 0] := RS_PURCHASE_GRID_PRODUCT;
+  GridItems.Cells[1, 0] := RS_PURCHASE_GRID_QTY;
+  GridItems.Cells[2, 0] := RS_PURCHASE_GRID_TOTALCOST;
+  GridItems.Cells[3, 0] := RS_PURCHASE_GRID_UTILITY;
+  GridItems.Cells[4, 0] := RS_PURCHASE_GRID_UNITCOST;
+  GridItems.Cells[5, 0] := RS_PURCHASE_GRID_PRICE;
 end;
 
 destructor TFramePurchase.Destroy;
@@ -182,7 +202,7 @@ begin
   { Validate supplier selected }
   if FPurchase.getSupplier() = nil then
   begin
-    StatusBarPurchase.SimpleText := 'Debe seleccionar un proveedor';
+    StatusBarPurchase.SimpleText := RS_PURCHASE_NO_SUPPLIER;
     Exit;
   end;
 
@@ -201,7 +221,7 @@ begin
 
   if not hasCompleteRow then
   begin
-    StatusBarPurchase.SimpleText := 'Debe agregar al menos un ítem completo';
+    StatusBarPurchase.SimpleText := RS_PURCHASE_NO_ITEMS;
     Exit;
   end;
 
@@ -389,7 +409,7 @@ begin
   total := 0;
   for i := 0 to High(FTotalCosts) do
     total := total + FTotalCosts[i];
-  LabelTotalCost.Caption := 'Total Compra: $' + FormatFloat('0.00', total);
+  LabelTotalCost.Caption := Format(RS_PURCHASE_TOTAL, [FormatFloat('0.00', total)]);
 end;
 
 procedure TFramePurchase.CalculateRowPrices(ARow: Integer);

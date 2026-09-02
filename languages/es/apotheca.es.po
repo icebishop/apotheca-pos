@@ -561,8 +561,8 @@ msgid "Total Cost"
 msgstr "Costo Total"
 
 #: uresourcestring.rs_purchase_grid_utility
-msgid "%% Utility"
-msgstr "%% Utilidad"
+msgid "% Utility"
+msgstr "% Utilidad"
 
 #: uresourcestring.rs_purchase_grid_unitcost
 msgid "Unit Cost"
@@ -679,6 +679,114 @@ msgstr "Compras"
 #: uresourcestring.rs_reports_exported
 msgid "Report exported successfully to: %s"
 msgstr "Reporte exportado exitosamente a: %s"
+
+#: uresourcestring.rs_reports_lbl_title
+msgid "Reports"
+msgstr "Reportes"
+
+#: uresourcestring.rs_reports_income_col_sale_id
+msgid "Sale ID"
+msgstr "ID Venta"
+
+#: uresourcestring.rs_reports_income_col_date
+msgid "Date"
+msgstr "Fecha"
+
+#: uresourcestring.rs_reports_income_col_customer
+msgid "Customer"
+msgstr "Cliente"
+
+#: uresourcestring.rs_reports_income_col_sale_total
+msgid "Sale Total"
+msgstr "Total Venta"
+
+#: uresourcestring.rs_reports_income_col_cost_total
+msgid "Total Cost"
+msgstr "Total Costo"
+
+#: uresourcestring.rs_reports_income_col_utility
+msgid "Utility"
+msgstr "Utilidad"
+
+#: uresourcestring.rs_reports_income_totals
+msgid "TOTALS:"
+msgstr "TOTALES:"
+
+#: uresourcestring.rs_reports_val_col_prod_id
+msgid "Prod ID"
+msgstr "ID Prod"
+
+#: uresourcestring.rs_reports_val_col_product
+msgid "Product"
+msgstr "Producto"
+
+#: uresourcestring.rs_reports_val_col_min_stock
+msgid "Min Stock"
+msgstr "Stock Mín"
+
+#: uresourcestring.rs_reports_val_col_max_stock
+msgid "Max Stock"
+msgstr "Stock Máx"
+
+#: uresourcestring.rs_reports_val_col_cur_stock
+msgid "Current Stock"
+msgstr "Stock Actual"
+
+#: uresourcestring.rs_reports_val_col_avg_cost
+msgid "Avg Cost"
+msgstr "Costo Prom."
+
+#: uresourcestring.rs_reports_val_col_sale_price
+msgid "Sale Price"
+msgstr "Precio Venta"
+
+#: uresourcestring.rs_reports_val_col_inv_value
+msgid "Inventory Value"
+msgstr "Valor Inventario"
+
+#: uresourcestring.rs_reports_val_total
+msgid "TOTAL INVENTORY:"
+msgstr "TOTAL INVENTARIO:"
+
+#: uresourcestring.rs_reports_pur_col_id
+msgid "ID"
+msgstr "ID"
+
+#: uresourcestring.rs_reports_pur_col_date
+msgid "Date"
+msgstr "Fecha"
+
+#: uresourcestring.rs_reports_pur_col_supplier
+msgid "Supplier"
+msgstr "Proveedor"
+
+#: uresourcestring.rs_reports_pur_col_total
+msgid "Total"
+msgstr "Total"
+
+#: uresourcestring.rs_reports_purdet_col_product
+msgid "Product"
+msgstr "Producto"
+
+#: uresourcestring.rs_reports_purdet_col_qty
+msgid "Quantity"
+msgstr "Cantidad"
+
+#: uresourcestring.rs_reports_purdet_col_unitcost
+msgid "Unit Cost"
+msgstr "Costo Unit."
+
+#: uresourcestring.rs_reports_purdet_col_saleprice
+msgid "Sale Price"
+msgstr "Precio Venta"
+
+#: uresourcestring.rs_reports_purdet_col_total
+msgid "Total"
+msgstr "Total"
+
+#: uresourcestring.rs_reports_save_dlg_title
+msgid "Export Report to CSV"
+msgstr "Exportar Reporte a CSV"
 
 #: uresourcestring.rs_reports_tab_units_sold
 msgid "Units Sold"

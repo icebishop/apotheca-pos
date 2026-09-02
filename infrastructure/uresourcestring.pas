@@ -186,7 +186,7 @@ RS_PURCHASE_NO_ITEMS = 'You must add at least one complete item';
 RS_PURCHASE_GRID_PRODUCT = 'Product';
 RS_PURCHASE_GRID_QTY = 'Qty';
 RS_PURCHASE_GRID_TOTALCOST = 'Total Cost';
-RS_PURCHASE_GRID_UTILITY = '%% Utility';
+RS_PURCHASE_GRID_UTILITY = '% Utility';
 RS_PURCHASE_GRID_UNITCOST = 'Unit Cost';
 RS_PURCHASE_GRID_PRICE = 'Sale Price';
 
@@ -224,6 +224,43 @@ RS_REPORTS_TAB_PURCHASES = 'Purchases';
 RS_REPORTS_EXPORTED = 'Report exported successfully to: %s';
 
 // Units Sold Report
+// Reports static captions
+RS_REPORTS_LBL_TITLE = 'Reports';
+
+// Income & Profit report grid columns
+RS_REPORTS_INCOME_COL_SALE_ID = 'Sale ID';
+RS_REPORTS_INCOME_COL_DATE = 'Date';
+RS_REPORTS_INCOME_COL_CUSTOMER = 'Customer';
+RS_REPORTS_INCOME_COL_SALE_TOTAL = 'Sale Total';
+RS_REPORTS_INCOME_COL_COST_TOTAL = 'Total Cost';
+RS_REPORTS_INCOME_COL_UTILITY = 'Utility';
+RS_REPORTS_INCOME_TOTALS = 'TOTALS:';
+
+// Inventory Valuation report grid columns
+RS_REPORTS_VAL_COL_PROD_ID = 'Prod ID';
+RS_REPORTS_VAL_COL_PRODUCT = 'Product';
+RS_REPORTS_VAL_COL_MIN_STOCK = 'Min Stock';
+RS_REPORTS_VAL_COL_MAX_STOCK = 'Max Stock';
+RS_REPORTS_VAL_COL_CUR_STOCK = 'Current Stock';
+RS_REPORTS_VAL_COL_AVG_COST = 'Avg Cost';
+RS_REPORTS_VAL_COL_SALE_PRICE = 'Sale Price';
+RS_REPORTS_VAL_COL_INV_VALUE = 'Inventory Value';
+RS_REPORTS_VAL_TOTAL = 'TOTAL INVENTORY:';
+
+// Purchases report grid columns (master + detail)
+RS_REPORTS_PUR_COL_ID = 'ID';
+RS_REPORTS_PUR_COL_DATE = 'Date';
+RS_REPORTS_PUR_COL_SUPPLIER = 'Supplier';
+RS_REPORTS_PUR_COL_TOTAL = 'Total';
+RS_REPORTS_PURDET_COL_PRODUCT = 'Product';
+RS_REPORTS_PURDET_COL_QTY = 'Quantity';
+RS_REPORTS_PURDET_COL_UNITCOST = 'Unit Cost';
+RS_REPORTS_PURDET_COL_SALEPRICE = 'Sale Price';
+RS_REPORTS_PURDET_COL_TOTAL = 'Total';
+
+// Reports CSV export dialog
+RS_REPORTS_SAVE_DLG_TITLE = 'Export Report to CSV';
+
 RS_REPORTS_TAB_UNITS_SOLD = 'Units Sold';
 RS_REPORTS_UNITS_COL_PRODUCT = 'Product';
 RS_REPORTS_UNITS_COL_UNITS = 'Units Sold';

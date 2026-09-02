@@ -117,6 +117,13 @@ begin
   if FInitialized then Exit;
   FInitialized := True;
 
+  { Static captions from resourcestrings for i18n }
+  LabelTitle.Caption := RS_REPORTS_LBL_TITLE;
+  LabelDateFrom.Caption := RS_REPORTS_DATE_FROM;
+  LabelDateTo.Caption := RS_REPORTS_DATE_TO;
+  BtnRefresh.Caption := RS_REPORTS_REFRESH;
+  BtnExportCSV.Caption := RS_REPORTS_EXPORT;
+
   DateFrom.Date := Date - 30;
   DateTo.Date := Date;
 
@@ -144,12 +151,12 @@ begin
   GridReport.ColCount := 6;
   GridReport.RowCount := 2;
   GridReport.FixedRows := 1;
-  GridReport.Cells[0, 0] := 'ID Venta';
-  GridReport.Cells[1, 0] := 'Fecha';
-  GridReport.Cells[2, 0] := 'Cliente';
-  GridReport.Cells[3, 0] := 'Total Venta';
-  GridReport.Cells[4, 0] := 'Total Costo';
-  GridReport.Cells[5, 0] := 'Utilidad';
+  GridReport.Cells[0, 0] := RS_REPORTS_INCOME_COL_SALE_ID;
+  GridReport.Cells[1, 0] := RS_REPORTS_INCOME_COL_DATE;
+  GridReport.Cells[2, 0] := RS_REPORTS_INCOME_COL_CUSTOMER;
+  GridReport.Cells[3, 0] := RS_REPORTS_INCOME_COL_SALE_TOTAL;
+  GridReport.Cells[4, 0] := RS_REPORTS_INCOME_COL_COST_TOTAL;
+  GridReport.Cells[5, 0] := RS_REPORTS_INCOME_COL_UTILITY;
   DistributeColumns(GridReport, [10, 15, 25, 18, 18, 14]);
 end;
 
@@ -159,14 +166,14 @@ begin
   GridReport.ColCount := 8;
   GridReport.RowCount := 2;
   GridReport.FixedRows := 1;
-  GridReport.Cells[0, 0] := 'ID Prod';
-  GridReport.Cells[1, 0] := 'Producto';
-  GridReport.Cells[2, 0] := 'Stock Mín';
-  GridReport.Cells[3, 0] := 'Stock Máx';
-  GridReport.Cells[4, 0] := 'Stock Actual';
-  GridReport.Cells[5, 0] := 'Costo Prom.';
-  GridReport.Cells[6, 0] := 'Precio Venta';
-  GridReport.Cells[7, 0] := 'Valor Inventario';
+  GridReport.Cells[0, 0] := RS_REPORTS_VAL_COL_PROD_ID;
+  GridReport.Cells[1, 0] := RS_REPORTS_VAL_COL_PRODUCT;
+  GridReport.Cells[2, 0] := RS_REPORTS_VAL_COL_MIN_STOCK;
+  GridReport.Cells[3, 0] := RS_REPORTS_VAL_COL_MAX_STOCK;
+  GridReport.Cells[4, 0] := RS_REPORTS_VAL_COL_CUR_STOCK;
+  GridReport.Cells[5, 0] := RS_REPORTS_VAL_COL_AVG_COST;
+  GridReport.Cells[6, 0] := RS_REPORTS_VAL_COL_SALE_PRICE;
+  GridReport.Cells[7, 0] := RS_REPORTS_VAL_COL_INV_VALUE;
   DistributeColumns(GridReport, [8, 22, 10, 10, 12, 13, 13, 12]);
 end;
 
@@ -226,7 +233,7 @@ begin
   begin
     GridReport.Cells[0, FIncomeList.Count + 1] := '';
     GridReport.Cells[1, FIncomeList.Count + 1] := '';
-    GridReport.Cells[2, FIncomeList.Count + 1] := 'TOTALES:';
+    GridReport.Cells[2, FIncomeList.Count + 1] := RS_REPORTS_INCOME_TOTALS;
     GridReport.Cells[3, FIncomeList.Count + 1] := Format('%.2f', [TotSales]);
     GridReport.Cells[4, FIncomeList.Count + 1] := Format('%.2f', [TotCosts]);
     GridReport.Cells[5, FIncomeList.Count + 1] := Format('%.2f', [TotUtility]);
@@ -272,7 +279,7 @@ begin
   begin
     GridReport.RowCount := FValuationList.Count + 2;
     GridReport.Cells[0, FValuationList.Count + 1] := '';
-    GridReport.Cells[1, FValuationList.Count + 1] := 'TOTAL INVENTARIO:';
+    GridReport.Cells[1, FValuationList.Count + 1] := RS_REPORTS_VAL_TOTAL;
     GridReport.Cells[2, FValuationList.Count + 1] := '';
     GridReport.Cells[3, FValuationList.Count + 1] := '';
     GridReport.Cells[4, FValuationList.Count + 1] := IntToStr(TotCount);
@@ -365,10 +372,10 @@ begin
   GridReport.ColCount := 4;
   GridReport.RowCount := 2;
   GridReport.FixedRows := 1;
-  GridReport.Cells[0, 0] := 'ID';
-  GridReport.Cells[1, 0] := 'Fecha';
-  GridReport.Cells[2, 0] := 'Proveedor';
-  GridReport.Cells[3, 0] := 'Total';
+  GridReport.Cells[0, 0] := RS_REPORTS_PUR_COL_ID;
+  GridReport.Cells[1, 0] := RS_REPORTS_PUR_COL_DATE;
+  GridReport.Cells[2, 0] := RS_REPORTS_PUR_COL_SUPPLIER;
+  GridReport.Cells[3, 0] := RS_REPORTS_PUR_COL_TOTAL;
   DistributeColumns(GridReport, [10, 20, 45, 25]);
 end;
 
@@ -378,11 +385,11 @@ begin
   GridDetail.ColCount := 5;
   GridDetail.RowCount := 2;
   GridDetail.FixedRows := 1;
-  GridDetail.Cells[0, 0] := 'Producto';
-  GridDetail.Cells[1, 0] := 'Cantidad';
-  GridDetail.Cells[2, 0] := 'Costo Unit.';
-  GridDetail.Cells[3, 0] := 'Precio Venta';
-  GridDetail.Cells[4, 0] := 'Total';
+  GridDetail.Cells[0, 0] := RS_REPORTS_PURDET_COL_PRODUCT;
+  GridDetail.Cells[1, 0] := RS_REPORTS_PURDET_COL_QTY;
+  GridDetail.Cells[2, 0] := RS_REPORTS_PURDET_COL_UNITCOST;
+  GridDetail.Cells[3, 0] := RS_REPORTS_PURDET_COL_SALEPRICE;
+  GridDetail.Cells[4, 0] := RS_REPORTS_PURDET_COL_TOTAL;
   DistributeColumns(GridDetail, [35, 15, 18, 18, 14]);
 end;
 
@@ -607,7 +614,7 @@ begin
   try
     SaveDialog.Filter := 'CSV Files (*.csv)|*.csv|Text Files (*.txt)|*.txt';
     SaveDialog.DefaultExt := 'csv';
-    SaveDialog.Title := 'Exportar Reporte a CSV';
+    SaveDialog.Title := RS_REPORTS_SAVE_DLG_TITLE;
 
     if SaveDialog.Execute then
     begin

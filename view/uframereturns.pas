@@ -102,6 +102,10 @@ begin
   GridItems.Cells[0, 0] := RS_RETURNS_GRID_PRODUCT;
   GridItems.Cells[1, 0] := RS_RETURNS_GRID_QTY;
   GridItems.Cells[2, 0] := RS_RETURNS_GRID_COST;
+  BtnAddItem.Caption := RS_RETURNS_ADD;
+  BtnDeleteItem.Caption := RS_RETURNS_DELETE;
+  BtnSave.Caption := RS_RETURNS_SAVE;
+  BtnRebuild.Caption := RS_RETURNS_REBUILD;
 
   { Populate operation type combo from resourcestrings }
   ComboOpType.Items.Clear;
