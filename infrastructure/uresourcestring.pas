@@ -389,6 +389,7 @@ RS_SETTINGS_DB_CHANGED = 'Database changed and reconnected: %s';
 RS_SETTINGS_DB_NOT_SWITCHED_STATUS = 'Saved, but could not switch database: %s';
 RS_SETTINGS_DB_NOT_SWITCHED_TITLE = 'Database not switched';
 RS_SETTINGS_DB_NOT_SWITCHED_MSG = 'The db.file value was saved, but the application could not connect to:' + sLineBreak + '%s' + sLineBreak + sLineBreak + '%s' + sLineBreak + 'Still using: %s';
+RS_SETTINGS_DB_FILE_DESC = 'SQLite database file path (stored in apotheca.conf)';
 
 // Product form
 RS_PRODUCT_LBL_ORIGINAL_PRICE = 'Original Price';

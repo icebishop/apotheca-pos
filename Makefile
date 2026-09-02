@@ -6,7 +6,7 @@ LPI = $(PROJECT).lpi
 BINARY = $(PROJECT)
 TEST_DIR = tests
 PACKAGE_NAME = apotheca-dist
-VERSION = 2.3.0
+VERSION = 2.3.1
 
 # Lazarus build tool
 LAZBUILD = lazbuild

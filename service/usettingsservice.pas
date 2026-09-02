@@ -189,8 +189,10 @@ procedure TSettingsService.SeedDefaults(const DbFilePath, ProductsPath,
   end;
 
 begin
-  SeedIfAbsent(PARAM_DB_FILE, DbFilePath, False,
-    'SQLite database file path');
+  { db.file is intentionally NOT seeded here: it lives in the external config
+    file (apotheca.conf) because the path is needed before the DB is opened.
+    DbFilePath is kept in the signature for compatibility but unused. }
+  if DbFilePath = '' then ; { silence unused-parameter hint without side effects }
   SeedIfAbsent(PARAM_EXPORT_PRODUCTS_PATH, ProductsPath, False,
     'Products JSON export file (Update Web Catalog)');
   SeedIfAbsent(PARAM_EXPORT_SERVICES_PATH, ServicesPath, False,

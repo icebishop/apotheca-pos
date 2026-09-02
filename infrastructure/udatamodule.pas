@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, sqlite3conn, sqldb, FileUtil, LResources, Forms, Controls,
-  Dialogs, LazLogger, ULogger, USettingsService;
+  Dialogs, LazLogger, ULogger, USettingsService, UAppConfig;
 
 type
 
@@ -891,42 +891,27 @@ end;
 
 procedure TDataModule1.DataModuleCreate(Sender: TObject);
 var
-  DbPath, ConfiguredPath: String;
-  Svc: TSettingsService;
+  DefaultPath, DbPath: String;
 begin
-  DbPath := ResolveDefaultDbPath;
+  { The database file path lives in the external config file (apotheca.conf),
+    not in the parameters table - it must be known BEFORE the DB is opened.
+    Fall back to the default location when the config is missing/empty, or when
+    it points to a non-existent file (so a stale path cannot lock us out). }
+  DefaultPath := ResolveDefaultDbPath;
+  DbPath := TAppConfig.GetDbFile(DefaultPath);
+  if (Trim(DbPath) = '') or
+     ((not FileExists(DbPath)) and FileExists(DefaultPath) and
+      (not SameFileName(ExpandFileName(DbPath), ExpandFileName(DefaultPath)))) then
+  begin
+    DebugLn('[DataModule] configured db.file "', DbPath,
+      '" unusable; using default ', DefaultPath);
+    DbPath := DefaultPath;
+  end;
   DebugLn('[DataModule] Initial DbPath = ', DbPath);
 
   try
     if not OpenDatabase(DbPath) then
       Exit;
-
-    { The db.file parameter can redirect to another database file. It lives in
-      the parameters table of the just-opened DB; if it points to a different,
-      existing file, switch to it (and run migrations there). }
-    ConfiguredPath := '';
-    try
-      EnsureTransaction;
-      Svc := TSettingsService.Create(SQLite3Connection1);
-      try
-        ConfiguredPath := Svc.GetValue(PARAM_DB_FILE, '');
-      finally
-        Svc.Free;
-      end;
-    except
-      on E: Exception do
-      begin
-        ConfiguredPath := '';
-        DebugLn('[DataModule] read db.file param failed: ' + E.Message);
-      end;
-    end;
-
-    if (ConfiguredPath <> '') and FileExists(ConfiguredPath) and
-       (not SameFileName(ExpandFileName(ConfiguredPath), ExpandFileName(DbPath))) then
-    begin
-      DebugLn('[DataModule] db.file parameter redirects to: ', ConfiguredPath);
-      OpenDatabase(ConfiguredPath);
-    end;
   except
     on E: Exception do
     begin

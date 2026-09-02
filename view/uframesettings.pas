@@ -16,7 +16,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Grids, StdCtrls, Buttons, ExtCtrls,
-  Graphics, Dialogs, LazLogger, USettingsService, UDataModule, UResourceString;
+  Graphics, Dialogs, LazLogger, USettingsService, UDataModule, UResourceString,
+  UAppConfig;
 
 type
 
@@ -88,7 +89,7 @@ procedure TFrameSettings.LoadGrid;
 var
   Svc: TSettingsService;
   Views: TParameterViewList;
-  i: Integer;
+  i, RowIdx: Integer;
   V: TParameterView;
   PrevKey: String;
 begin
@@ -105,18 +106,34 @@ begin
       try
         Views := Svc.GetViews();
         try
-          GridParams.RowCount := 1 + Views.Count;
+          { Row 1 is always the db.file path, sourced from the external config
+            file (apotheca.conf), not the parameters table. }
+          GridParams.RowCount := 2 + Views.Count;
+          GridParams.Cells[COL_KEY, 1] := PARAM_DB_FILE;
+          GridParams.Cells[COL_VALUE, 1] :=
+            TAppConfig.GetDbFile(DataModule1.CurrentDbPath);
+          GridParams.Cells[COL_CREDENTIAL, 1] := RS_SETTINGS_NO;
+          GridParams.Cells[COL_DESC, 1] := RS_SETTINGS_DB_FILE_DESC;
+
+          RowIdx := 2;
           for i := 0 to Views.Count - 1 do
           begin
             V := Views[i];
-            GridParams.Cells[COL_KEY, i + 1] := V.Key;
-            GridParams.Cells[COL_VALUE, i + 1] := V.Masked;
+            { db.file is shown from the config file (row 1); skip any stale
+              db.file row left in the parameters table by older versions. }
+            if V.Key = PARAM_DB_FILE then
+              Continue;
+            GridParams.Cells[COL_KEY, RowIdx] := V.Key;
+            GridParams.Cells[COL_VALUE, RowIdx] := V.Masked;
             if V.IsCredential then
-              GridParams.Cells[COL_CREDENTIAL, i + 1] := RS_SETTINGS_YES
+              GridParams.Cells[COL_CREDENTIAL, RowIdx] := RS_SETTINGS_YES
             else
-              GridParams.Cells[COL_CREDENTIAL, i + 1] := RS_SETTINGS_NO;
-            GridParams.Cells[COL_DESC, i + 1] := V.Description;
+              GridParams.Cells[COL_CREDENTIAL, RowIdx] := RS_SETTINGS_NO;
+            GridParams.Cells[COL_DESC, RowIdx] := V.Description;
+            Inc(RowIdx);
           end;
+          { Shrink if a stale db.file row was skipped. }
+          GridParams.RowCount := RowIdx;
         finally
           Views.Free;
         end;
@@ -192,6 +209,36 @@ begin
     Exit;
   end;
   try
+    { The database file path is stored in the external config file
+      (apotheca.conf), NOT the parameters table, so it is known before the DB
+      opens. Persist it there, then reconnect the data module. }
+    if FSelectedKey = PARAM_DB_FILE then
+    begin
+      NewDbPath := Trim(edtValue.Text);
+      if not TAppConfig.SetDbFile(NewDbPath) then
+      begin
+        lblStatus.Caption := Format(RS_SETTINGS_MSG_SAVE_ERROR, [FSelectedKey]);
+        Exit;
+      end;
+      if DataModule1.ReopenDatabase(NewDbPath, ReopenErr) then
+      begin
+        LoadGrid;  { new DB may have its own parameter set }
+        lblStatus.Caption := Format(RS_SETTINGS_DB_CHANGED, [NewDbPath]);
+      end
+      else
+      begin
+        { Reopen failed/refused; the config value was written but the connection
+          still points at the previous file. Warn and reload from the old DB. }
+        LoadGrid;
+        lblStatus.Caption := Format(RS_SETTINGS_DB_NOT_SWITCHED_STATUS, [ReopenErr]);
+        MessageDlg(RS_SETTINGS_DB_NOT_SWITCHED_TITLE,
+          Format(RS_SETTINGS_DB_NOT_SWITCHED_MSG,
+            [NewDbPath, ReopenErr, DataModule1.CurrentDbPath]),
+          mtWarning, [mbOK], 0);
+      end;
+      Exit;
+    end;
+
     DataModule1.EnsureTransaction;
     Svc := TSettingsService.Create(DataModule1.SQLite3Connection1);
     try
@@ -202,30 +249,6 @@ begin
       end;
     finally
       Svc.Free;
-    end;
-
-    { Changing the database file requires reconnecting the data module so the
-      whole app reads/writes the new file. }
-    if FSelectedKey = PARAM_DB_FILE then
-    begin
-      NewDbPath := edtValue.Text;
-      if DataModule1.ReopenDatabase(NewDbPath, ReopenErr) then
-      begin
-        LoadGrid;  { new DB may have its own parameter set }
-        lblStatus.Caption := Format(RS_SETTINGS_DB_CHANGED, [NewDbPath]);
-      end
-      else
-      begin
-        { Reopen failed/refused; the value was written but the connection still
-          points at the previous file. Warn the user and reload from the old DB. }
-        LoadGrid;
-        lblStatus.Caption := Format(RS_SETTINGS_DB_NOT_SWITCHED_STATUS, [ReopenErr]);
-        MessageDlg(RS_SETTINGS_DB_NOT_SWITCHED_TITLE,
-          Format(RS_SETTINGS_DB_NOT_SWITCHED_MSG,
-            [NewDbPath, ReopenErr, DataModule1.CurrentDbPath]),
-          mtWarning, [mbOK], 0);
-      end;
-      Exit;
     end;
 
     { Reload so the grid reflects the persisted value (and re-masks credentials).

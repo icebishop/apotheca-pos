@@ -1244,6 +1244,10 @@ msgstr "Base de datos no cambiada"
 msgid "The db.file value was saved, but the application could not connect to:\n%s\n\n%s\nStill using: %s"
 msgstr "El valor db.file fue guardado, pero la aplicación no pudo conectarse a:\n%s\n\n%s\nSe sigue usando: %s"
 
+#: uresourcestring.rs_settings_db_file_desc
+msgid "SQLite database file path (stored in apotheca.conf)"
+msgstr "Ruta del archivo de base de datos SQLite (guardada en apotheca.conf)"
+
 #: uresourcestring.rs_product_lbl_original_price
 msgid "Original Price"
 msgstr "Precio Original"
