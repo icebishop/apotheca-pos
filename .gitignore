@@ -15,7 +15,7 @@ apotheca.exe
 # Lazarus generated form resources (from {$R *.lfm} in output dir)
 /uframe*.lfm
 /uformsplash.lfm
-
+/ufpublishpreview.lfm
 # Logs
 *.log
 logs/
