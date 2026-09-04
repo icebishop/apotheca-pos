@@ -92,7 +92,9 @@ begin
       LogError('SaleService', 'SALE_EXCEPTION', 'error=' + E.Message);
     end;
   end;
-  dataOut.Free;
+  { Destroy, not Free: TData shadows a lowercase free() that used to release the
+    shared connection transaction. }
+  dataOut.Destroy;
 end;
 
 function TSaleService.GetLastError: String;

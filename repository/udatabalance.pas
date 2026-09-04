@@ -145,6 +145,7 @@ balance.setPrice(Self.getQuery().FieldByName('price').AsFloat);
 balance.setCost(Self.getQuery().FieldByName('cost').AsFloat);
 Self.getQuery().Next;
 end;
+Self.getQuery().Close;
 get := balance;
 except
 get := balance;

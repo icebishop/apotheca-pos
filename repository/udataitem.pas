@@ -25,7 +25,7 @@ unit UDataItem;
 interface
 
 uses
-  Classes, SysUtils, sqlite3conn, SqlDb, UData, UItem, UDataProduct;
+  Classes, SysUtils, sqlite3conn, SqlDb, ULogger, UData, UItem, UDataProduct;
 
   type
     TDataItem = class(TData)
@@ -74,7 +74,14 @@ implementation
             Self.getQuery().Close;
 
          except
-               new := 0;
+               on E: Exception do
+               begin
+                    LogError('DataItem', 'INSERT_FAILED',
+                      'operation=' + IntToStr(transactionID) +
+                      ' productId=' + IntToStr(item.getProduct().getId()) +
+                      ' error=' + E.ClassName + ': ' + E.Message);
+                    new := 0;
+               end;
          end;
     end;
 

@@ -5,8 +5,9 @@ PROJECT = apotheca
 LPI = $(PROJECT).lpi
 BINARY = $(PROJECT)
 TEST_DIR = tests
+SERVICE_DIR = service
 PACKAGE_NAME = apotheca-dist
-VERSION = 2.3.1
+VERSION = 2.3.2
 
 # Lazarus build tool
 LAZBUILD = lazbuild
@@ -25,7 +26,10 @@ LCL_UNITS_PATH = /usr/lib/lazarus/lcl/units/x86_64-linux
 IG_TEST_RUNNERS = run_caption_publish_test run_detector_publish_test \
                   run_publish_image_url_test run_publish_tracking_test
 
-.PHONY: all build test test-instagram run clean package release help
+# Database / transaction test runners (compiled with fpc directly)
+DB_TEST_RUNNERS = run_db_test
+
+.PHONY: all build test test-instagram test-db run clean package release help
 
 # Release settings
 TAG = v$(VERSION)
@@ -89,6 +93,28 @@ test-instagram:
 	echo "Instagram test suites: $$PASS built+run, $$FAIL failed"; \
 	[ $$FAIL -eq 0 ]
 
+## Build and run the database / transaction persistence tests (fpc directly)
+test-db:
+	@echo "Building and running database / transaction tests..."
+	@cd $(TEST_DIR); PASS=0; FAIL=0; \
+	for t in $(DB_TEST_RUNNERS); do \
+		echo "  Compiling $$t..."; \
+		if $(FPC) -MObjFPC $(SRC_UNIT_PATHS) -Fu$(LAZUTILS_PATH) -Fu$(LCL_UNITS_PATH) $$t.lpr > /tmp/$$t.build 2>&1; then \
+			echo "  Running $$t..."; \
+			if ./$$t --all --format=plainnotiming 2>&1 | tail -6; then \
+				PASS=$$((PASS + 1)); \
+			else \
+				FAIL=$$((FAIL + 1)); \
+			fi; \
+		else \
+			echo "  BUILD FAILED for $$t (see /tmp/$$t.build)"; \
+			FAIL=$$((FAIL + 1)); \
+		fi; \
+		echo ""; \
+	done; \
+	echo "DB test suites: $$PASS built+run, $$FAIL failed"; \
+	[ $$FAIL -eq 0 ]
+
 ## Build and run the application
 run: build
 	@echo "Starting $(PROJECT)..."
@@ -112,8 +138,10 @@ clean:
 	rm -f $(TEST_DIR)/run_detector_publish_test
 	rm -f $(TEST_DIR)/run_publish_image_url_test
 	rm -f $(TEST_DIR)/run_publish_tracking_test
+	rm -f $(TEST_DIR)/run_db_test
 	rm -f $(TEST_DIR)/test_cart_arithmetic
 	rm -f $(TEST_DIR)/test_cart_quantity
+	rm -f $(SERVICE_DIR)/*.o $(SERVICE_DIR)/*.ppu
 	@echo "Clean complete"
 
 ## Create distributable package
@@ -153,6 +181,7 @@ help:
 	@echo "Targets:"
 	@echo "  make build        - Compile the application"
 	@echo "  make test         - Run all property-based tests"
+	@echo "  make test-db      - Run database / transaction persistence tests"
 	@echo "  make build-tests  - Compile test binaries only"
 	@echo "  make run          - Build and run the application"
 	@echo "  make clean        - Remove all build artifacts"

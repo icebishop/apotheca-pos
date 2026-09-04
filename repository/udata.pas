@@ -83,8 +83,14 @@ end;
 
 procedure TData.free();
 begin
-Self.getTransaction().Free;
-Self.getQuery().Free;
+{ Do NOT free the transaction here: it is the SHARED connection transaction
+  (assigned in Create as Self.Transaction := Connection.Transaction), owned by
+  the data module and reused across the whole app. Freeing it left the
+  connection with a dangling transaction, which broke every subsequent DB
+  operation (purchases/sales failing to save). Only release the per-instance
+  query we created. }
+if Self.getQuery() <> nil then
+  Self.getQuery().Free;
 end;
 
 

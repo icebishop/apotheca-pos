@@ -141,8 +141,23 @@ begin
        if balance <> nil then
        begin
          product.setBalance(balance);
-         if not dataBalance.edit(product) then
-           DebugLn('[TBalanceBuilder.build] FAILED edit for id=' + IntToStr(product.getId()));
+         { A product may have NO balance row yet (e.g. created without one, or
+           a product whose only movements are purchases). balance.getId()=0 in
+           that case, so an UPDATE would touch zero rows and silently drop the
+           recomputed stock. INSERT a fresh row instead; otherwise UPDATE. }
+         if balance.getId() > 0 then
+         begin
+           if not dataBalance.edit(product) then
+             DebugLn('[TBalanceBuilder.build] FAILED edit for id=' + IntToStr(product.getId()));
+         end
+         else
+         begin
+           if dataBalance.new(product) <= 0 then
+             DebugLn('[TBalanceBuilder.build] FAILED insert for id=' + IntToStr(product.getId()))
+           else
+             DebugLn('[TBalanceBuilder.build] INSERTED missing balance for id=' +
+               IntToStr(product.getId()));
+         end;
        end
        else
          DebugLn('[TBalanceBuilder.build] NIL balance for id=' + IntToStr(product.getId()));

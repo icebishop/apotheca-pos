@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, Forms, Controls, Graphics, StdCtrls, EditBtn, Grids,
   Buttons, ComCtrls, Dialogs, LCLType,
   UPurchase, UItem, UFFindSupplier, UFFindProduct,
-  UPurchaseService, UDataModule, UResourceString, UGridUtils, LazLogger;
+  UPurchaseService, UDataModule, UResourceString, UGridUtils, LazLogger, ULogger;
 
 type
 
@@ -199,18 +199,34 @@ var
   hasCompleteRow: Boolean;
 begin
   try
+  LogInfo('FramePurchase', 'SAVE_CLICK',
+    'items=' + IntToStr(FPurchase.getItemList().Count) +
+    ' supplier=' + BoolToStr(FPurchase.getSupplier() <> nil, 'set', 'nil'));
+
+  { Ensure any in-progress grid edit is committed to the item objects before we
+    validate/save (if the user clicked Save while a cell still had focus, its
+    OnEditingDone may not have fired yet). }
+  GridItemsEditingDone(nil);
+
   { Validate supplier selected }
   if FPurchase.getSupplier() = nil then
   begin
     StatusBarPurchase.SimpleText := RS_PURCHASE_NO_SUPPLIER;
+    LogWarn('FramePurchase', 'SAVE_BLOCKED', 'reason=no_supplier');
     Exit;
   end;
 
-  { Validate at least one complete item row }
+  { Validate at least one complete item row - log every row so we can see WHY a
+    save is rejected (e.g. qty=0 or cost=0 because a grid edit did not stick). }
   hasCompleteRow := False;
   for i := 0 to FPurchase.getItemList().Count - 1 do
   begin
     item := TItem(FPurchase.getItemList()[i]);
+    LogInfo('FramePurchase', 'SAVE_ROW',
+      'row=' + IntToStr(i) +
+      ' product=' + BoolToStr(item.getProduct() <> nil, 'set', 'nil') +
+      ' qty=' + IntToStr(item.getStock()) +
+      ' cost=' + FloatToStr(item.getCost()));
     if (item.getProduct() <> nil) and (item.getStock() > 0) and
        (item.getCost() > 0) then
     begin
@@ -222,22 +238,32 @@ begin
   if not hasCompleteRow then
   begin
     StatusBarPurchase.SimpleText := RS_PURCHASE_NO_ITEMS;
+    LogWarn('FramePurchase', 'SAVE_BLOCKED', 'reason=no_complete_row');
     Exit;
   end;
 
   { Call PurchaseService to save }
   if FPurchaseService.SavePurchase(FPurchase) then
   begin
+    LogInfo('FramePurchase', 'SAVE_SUCCESS', '');
     Application.MessageBox(PChar(RS_OBJECTSAVE), PChar(RS_MESSAGE), MB_OK);
     ClearForm;
   end
   else
   begin
+    LogError('FramePurchase', 'SAVE_SERVICE_FAILED',
+      'lastError=' + FPurchaseService.GetLastError());
     Application.MessageBox(PChar(FPurchaseService.GetLastError()),
       PChar(RS_Error), MB_ICONHAND);
   end;
   except
-    on E: Exception do DebugLn('[TFramePurchase.BtnSavePurchaseClick] ERROR: ' + E.Message);
+    on E: Exception do
+    begin
+      LogError('FramePurchase', 'SAVE_CLICK_EXCEPTION',
+        'error=' + E.ClassName + ': ' + E.Message);
+      StatusBarPurchase.SimpleText := 'Error: ' + E.Message;
+      Application.MessageBox(PChar('Error: ' + E.Message), PChar(RS_Error), MB_ICONHAND);
+    end;
   end;
 end;
 
