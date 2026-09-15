@@ -26,6 +26,12 @@ uses
 
 implementation
 
+const
+  { Julian Day number of the TDateTime epoch (1899-12-30). SQLite stores dates
+    written via Params.AsDate as Julian Days, so read them back with:
+    TDateTime := storedJulianDay - JULIAN_TDATETIME_OFFSET. }
+  JULIAN_TDATETIME_OFFSET = 2415018.5;
+
         function TDataTransaction.updateBalance(product:TProduct):Boolean;
         var
           dataBalance : TDataBalance;
@@ -275,7 +281,11 @@ implementation
                  transaction := TOut.Create;
               transaction.setId(Self.getQuery().FieldByName('id').AsInteger);
               transaction.setPerson(dataPerson.get(Self.getQuery().FieldByName('person').AsInteger));
-              transaction.setDate(FloatToDateTime(Self.getQuery().FieldByName('date').AsFloat));
+              { The date column stores a SQLite Julian Day (as written by
+                Params.AsDate). Convert Julian Day -> TDateTime by subtracting
+                the epoch offset (1899-12-30). FloatToDateTime is an identity
+                cast and produced year-8638 garbage. }
+              transaction.setDate(Self.getQuery().FieldByName('date').AsFloat - JULIAN_TDATETIME_OFFSET);
               transaction.setItemList(dataItem.getTransactionItems(Self.getQuery().FieldByName('id').AsInteger));
               transaction.setOperationType(dataOperationType.get(Self.getQuery().FieldByName('type').AsInteger));
               Self.getQuery().Next;
@@ -312,7 +322,8 @@ implementation
                  transaction := TOut.Create;
               transaction.setId(Self.getQuery().FieldByName('id').AsInteger);
               transaction.setPerson(dataPerson.get(Self.getQuery().FieldByName('person').AsInteger));
-              transaction.setDate(FloatToDateTime(Self.getQuery().FieldByName('date').AsFloat));
+              { Julian Day -> TDateTime (see note in the other get overload). }
+              transaction.setDate(Self.getQuery().FieldByName('date').AsFloat - JULIAN_TDATETIME_OFFSET);
               transaction.setItemList(dataItem.getProductTransactionItems(Self.getQuery().FieldByName('id').AsInteger,productId));
               transaction.setOperationType(dataOperationType.get(Self.getQuery().FieldByName('type').AsInteger));
               Self.getQuery().Next;

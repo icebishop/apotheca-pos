@@ -17,7 +17,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Grids, StdCtrls, Buttons, ExtCtrls,
   Graphics, Dialogs, LazLogger, USettingsService, UDataModule, UResourceString,
-  UAppConfig;
+  UAppConfig, ULogger;
 
 type
 
@@ -222,6 +222,7 @@ begin
       end;
       if DataModule1.ReopenDatabase(NewDbPath, ReopenErr) then
       begin
+        LogSecurity('FrameSettings', 'DB_FILE_CHANGED', 'newPath=' + NewDbPath);
         LoadGrid;  { new DB may have its own parameter set }
         lblStatus.Caption := Format(RS_SETTINGS_DB_CHANGED, [NewDbPath]);
       end
@@ -247,6 +248,14 @@ begin
         lblStatus.Caption := Format(RS_SETTINGS_MSG_SAVE_ERROR, [FSelectedKey]);
         Exit;
       end;
+      { Audit the parameter change. Never log the value of a credential; for
+        plain parameters the value is safe to record. }
+      if FSelectedIsCredential then
+        LogSecurity('FrameSettings', 'PARAMETER_CHANGED',
+          'key=' + FSelectedKey + ' credential=yes value=(hidden)')
+      else
+        LogSecurity('FrameSettings', 'PARAMETER_CHANGED',
+          'key=' + FSelectedKey + ' value=' + edtValue.Text);
     finally
       Svc.Free;
     end;

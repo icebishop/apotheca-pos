@@ -28,7 +28,7 @@ uses
   Classes, SysUtils, Forms, Controls, ComCtrls, Grids, StdCtrls, Buttons,
   Dialogs, LCLType, SqlDb,
   UCustomer, USupplier, UDataCustomer, UDataSupplier, UDataModule,
-  UFCustomer, UFSupplier, UResourceString, UGridUtils, LazLogger;
+  UFCustomer, UFSupplier, UResourceString, UGridUtils, LazLogger, ULogger;
 
 type
 
@@ -419,11 +419,15 @@ if not         DataCustomer.getTransaction().Active then         DataCustomer.ge
         if DataCustomer.delete(Customer) then
         begin
           DataCustomer.getTransaction().Commit;
+          LogSecurity('FramePeople', 'CUSTOMER_DELETED',
+            'customerId=' + IntToStr(Customer.getId()) + ' name=' + Customer.getName());
           Application.MessageBox(PChar(RS_OBJECTSAVE), PChar(RS_MESSAGE), MB_OK);
         end
         else
         begin
           DataCustomer.getTransaction().Rollback;
+          LogError('FramePeople', 'CUSTOMER_DELETE_FAILED',
+            'customerId=' + IntToStr(Customer.getId()) + ' name=' + Customer.getName());
           Application.MessageBox(PChar(DataCustomer.getLastError()),
             PChar(RS_Error), MB_ICONHAND);
         end;
@@ -461,11 +465,15 @@ if not         DataSupplier.getTransaction().Active then         DataSupplier.ge
         if DataSupplier.delete(Supplier) then
         begin
           DataSupplier.getTransaction().Commit;
+          LogSecurity('FramePeople', 'SUPPLIER_DELETED',
+            'supplierId=' + IntToStr(Supplier.getId()) + ' name=' + Supplier.getName());
           Application.MessageBox(PChar(RS_OBJECTSAVE), PChar(RS_MESSAGE), MB_OK);
         end
         else
         begin
           DataSupplier.getTransaction().Rollback;
+          LogError('FramePeople', 'SUPPLIER_DELETE_FAILED',
+            'supplierId=' + IntToStr(Supplier.getId()) + ' name=' + Supplier.getName());
           Application.MessageBox(PChar(DataSupplier.getLastError()),
             PChar(RS_Error), MB_ICONHAND);
         end;

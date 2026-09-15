@@ -27,7 +27,8 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Grids, StdCtrls, Buttons,
   Dialogs, LCLType, SqlDb, LazLogger,
-  UProduct, UDataProduct, UDataModule, UFProduct, UResourceString, UGridUtils;
+  UProduct, UDataProduct, UDataModule, UFProduct, UResourceString, UGridUtils,
+  ULogger, UFProductMovements;
 
 type
 
@@ -43,6 +44,7 @@ type
     procedure BtnAddClick(Sender: TObject);
     procedure BtnEditClick(Sender: TObject);
     procedure BtnDeleteClick(Sender: TObject);
+    procedure GridProductsDblClick(Sender: TObject);
   private
     FProductList: TList;
     procedure LoadProducts(const AFilter: String);
@@ -68,6 +70,7 @@ begin
   FProductList := nil;
   ApplyTranslations;
   InitGrid;
+  GridProducts.OnDblClick := @GridProductsDblClick;
   LoadProducts('');
 end;
 
@@ -220,6 +223,15 @@ begin
   RefreshGrid;
 end;
 
+procedure TFrameProducts.GridProductsDblClick(Sender: TObject);
+var
+  Product: TProduct;
+begin
+  Product := GetSelectedProduct;
+  if Product = nil then Exit;
+  ShowProductMovements(Self, Product);
+end;
+
 procedure TFrameProducts.BtnDeleteClick(Sender: TObject);
 var
   Product: TProduct;
@@ -241,11 +253,15 @@ if not       DataProduct.getTransaction().Active then       DataProduct.getTrans
       if DataProduct.delete(Product) then
       begin
         DataProduct.getTransaction().Commit;
+        LogSecurity('FrameProducts', 'PRODUCT_DELETED',
+          'productId=' + IntToStr(Product.getId()) + ' name=' + Product.getName());
         Application.MessageBox(PChar(RS_OBJECTSAVE), PChar(RS_MESSAGE), MB_OK);
       end
       else
       begin
         DataProduct.getTransaction().Rollback;
+        LogError('FrameProducts', 'PRODUCT_DELETE_FAILED',
+          'productId=' + IntToStr(Product.getId()) + ' name=' + Product.getName());
         Application.MessageBox(PChar(RS_OBJECTNOTSAVE),
           PChar(RS_Error), MB_ICONHAND);
       end;

@@ -60,6 +60,9 @@ type
       product that has purchase history but no balance row (what the balance
       builder relies on to fix O'min-style products). }
     procedure TestDataBalanceInsertForMissingProduct;
+    { With foreign_keys ON, an item referencing a non-existent product must be
+      rejected (orphan rows blocked). }
+    procedure TestForeignKeyEnforcementRejectsOrphan;
   end;
 
 implementation
@@ -120,7 +123,9 @@ begin
           ' type INTEGER NOT NULL, date REAL, person INTEGER, credit INTEGER DEFAULT 0);');
   ExecSQL('CREATE TABLE item (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,' +
           ' product INTEGER NOT NULL, operation INTEGER NOT NULL, cost REAL NOT NULL,' +
-          ' stock INTEGER NOT NULL, price REAL NOT NULL);');
+          ' stock INTEGER NOT NULL, price REAL NOT NULL,' +
+          ' FOREIGN KEY(product) REFERENCES product(id),' +
+          ' FOREIGN KEY(operation) REFERENCES operation(id));');
 end;
 
 procedure TDBTest.SeedData;
@@ -193,6 +198,9 @@ begin
   FConn.DatabaseName := FDbPath;
   FConn.Transaction := FTrans;
   FTrans.DataBase := FConn;
+  { Enforce foreign keys via connection Params, mirroring the app's
+    OpenDatabase (must be set at connect time, not via a runtime PRAGMA). }
+  FConn.Params.Add('foreign_keys=ON');
   FConn.Open;
   if not FTrans.Active then
     FTrans.StartTransaction;
@@ -493,6 +501,32 @@ begin
     ScalarInt('SELECT COUNT(*) FROM balance WHERE product = 3'));
   AssertEquals('inserted balance units correct', 4,
     ScalarInt('SELECT units FROM balance WHERE product = 3'));
+end;
+
+procedure TDBTest.TestForeignKeyEnforcementRejectsOrphan;
+var
+  raised: Boolean;
+begin
+  { Verify the pragma is actually ON for this connection. }
+  AssertEquals('foreign_keys pragma is ON', 1,
+    ScalarInt('PRAGMA foreign_keys'));
+
+  { Inserting an item for a product that does not exist (id 9999) and a
+    non-existent operation must be rejected by FK enforcement. }
+  raised := False;
+  try
+    ExecSQL('INSERT INTO item (product, operation, cost, stock, price)' +
+            ' VALUES (9999, 9999, 100.0, 1, 200.0);');
+  except
+    on E: Exception do
+      raised := True;
+  end;
+
+  AssertTrue('orphan item insert was rejected by FK enforcement', raised);
+  if FTrans.Active then FTrans.Rollback;
+  FTrans.StartTransaction;
+  AssertEquals('no orphan item row persisted', 0,
+    ScalarInt('SELECT COUNT(*) FROM item WHERE product = 9999'));
 end;
 
 initialization

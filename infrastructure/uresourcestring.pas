@@ -391,6 +391,21 @@ RS_SETTINGS_DB_NOT_SWITCHED_TITLE = 'Database not switched';
 RS_SETTINGS_DB_NOT_SWITCHED_MSG = 'The db.file value was saved, but the application could not connect to:' + sLineBreak + '%s' + sLineBreak + sLineBreak + '%s' + sLineBreak + 'Still using: %s';
 RS_SETTINGS_DB_FILE_DESC = 'SQLite database file path (stored in apotheca.conf)';
 
+// Product movements history dialog
+RS_PRODMOV_TITLE      = 'Movements of: %s';
+RS_PRODMOV_COL_ID     = 'ID';
+RS_PRODMOV_COL_TYPE   = 'Type';
+RS_PRODMOV_COL_DATE   = 'Date';
+RS_PRODMOV_COL_PERSON = 'Provider / Customer';
+RS_PRODMOV_COL_QTY    = 'Quantity';
+RS_PRODMOV_COL_VALUE  = 'Value';
+RS_PRODMOV_TOTAL      = 'In: %d unit(s)   Out: %d unit(s)';
+RS_PRODMOV_NONE       = 'This product has no registered movements.';
+RS_PRODMOV_BTN_CLOSE  = 'Close';
+RS_PRODMOV_FROM       = 'From:';
+RS_PRODMOV_TO         = 'To:';
+RS_PRODMOV_BTN_FILTER = 'Filter';
+
 // Product form
 RS_PRODUCT_LBL_ORIGINAL_PRICE = 'Original Price';
 RS_PRODUCT_LBL_CATEGORY = 'Category';

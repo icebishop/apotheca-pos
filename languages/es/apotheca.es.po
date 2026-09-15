@@ -1248,6 +1248,58 @@ msgstr "El valor db.file fue guardado, pero la aplicación no pudo conectarse a:
 msgid "SQLite database file path (stored in apotheca.conf)"
 msgstr "Ruta del archivo de base de datos SQLite (guardada en apotheca.conf)"
 
+#: uresourcestring.rs_prodmov_title
+msgid "Movements of: %s"
+msgstr "Movimientos de: %s"
+
+#: uresourcestring.rs_prodmov_col_id
+msgid "ID"
+msgstr "ID"
+
+#: uresourcestring.rs_prodmov_col_type
+msgid "Type"
+msgstr "Tipo"
+
+#: uresourcestring.rs_prodmov_col_date
+msgid "Date"
+msgstr "Fecha"
+
+#: uresourcestring.rs_prodmov_col_person
+msgid "Provider / Customer"
+msgstr "Proveedor / Cliente"
+
+#: uresourcestring.rs_prodmov_col_qty
+msgid "Quantity"
+msgstr "Cantidad"
+
+#: uresourcestring.rs_prodmov_col_value
+msgid "Value"
+msgstr "Valor"
+
+#: uresourcestring.rs_prodmov_total
+msgid "In: %d unit(s)   Out: %d unit(s)"
+msgstr "Entradas: %d unidad(es)   Salidas: %d unidad(es)"
+
+#: uresourcestring.rs_prodmov_none
+msgid "This product has no registered movements."
+msgstr "Este producto no tiene movimientos registrados."
+
+#: uresourcestring.rs_prodmov_btn_close
+msgid "Close"
+msgstr "Cerrar"
+
+#: uresourcestring.rs_prodmov_from
+msgid "From:"
+msgstr "Desde:"
+
+#: uresourcestring.rs_prodmov_to
+msgid "To:"
+msgstr "Hasta:"
+
+#: uresourcestring.rs_prodmov_btn_filter
+msgid "Filter"
+msgstr "Filtrar"
+
 #: uresourcestring.rs_product_lbl_original_price
 msgid "Original Price"
 msgstr "Precio Original"

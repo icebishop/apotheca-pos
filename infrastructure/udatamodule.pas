@@ -49,6 +49,13 @@ type
     procedure SeedParameters(const DbPath: String);
     procedure SeedReturnOperationTypes;
     function ResolveDefaultDbPath: String;
+    { Turns on SQLite foreign-key enforcement for the current connection. Must
+      be called outside a transaction (SQLite ignores the pragma inside one). }
+    procedure EnableForeignKeys;
+    { Logs any products that have no balance row (data-integrity check). A
+      product with no balance can never accumulate stock from purchases (the
+      "O'min" bug), so surfacing it at startup makes it actionable. }
+    procedure CheckProductsWithoutBalance;
     { Connects to DbPath and runs all schema init / migrations / seeding.
       Returns True on success. }
     function OpenDatabase(const DbPath: String): Boolean;
@@ -785,6 +792,87 @@ begin
   end;
 end;
 
+procedure TDataModule1.EnableForeignKeys;
+var
+  Query: TSQLQuery;
+begin
+  { The reliable way to enable SQLite foreign keys in FPC's sqldb is via the
+    connection Params, applied at connection time - a runtime 'PRAGMA
+    foreign_keys=ON' issued through sqldb runs inside a transaction and is
+    silently ignored by SQLite. This is set before Connected:=True (see the
+    caller), so here we only verify and log the effective state. }
+  Query := TSQLQuery.Create(nil);
+  try
+    try
+      Query.DataBase := SQLite3Connection1;
+      Query.Transaction := SQLite3Connection1.Transaction;
+      Query.SQL.Text := 'PRAGMA foreign_keys;';
+      Query.Open;
+      if (not Query.EOF) and (Query.Fields[0].AsInteger = 1) then
+        LogInfo('DataModule', 'FK_ENFORCEMENT', 'foreign_keys=ON')
+      else
+        LogWarn('DataModule', 'FK_ENFORCEMENT', 'foreign_keys still OFF (check connection Params)');
+      Query.Close;
+    except
+      on E: Exception do
+        LogError('DataModule', 'FK_ENFORCEMENT_FAILED', 'error=' + E.Message);
+    end;
+  finally
+    Query.Free;
+  end;
+end;
+
+procedure TDataModule1.CheckProductsWithoutBalance;
+var
+  Trans: TSQLTransaction;
+  Query: TSQLQuery;
+  Missing: Integer;
+begin
+  Trans := TSQLTransaction.Create(nil);
+  Query := TSQLQuery.Create(nil);
+  try
+    try
+      Trans.DataBase := SQLite3Connection1;
+      Query.DataBase := SQLite3Connection1;
+      Query.Transaction := Trans;
+      if not Trans.Active then
+        Trans.StartTransaction;
+
+      Query.SQL.Text :=
+        'SELECT p.id, p.name FROM product p ' +
+        'LEFT JOIN balance b ON b.product = p.id ' +
+        'WHERE b.id IS NULL';
+      Query.Open;
+      Missing := 0;
+      while not Query.EOF do
+      begin
+        Inc(Missing);
+        LogWarn('DataModule', 'PRODUCT_WITHOUT_BALANCE',
+          'productId=' + IntToStr(Query.FieldByName('id').AsInteger) +
+          ' name=' + Query.FieldByName('name').AsString);
+        Query.Next;
+      end;
+      Query.Close;
+      if Missing = 0 then
+        LogInfo('DataModule', 'BALANCE_INTEGRITY', 'all products have a balance row')
+      else
+        LogWarn('DataModule', 'BALANCE_INTEGRITY',
+          IntToStr(Missing) + ' product(s) missing a balance row (run Reconstruir Saldos)');
+      if Trans.Active then
+        Trans.Commit;
+    except
+      on E: Exception do
+      begin
+        if Trans.Active then Trans.Rollback;
+        LogError('DataModule', 'BALANCE_INTEGRITY_CHECK_FAILED', 'error=' + E.Message);
+      end;
+    end;
+  finally
+    Query.Free;
+    Trans.Free;
+  end;
+end;
+
 function TDataModule1.OpenDatabase(const DbPath: String): Boolean;
 var
   DbDir: String;
@@ -802,9 +890,19 @@ begin
   SQLite3Connection1.DatabaseName := DbPath;
   DebugLn('[DataModule] DatabaseName set to: ', SQLite3Connection1.DatabaseName);
 
+  { Enforce referential integrity. SQLite disables foreign keys by default on
+    every connection, so the FK clauses in the schema were declared but never
+    enforced (orphan rows were possible). Setting it via connection Params
+    applies it at connect time (a runtime PRAGMA runs inside a transaction and
+    is ignored by SQLite). }
+  if SQLite3Connection1.Params.IndexOfName('foreign_keys') < 0 then
+    SQLite3Connection1.Params.Add('foreign_keys=ON');
+
   SQLite3Connection1.Connected := True;
   DebugLn('[DataModule] Connected successfully!');
   LogInfo('DataModule', 'DB_CONNECTED', 'path=' + SQLite3Connection1.DatabaseName);
+
+  EnableForeignKeys;  { verify + log the effective FK state }
 
   InitDefaultDatabaseSchema;
   MigrateCreditColumn;
@@ -818,6 +916,10 @@ begin
   CreateGoogleCategoryTable;
   SeedParameters(DbPath);
   LogInfo('DataModule', 'DB_MIGRATIONS_COMPLETE', 'All migrations applied path=' + DbPath);
+
+  { Data-integrity check: surface any products lacking a balance row. }
+  CheckProductsWithoutBalance;
+
   Result := True;
 end;
 
