@@ -131,8 +131,14 @@ balance:TBalance;
 begin
 balance := TBalance.Create;
 try
-Self.getQuery().SQL.Text := 'select * from balance where product = :productId';
+{ Fetch only the single most-recent balance row for this product.
+  ORDER BY id DESC LIMIT 1 is a defensive guard: if a duplicate row
+  somehow exists (e.g. before the uq_balance_product unique index is
+  applied) we always resolve to the highest-id (most recently written)
+  row instead of overwriting `balance` in a silent while-loop. }
+Self.getQuery().SQL.Text := 'select * from balance where product = :productId order by id desc limit 1';
 Self.getQuery().Params.ParamByName('productId').AsInteger := productId;
+
 Self.getQuery().Open;
 
 Self.getQuery().First;

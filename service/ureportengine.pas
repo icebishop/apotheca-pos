@@ -59,6 +59,15 @@ type
     Utility     : Real;
   end;
 
+  TSaleDetailRow = record
+    ProductName : String;
+    Quantity    : Integer;
+    UnitPrice   : Real;
+    UnitCost    : Real;
+    LineTotal   : Real;
+    LineUtility : Real;
+  end;
+
   { TReportEngine }
 
   TReportEngine = class(TObject)
@@ -78,6 +87,9 @@ type
 
     // Units Sold Report by date range
     function GetUnitsSoldReport(StartDate, EndDate: TDateTime; var GrandTotalUnits: Integer; var GrandTotalRevenue, GrandTotalCost, GrandTotalUtility: Real): TList;
+
+    // Sale line-item detail for a single operation (used by Income tab detail grid)
+    function GetSaleDetailReport(AOperationId: Integer): TList;
   end;
 
 implementation
@@ -414,6 +426,66 @@ begin
   { transaction owned by connection }
 
   GetUnitsSoldReport := ResultList;
+end;
+
+function TReportEngine.GetSaleDetailReport(AOperationId: Integer): TList;
+var
+  Query: TSQLQuery;
+  ResultList: TList;
+  RowPtr: ^TSaleDetailRow;
+begin
+  ResultList := TList.Create;
+
+  if FConnection = nil then
+  begin
+    GetSaleDetailReport := ResultList;
+    Exit;
+  end;
+
+  Query := TSQLQuery.Create(nil);
+  try
+    Query.DataBase := FConnection;
+    Query.Transaction := FConnection.Transaction;
+
+    { One row per item in the sale: product name, qty, unit price, unit cost,
+      line total (qty*price) and per-line utility (qty*(price-cost)). }
+    Query.SQL.Text :=
+      'SELECT pr.name AS product_name, i.stock AS qty, ' +
+      'i.price AS unit_price, i.cost AS unit_cost, ' +
+      'i.stock * i.price AS line_total, ' +
+      'i.stock * (i.price - i.cost) AS line_utility ' +
+      'FROM item i ' +
+      'JOIN product pr ON i.product = pr.id ' +
+      'WHERE i.operation = :op_id ' +
+      'ORDER BY pr.name ASC';
+
+    Query.Params.ParamByName('op_id').AsInteger := AOperationId;
+
+    if not FConnection.Transaction.Active then
+      FConnection.Transaction.StartTransaction;
+    Query.Open;
+
+    while not Query.EOF do
+    begin
+      New(RowPtr);
+      RowPtr^.ProductName := Query.FieldByName('product_name').AsString;
+      RowPtr^.Quantity    := Query.FieldByName('qty').AsInteger;
+      RowPtr^.UnitPrice   := Query.FieldByName('unit_price').AsFloat;
+      RowPtr^.UnitCost    := Query.FieldByName('unit_cost').AsFloat;
+      RowPtr^.LineTotal   := Query.FieldByName('line_total').AsFloat;
+      RowPtr^.LineUtility := Query.FieldByName('line_utility').AsFloat;
+      ResultList.Add(RowPtr);
+      Query.Next;
+    end;
+
+    Query.Close;
+  except
+    on E: Exception do
+      { Silently handle - detail grid will be empty }
+  end;
+
+  Query.Free;
+  GetSaleDetailReport := ResultList;
 end;
 
 end.

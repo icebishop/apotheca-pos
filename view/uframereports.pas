@@ -35,6 +35,7 @@ type
   PInventoryValuationRow = ^TInventoryValuationRow;
   PPurchaseReportRow = ^TPurchaseReportRow;
   PUnitsSoldRow = ^TUnitsSoldRow;
+  PSaleDetailRow = ^TSaleDetailRow;
 
   { TFrameReports }
 
@@ -58,6 +59,8 @@ type
   private
     FReportEngine: TReportEngine;
     FIncomeList: TList;
+    FIncomeSaleDetail: TList;        { line items of the currently selected sale }
+    FIncomeMasterIds: TList;         { TList of PInteger - operation IDs for income rows }
     FValuationList: TList;
     FPurchaseList: TList;
     FUnitsSoldList: TList;
@@ -65,12 +68,15 @@ type
     FInitialized: Boolean;
     procedure ClearList(var AList: TList);
     procedure ClearMasterIds;
+    procedure ClearIncomeMasterIds;
     procedure LoadIncomeUtilityReport;
+    procedure LoadIncomeDetail(AOperationId: Integer);
     procedure LoadInventoryValuationReport;
     procedure LoadPurchaseReport;
     procedure LoadPurchaseDetail(AOperationId: Integer);
     procedure LoadUnitsSoldReport;
     procedure SetupIncomeGridHeaders;
+    procedure SetupIncomeDetailHeaders;
     procedure SetupValuationGridHeaders;
     procedure SetupPurchaseMasterHeaders;
     procedure SetupPurchaseDetailHeaders;
@@ -92,6 +98,8 @@ constructor TFrameReports.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FIncomeList := nil;
+  FIncomeSaleDetail := nil;
+  FIncomeMasterIds := nil;
   FValuationList := nil;
   FPurchaseList := nil;
   FUnitsSoldList := nil;
@@ -103,6 +111,8 @@ end;
 destructor TFrameReports.Destroy;
 begin
   ClearList(FIncomeList);
+  ClearList(FIncomeSaleDetail);
+  ClearIncomeMasterIds;
   ClearList(FValuationList);
   ClearList(FPurchaseList);
   ClearList(FUnitsSoldList);
@@ -137,7 +147,9 @@ begin
   try
     DataModule1.EnsureTransaction;
     FReportEngine := TReportEngine.Create(DataModule1.SQLite3Connection1);
+    ShowDetailGrid(True);
     SetupIncomeGridHeaders;
+    SetupIncomeDetailHeaders;
     LoadIncomeUtilityReport;
   except
     on E: Exception do
@@ -158,6 +170,63 @@ begin
   GridReport.Cells[4, 0] := RS_REPORTS_INCOME_COL_COST_TOTAL;
   GridReport.Cells[5, 0] := RS_REPORTS_INCOME_COL_UTILITY;
   DistributeColumns(GridReport, [10, 15, 25, 18, 18, 14]);
+end;
+
+procedure TFrameReports.SetupIncomeDetailHeaders;
+begin
+  GridDetail.Clear;
+  GridDetail.ColCount := 6;
+  GridDetail.RowCount := 2;
+  GridDetail.FixedRows := 1;
+  GridDetail.Cells[0, 0] := RS_REPORTS_INCOME_DET_PRODUCT;
+  GridDetail.Cells[1, 0] := RS_REPORTS_INCOME_DET_QTY;
+  GridDetail.Cells[2, 0] := RS_REPORTS_INCOME_DET_UNITPRICE;
+  GridDetail.Cells[3, 0] := RS_REPORTS_INCOME_DET_UNITCOST;
+  GridDetail.Cells[4, 0] := RS_REPORTS_INCOME_DET_LINETOTAL;
+  GridDetail.Cells[5, 0] := RS_REPORTS_INCOME_DET_UTILITY;
+  DistributeColumns(GridDetail, [32, 12, 14, 14, 14, 14]);
+end;
+
+procedure TFrameReports.LoadIncomeDetail(AOperationId: Integer);
+var
+  i: Integer;
+  DetailList: TList;
+  RowPtr: PSaleDetailRow;
+begin
+  if not Assigned(FReportEngine) then Exit;
+
+  SetupIncomeDetailHeaders;
+
+  { Fetch line items for this sale from the report engine }
+  ClearList(FIncomeSaleDetail);
+  FIncomeSaleDetail := FReportEngine.GetSaleDetailReport(AOperationId);
+  DetailList := FIncomeSaleDetail;
+
+  if DetailList.Count > 0 then
+    GridDetail.RowCount := DetailList.Count + 1
+  else
+    GridDetail.RowCount := 2;
+
+  for i := 0 to DetailList.Count - 1 do
+  begin
+    RowPtr := PSaleDetailRow(DetailList[i]);
+    GridDetail.Cells[0, i + 1] := RowPtr^.ProductName;
+    GridDetail.Cells[1, i + 1] := IntToStr(RowPtr^.Quantity);
+    GridDetail.Cells[2, i + 1] := Format('%.2f', [RowPtr^.UnitPrice]);
+    GridDetail.Cells[3, i + 1] := Format('%.2f', [RowPtr^.UnitCost]);
+    GridDetail.Cells[4, i + 1] := Format('%.2f', [RowPtr^.LineTotal]);
+    GridDetail.Cells[5, i + 1] := Format('%.2f', [RowPtr^.LineUtility]);
+  end;
+
+  if DetailList.Count = 0 then
+  begin
+    GridDetail.Cells[0, 1] := '';
+    GridDetail.Cells[1, 1] := '';
+    GridDetail.Cells[2, 1] := '';
+    GridDetail.Cells[3, 1] := '';
+    GridDetail.Cells[4, 1] := '';
+    GridDetail.Cells[5, 1] := '';
+  end;
 end;
 
 procedure TFrameReports.SetupValuationGridHeaders;
@@ -196,6 +265,7 @@ var
   TotSales, TotCosts, TotUtility: Real;
   RowPtr: PIncomeUtilityReportRow;
   StartDateVal, EndDateVal: TDateTime;
+  PId: PInteger;
 begin
   if not Assigned(FReportEngine) then Exit;
 
@@ -212,6 +282,10 @@ begin
 
   SetupIncomeGridHeaders;
 
+  { Rebuild income master IDs list }
+  ClearIncomeMasterIds;
+  FIncomeMasterIds := TList.Create;
+
   if FIncomeList.Count > 0 then
     GridReport.RowCount := FIncomeList.Count + 2  { +1 header, +1 totals row }
   else
@@ -226,6 +300,11 @@ begin
     GridReport.Cells[3, i + 1] := Format('%.2f', [RowPtr^.TotalSale]);
     GridReport.Cells[4, i + 1] := Format('%.2f', [RowPtr^.TotalCost]);
     GridReport.Cells[5, i + 1] := Format('%.2f', [RowPtr^.Utility]);
+
+    { Store operation ID for detail lookup }
+    New(PId);
+    PId^ := RowPtr^.TransactionId;
+    FIncomeMasterIds.Add(PId);
   end;
 
   { Add totals summary row at the bottom }
@@ -237,6 +316,15 @@ begin
     GridReport.Cells[3, FIncomeList.Count + 1] := Format('%.2f', [TotSales]);
     GridReport.Cells[4, FIncomeList.Count + 1] := Format('%.2f', [TotCosts]);
     GridReport.Cells[5, FIncomeList.Count + 1] := Format('%.2f', [TotUtility]);
+  end;
+
+  { Auto-select first row detail if available }
+  if (FIncomeMasterIds <> nil) and (FIncomeMasterIds.Count > 0) then
+    LoadIncomeDetail(PInteger(FIncomeMasterIds[0])^)
+  else
+  begin
+    GridDetail.RowCount := 2;
+    GridDetail.Cells[0, 1] := '';
   end;
 end;
 
@@ -310,9 +398,9 @@ begin
   try
     DataModule1.EnsureTransaction;
     case TabControl.TabIndex of
-      0: begin ShowDetailGrid(False); LoadIncomeUtilityReport; end;
+      0: begin ShowDetailGrid(True);  LoadIncomeUtilityReport; end;
       1: begin ShowDetailGrid(False); LoadInventoryValuationReport; end;
-      2: begin ShowDetailGrid(True); LoadPurchaseReport; end;
+      2: begin ShowDetailGrid(True);  LoadPurchaseReport; end;
       3: begin ShowDetailGrid(False); LoadUnitsSoldReport; end;
     end;
   except
@@ -326,7 +414,17 @@ var
   OpId: Integer;
   PId: PInteger;
 begin
-  { Only handle master-detail in Compras tab }
+  { Income & Utility tab (0): show sale line-item detail }
+  if TabControl.TabIndex = 0 then
+  begin
+    if (aRow < 1) or (FIncomeMasterIds = nil) then Exit;
+    if (aRow - 1) >= FIncomeMasterIds.Count then Exit;
+    PId := PInteger(FIncomeMasterIds[aRow - 1]);
+    LoadIncomeDetail(PId^);
+    Exit;
+  end;
+
+  { Purchases tab (2): show purchase line-item detail }
   if TabControl.TabIndex <> 2 then Exit;
   if (aRow < 1) or (FPurchaseMasterIds = nil) then Exit;
   if (aRow - 1) >= FPurchaseMasterIds.Count then Exit;
@@ -363,6 +461,19 @@ begin
       Dispose(PInteger(FPurchaseMasterIds[i]));
     FPurchaseMasterIds.Free;
     FPurchaseMasterIds := nil;
+  end;
+end;
+
+procedure TFrameReports.ClearIncomeMasterIds;
+var
+  i: Integer;
+begin
+  if FIncomeMasterIds <> nil then
+  begin
+    for i := 0 to FIncomeMasterIds.Count - 1 do
+      Dispose(PInteger(FIncomeMasterIds[i]));
+    FIncomeMasterIds.Free;
+    FIncomeMasterIds := nil;
   end;
 end;
 

@@ -236,6 +236,14 @@ RS_REPORTS_INCOME_COL_COST_TOTAL = 'Total Cost';
 RS_REPORTS_INCOME_COL_UTILITY = 'Utility';
 RS_REPORTS_INCOME_TOTALS = 'TOTALS:';
 
+// Income sale-detail sub-grid columns
+RS_REPORTS_INCOME_DET_PRODUCT  = 'Product';
+RS_REPORTS_INCOME_DET_QTY      = 'Quantity';
+RS_REPORTS_INCOME_DET_UNITPRICE= 'Unit Price';
+RS_REPORTS_INCOME_DET_UNITCOST = 'Unit Cost';
+RS_REPORTS_INCOME_DET_LINETOTAL= 'Line Total';
+RS_REPORTS_INCOME_DET_UTILITY  = 'Utility';
+
 // Inventory Valuation report grid columns
 RS_REPORTS_VAL_COL_PROD_ID = 'Prod ID';
 RS_REPORTS_VAL_COL_PRODUCT = 'Product';
