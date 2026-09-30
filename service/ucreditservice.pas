@@ -59,6 +59,12 @@ type
 
 implementation
 
+const
+  { Julian Day number of the TDateTime epoch (1899-12-30). SQLite stores dates
+    written via Params.AsDate as Julian Days, so read them back with:
+    TDateTime := storedJulianDay - JULIAN_TDATETIME_OFFSET. }
+  JULIAN_TDATETIME_OFFSET = 2415018.5;
+
 function TCreditService.NewQuery: TSQLQuery;
 begin
   DataModule1.EnsureTransaction;
@@ -374,7 +380,7 @@ begin
     begin
       saleInfo := TCreditSaleInfo.Create;
       saleInfo.OperationId := Query.FieldByName('id').AsInteger;
-      saleInfo.Date := Query.FieldByName('date').AsFloat;
+      saleInfo.Date := Query.FieldByName('date').AsFloat - JULIAN_TDATETIME_OFFSET;
       saleInfo.SaleTotal := Query.FieldByName('sale_total').AsFloat;
       saleInfo.Debt := Query.FieldByName('sale_total').AsFloat - Query.FieldByName('total_paid').AsFloat;
       if saleInfo.Debt < 0 then saleInfo.Debt := 0;
@@ -441,7 +447,7 @@ begin
       pay := TPay.Create;
       pay.setId(Query.FieldByName('id').AsInteger);
       pay.setValue(Query.FieldByName('val').AsFloat);
-      pay.setDate(Query.FieldByName('date').AsFloat);
+      pay.setDate(Query.FieldByName('date').AsFloat - JULIAN_TDATETIME_OFFSET);
       person := TPerson.Create;
       person.setId(Query.FieldByName('person').AsInteger);
       pay.setPerson(person);

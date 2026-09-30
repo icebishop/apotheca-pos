@@ -775,6 +775,8 @@ begin
     finally
       Svc.Free;
     end;
+    if (SQLite3Connection1.Transaction <> nil) and SQLite3Connection1.Transaction.Active then
+      SQLite3Connection1.Transaction.Commit;
   except
     on E: Exception do
       LogError('DataModule', 'SEED_PARAMETERS_FAILED', 'error=' + E.Message);
@@ -796,11 +798,8 @@ procedure TDataModule1.EnableForeignKeys;
 var
   Query: TSQLQuery;
 begin
-  { The reliable way to enable SQLite foreign keys in FPC's sqldb is via the
-    connection Params, applied at connection time - a runtime 'PRAGMA
-    foreign_keys=ON' issued through sqldb runs inside a transaction and is
-    silently ignored by SQLite. This is set before Connected:=True (see the
-    caller), so here we only verify and log the effective state. }
+  { Ensure a transaction is initialized on SQLite3Connection1 before querying }
+  EnsureTransaction;
   Query := TSQLQuery.Create(nil);
   try
     try
@@ -824,19 +823,15 @@ end;
 
 procedure TDataModule1.CheckProductsWithoutBalance;
 var
-  Trans: TSQLTransaction;
   Query: TSQLQuery;
   Missing: Integer;
 begin
-  Trans := TSQLTransaction.Create(nil);
+  EnsureTransaction;
   Query := TSQLQuery.Create(nil);
   try
     try
-      Trans.DataBase := SQLite3Connection1;
       Query.DataBase := SQLite3Connection1;
-      Query.Transaction := Trans;
-      if not Trans.Active then
-        Trans.StartTransaction;
+      Query.Transaction := SQLite3Connection1.Transaction;
 
       Query.SQL.Text :=
         'SELECT p.id, p.name FROM product p ' +
@@ -858,18 +853,14 @@ begin
       else
         LogWarn('DataModule', 'BALANCE_INTEGRITY',
           IntToStr(Missing) + ' product(s) missing a balance row (run Reconstruir Saldos)');
-      if Trans.Active then
-        Trans.Commit;
     except
       on E: Exception do
       begin
-        if Trans.Active then Trans.Rollback;
         LogError('DataModule', 'BALANCE_INTEGRITY_CHECK_FAILED', 'error=' + E.Message);
       end;
     end;
   finally
     Query.Free;
-    Trans.Free;
   end;
 end;
 
