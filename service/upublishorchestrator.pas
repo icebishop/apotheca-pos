@@ -73,9 +73,15 @@ type
       match the file the web-catalog export writes to the public folder.
       Caller frees the returned owned list. }
     function LoadItemsFromDb(Options: TPublishOptions): TFPObjectList;
-    { Extracts the item's image blob from the images table and writes it into
-      the public folder as <normalized-name>.png so the resolver (and, via its
-      public URL, the Instagram API) can use it. Returns True on success. }
+    { Converts one PNG blob to an Instagram-ready JPEG (cropped to the accepted
+      aspect-ratio range) and writes it to OutPath. Returns True on success. }
+    function WriteInstagramJpeg(const ImageData: TBytes; const OutPath: String): Boolean;
+    { Extracts the item's image blob(s) from the images table and writes them
+      into the public folder as JPEG(s) so the resolver (and, via its public
+      URL, the Instagram API) can use them. For a product with multiple images
+      it writes one JPEG per image (<normalized>.jpeg, <normalized>-2.jpeg, ...),
+      enabling carousel publishing. Returns True if at least one image was
+      written. }
     function MaterializeDbImage(Item: TRegistryItem; const PublicFolder: String): Boolean;
   public
     constructor Create(AConnection: TSQLite3Connection);
@@ -159,11 +165,12 @@ function TPublishOrchestrator.LoadItemsFromDb(
 var
   DataProduct: TDataProducto;
   DbList: TList;
-  i: Integer;
+  i, j: Integer;
   P: TProduct;
   Item: TRegistryItem;
   IsService: Boolean;
   NormName: String;
+  Refs: array of Integer;
 begin
   Result := TFPObjectList.Create(True);  { owns items }
 
@@ -206,11 +213,27 @@ begin
         { The web-catalog export writes the image as /<normalized-name>.webp in
           the public folder; reference that so the resolver can find it. }
         Item.ImageRef := P.getImageRef();
-        if P.getImageRef() > 0 then
+        { Carry every DB image id (ordered) so products with multiple images are
+          published as a carousel. ImageRef stays the primary for compatibility. }
+        SetLength(Refs, P.getImageRefCount());
+        for j := 0 to P.getImageRefCount() - 1 do
+          Refs[j] := P.getImageRefAt(j);
+        Item.SetImageRefs(Refs);
+
+        if P.getImageRefCount() > 0 then
         begin
-          { Instagram needs JPEG. The web-catalog export writes <normalized>.jpeg
-            (and .webp) to the public folder; reference the .jpeg so the resolver
-            uses it and the deployed URL matches. }
+          { Instagram needs JPEG. The web-catalog export writes one JPEG per
+            image to the public folder, named <normalized>.jpeg,
+            <normalized>-2.jpeg, ...; reference each so the resolver uses them
+            and the deployed URLs match. One Images entry => single post;
+            two or more => carousel (handled in Run()). }
+          NormName := TWebPConverter.NormalizeProductName(P.getName());
+          for j := 0 to P.getImageRefCount() - 1 do
+            Item.Images.Add('/' + TWebPConverter.ImageVariantName(NormName, j) + '.jpeg');
+        end
+        else if P.getImageRef() > 0 then
+        begin
+          { Legacy fallback: product with a scalar image_ref but no image rows. }
           NormName := TWebPConverter.NormalizeProductName(P.getName());
           Item.Images.Add('/' + NormName + '.jpeg');
         end;
@@ -226,15 +249,12 @@ begin
   end;
 end;
 
-function TPublishOrchestrator.MaterializeDbImage(Item: TRegistryItem;
-  const PublicFolder: String): Boolean;
+function TPublishOrchestrator.WriteInstagramJpeg(const ImageData: TBytes;
+  const OutPath: String): Boolean;
 const
   IG_MIN_ASPECT = 0.8;
   IG_MAX_ASPECT = 1.91;
 var
-  DataImage: TDataImage;
-  ImageData: TBytes;
-  NormName, OutPath: String;
   Img, Cropped: TFPMemoryImage;
   Reader: TFPReaderPNG;
   Writer: TFPWriterJPEG;
@@ -243,76 +263,118 @@ var
   NewW, NewH, Left, Top, X, Y: Integer;
 begin
   Result := False;
-  if Item.ImageRef <= 0 then
+  if (ImageData = nil) or (Length(ImageData) = 0) then
     Exit;
 
+  { Convert the PNG blob to JPEG (Instagram requires JPEG), cropping to the
+    supported aspect-ratio range (4:5 .. 1.91:1) so it is accepted (avoids
+    error 36003). }
+  Img := TFPMemoryImage.Create(0, 0);
+  InStream := TBytesStream.Create(ImageData);
+  Reader := TFPReaderPNG.Create;
+  Writer := TFPWriterJPEG.Create;
+  try
+    try
+      InStream.Position := 0;
+      Img.LoadFromStream(InStream, Reader);
+      if (Img.Width = 0) or (Img.Height = 0) then
+        Exit;
+      Ratio := Img.Width / Img.Height;
+      NewW := Img.Width; NewH := Img.Height; Left := 0; Top := 0;
+      if Ratio < IG_MIN_ASPECT then
+      begin
+        NewH := Round(Img.Width / IG_MIN_ASPECT);
+        Top := (Img.Height - NewH) div 2;
+      end
+      else if Ratio > IG_MAX_ASPECT then
+      begin
+        NewW := Round(Img.Height * IG_MAX_ASPECT);
+        Left := (Img.Width - NewW) div 2;
+      end;
+      Writer.CompressionQuality := 85;
+      if (NewW = Img.Width) and (NewH = Img.Height) then
+        Img.SaveToFile(OutPath, Writer)
+      else
+      begin
+        Cropped := TFPMemoryImage.Create(NewW, NewH);
+        try
+          for Y := 0 to NewH - 1 do
+            for X := 0 to NewW - 1 do
+              Cropped.Colors[X, Y] := Img.Colors[Left + X, Top + Y];
+          Cropped.SaveToFile(OutPath, Writer);
+        finally
+          Cropped.Free;
+        end;
+      end;
+      Result := True;
+    except
+      on E: Exception do
+        LogError('PublishOrchestrator', 'IMG_WRITE_FAIL',
+          'path=' + OutPath + ' error=' + E.Message);
+    end;
+  finally
+    Writer.Free;
+    Reader.Free;
+    InStream.Free;
+    Img.Free;
+  end;
+end;
+
+function TPublishOrchestrator.MaterializeDbImage(Item: TRegistryItem;
+  const PublicFolder: String): Boolean;
+var
+  DataImage: TDataImage;
+  ImageData: TBytes;
+  NormName, OutPath: String;
+  i, imageId, written: Integer;
+begin
+  Result := False;
+  written := 0;
+
+  NormName := TWebPConverter.NormalizeProductName(Item.Name);
   DataImage := TDataImage.Create(FConnection);
   try
-    ImageData := DataImage.Get(Item.ImageRef);
-    if (ImageData = nil) or (Length(ImageData) = 0) then
+    if Item.ImageRefCount > 0 then
     begin
-      LogWarn('PublishOrchestrator', 'IMG_BLOB_EMPTY',
-        'item=' + Item.Name + ' imageRef=' + IntToStr(Item.ImageRef));
-      Exit;
-    end;
-
-    { Convert the PNG blob to JPEG (Instagram requires JPEG), cropping to the
-      supported aspect-ratio range (4:5 .. 1.91:1) so it is accepted (avoids
-      error 36003), and write it as <normalized>.jpeg. }
-    NormName := TWebPConverter.NormalizeProductName(Item.Name);
-    OutPath := IncludeTrailingPathDelimiter(PublicFolder) + NormName + '.jpeg';
-    Img := TFPMemoryImage.Create(0, 0);
-    InStream := TBytesStream.Create(ImageData);
-    Reader := TFPReaderPNG.Create;
-    Writer := TFPWriterJPEG.Create;
-    try
-      try
-        InStream.Position := 0;
-        Img.LoadFromStream(InStream, Reader);
-        if (Img.Width = 0) or (Img.Height = 0) then
-          Exit;
-        Ratio := Img.Width / Img.Height;
-        NewW := Img.Width; NewH := Img.Height; Left := 0; Top := 0;
-        if Ratio < IG_MIN_ASPECT then
+      { Materialize every image of the product to its deterministic filename so
+        the resolver can build one public URL per image (carousel). }
+      for i := 0 to Item.ImageRefCount - 1 do
+      begin
+        imageId := Item.ImageRefItem[i];
+        if imageId <= 0 then
+          Continue;
+        ImageData := DataImage.Get(imageId);
+        if (ImageData = nil) or (Length(ImageData) = 0) then
         begin
-          NewH := Round(Img.Width / IG_MIN_ASPECT);
-          Top := (Img.Height - NewH) div 2;
-        end
-        else if Ratio > IG_MAX_ASPECT then
-        begin
-          NewW := Round(Img.Height * IG_MAX_ASPECT);
-          Left := (Img.Width - NewW) div 2;
+          LogWarn('PublishOrchestrator', 'IMG_BLOB_EMPTY',
+            'item=' + Item.Name + ' imageId=' + IntToStr(imageId));
+          Continue;
         end;
-        Writer.CompressionQuality := 85;
-        if (NewW = Img.Width) and (NewH = Img.Height) then
-          Img.SaveToFile(OutPath, Writer)
-        else
-        begin
-          Cropped := TFPMemoryImage.Create(NewW, NewH);
-          try
-            for Y := 0 to NewH - 1 do
-              for X := 0 to NewW - 1 do
-                Cropped.Colors[X, Y] := Img.Colors[Left + X, Top + Y];
-            Cropped.SaveToFile(OutPath, Writer);
-          finally
-            Cropped.Free;
-          end;
-        end;
-        Result := True;
-      except
-        on E: Exception do
-          LogError('PublishOrchestrator', 'IMG_WRITE_FAIL',
-            'item=' + Item.Name + ' path=' + OutPath + ' error=' + E.Message);
+        OutPath := IncludeTrailingPathDelimiter(PublicFolder) +
+                   TWebPConverter.ImageVariantName(NormName, i) + '.jpeg';
+        if WriteInstagramJpeg(ImageData, OutPath) then
+          Inc(written);
       end;
-    finally
-      Writer.Free;
-      Reader.Free;
-      InStream.Free;
-      Img.Free;
+    end
+    else if Item.ImageRef > 0 then
+    begin
+      { Legacy fallback: scalar image_ref only. }
+      ImageData := DataImage.Get(Item.ImageRef);
+      if (ImageData = nil) or (Length(ImageData) = 0) then
+      begin
+        LogWarn('PublishOrchestrator', 'IMG_BLOB_EMPTY',
+          'item=' + Item.Name + ' imageRef=' + IntToStr(Item.ImageRef));
+        Exit;
+      end;
+      OutPath := IncludeTrailingPathDelimiter(PublicFolder) + NormName + '.jpeg';
+      if WriteInstagramJpeg(ImageData, OutPath) then
+        Inc(written);
     end;
   finally
     DataImage.getQuery().Free;
   end;
+
+  Result := written > 0;
 end;
 
 function TPublishOrchestrator.DetectNew(const Options: TPublishOptions;
@@ -392,10 +454,13 @@ begin
       Item := TRegistryItem(Items[i]);
       if IsNew(Item, PublishedIds) then
       begin
+        { Line format: CatalogId<TAB>Name<TAB>HasImage('1'/'0')<TAB>ImageCount.
+          ImageCount lets the preview show which items become a carousel (2+). }
         if ItemHasImage(Item, Options) then
-          Result.Add(Item.Id + #9 + Item.Name + #9 + '1')
+          Result.Add(Item.Id + #9 + Item.Name + #9 + '1' + #9 +
+                     IntToStr(Item.Images.Count))
         else
-          Result.Add(Item.Id + #9 + Item.Name + #9 + '0');
+          Result.Add(Item.Id + #9 + Item.Name + #9 + '0' + #9 + '0');
       end;
     end;
   finally

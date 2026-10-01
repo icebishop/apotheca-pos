@@ -63,10 +63,14 @@ type
     function DeriveFilePaths(const BasePath: String; Both: Boolean): TStringArray;
     function QueryProducts(IsService: Boolean): TList;
     function ProcessImage(Product: TProduct; const ImageDir: String): String;
+    { Exports every image of the product (JPEG + WebP) and returns the public
+      .webp paths in order (primary first). Empty array when the product has no
+      usable image. Used to populate the catalog "images" array (carousel). }
+    function ProcessImages(Product: TProduct; const ImageDir: String): TStringArray;
     { Writes a JPEG copy of PNG image bytes to OutDir/NormalizedName.jpeg
       (for Instagram, which only accepts JPEG). Returns True on success. }
     function WriteJpeg(const PngData: TBytes; const OutDir, NormalizedName: String): Boolean;
-    function SerializeProductList(Products: TList; const ImagePaths: array of String): String;
+    function SerializeProductList(Products: TList; const ImagePaths: array of TStringArray): String;
     function SerializeServiceList(Services: TList; const ImagePaths: array of String): String;
     function WriteJsonToFile(const FilePath: String; const JsonContent: String): Boolean;
   public
@@ -121,6 +125,12 @@ begin
   end;
 end;
 
+{ Orders two products so the newest (highest id) sorts first. }
+function CompareProductsByIdDesc(Item1, Item2: Pointer): Integer;
+begin
+  Result := TProduct(Item2).getId() - TProduct(Item1).getId();
+end;
+
 function TExportService.QueryProducts(IsService: Boolean): TList;
 var
   DataProducto: TDataProducto;
@@ -170,46 +180,110 @@ begin
   finally
     DataProducto.getQuery().Free;
   end;
+
+  { Order the catalog newest-first (highest product id, i.e. most recently
+    created, first). Sorting explicitly rather than relying on query scan
+    order keeps the output deterministic. }
+  FilteredList.Sort(@CompareProductsByIdDesc);
+
   Result := FilteredList;
 end;
 
 function TExportService.ProcessImage(Product: TProduct; const ImageDir: String): String;
 var
+  Paths: TStringArray;
+begin
+  { Primary image path (first), for single-image callers. }
+  Paths := ProcessImages(Product, ImageDir);
+  if Length(Paths) > 0 then
+    Result := Paths[0]
+  else
+    Result := '';
+end;
+
+function TExportService.ProcessImages(Product: TProduct;
+  const ImageDir: String): TStringArray;
+var
   DataImage: TDataImage;
   ImageData: TBytes;
-  NormalizedName: String;
+  NormalizedName, VariantName: String;
+  i, imageId, imageCount: Integer;
+
+  procedure AddPath(const P: String);
+  begin
+    SetLength(Result, Length(Result) + 1);
+    Result[High(Result)] := P;
+  end;
+
 begin
-  Result := '';
+  SetLength(Result, 0);
 
   if Product.getImageRef() <= 0 then
     Exit;
 
+  NormalizedName := TWebPConverter.NormalizeProductName(Product.getName());
+  imageCount := Product.getImageRefCount();
+
   DataImage := TDataImage.Create(FConnection);
   try
-    ImageData := DataImage.Get(Product.getImageRef());
-
-    if (ImageData = nil) or (Length(ImageData) = 0) then
+    if imageCount > 0 then
     begin
-      LogError('TExportService', 'PROCESS_IMAGE_FAIL',
-        'Image not found for product ID=' + IntToStr(Product.getId()) +
-        ' ImageRef=' + IntToStr(Product.getImageRef()));
-      Exit;
-    end;
+      { Export every image of the product. The primary (index 0) keeps the
+        plain normalized name so existing catalog URLs stay valid; extra images
+        get -2, -3, ... suffixes. Each is written as both JPEG (Instagram) and
+        WebP (web store). Returns the .webp paths in order so the catalog
+        "images" array becomes a carousel. }
+      for i := 0 to imageCount - 1 do
+      begin
+        imageId := Product.getImageRefAt(i);
+        if imageId <= 0 then
+          Continue;
+        ImageData := DataImage.Get(imageId);
+        if (ImageData = nil) or (Length(ImageData) = 0) then
+        begin
+          LogWarn('TExportService', 'PROCESS_IMAGE_FAIL',
+            'Image blob empty for product ID=' + IntToStr(Product.getId()) +
+            ' imageId=' + IntToStr(imageId));
+          Continue;
+        end;
+        VariantName := TWebPConverter.ImageVariantName(NormalizedName, i);
 
-    NormalizedName := TWebPConverter.NormalizeProductName(Product.getName());
+        if not WriteJpeg(ImageData, ImageDir, VariantName) then
+          LogWarn('TExportService', 'JPEG_WRITE_FAIL',
+            'Failed to write JPEG for product ID=' + IntToStr(Product.getId()) +
+            ' variant=' + VariantName);
 
-    { Write a JPEG copy alongside the WebP (Instagram publishing needs JPEG;
-      the web store uses WebP). Failure here is non-fatal for the catalog. }
-    if not WriteJpeg(ImageData, ImageDir, NormalizedName) then
-      LogWarn('TExportService', 'JPEG_WRITE_FAIL',
-        'Failed to write JPEG for product ID=' + IntToStr(Product.getId()));
-
-    if FConverter.Convert(ImageData, ImageDir, NormalizedName) then
-      Result := '/' + NormalizedName + '.webp'
+        if FConverter.Convert(ImageData, ImageDir, VariantName) then
+          AddPath('/' + VariantName + '.webp')
+        else
+          LogError('TExportService', 'IMAGE_CONVERT_FAIL',
+            'Failed to convert image to WebP for product ID=' + IntToStr(Product.getId()) +
+            ' variant=' + VariantName + ' Error=' + FConverter.GetLastError());
+      end;
+    end
     else
-      LogError('TExportService', 'IMAGE_CONVERT_FAIL',
-        'Failed to convert image to WebP for product ID=' + IntToStr(Product.getId()) +
-        ' Error=' + FConverter.GetLastError());
+    begin
+      { Legacy fallback: scalar image_ref only, no image rows. }
+      ImageData := DataImage.Get(Product.getImageRef());
+      if (ImageData = nil) or (Length(ImageData) = 0) then
+      begin
+        LogError('TExportService', 'PROCESS_IMAGE_FAIL',
+          'Image not found for product ID=' + IntToStr(Product.getId()) +
+          ' ImageRef=' + IntToStr(Product.getImageRef()));
+        Exit;
+      end;
+
+      if not WriteJpeg(ImageData, ImageDir, NormalizedName) then
+        LogWarn('TExportService', 'JPEG_WRITE_FAIL',
+          'Failed to write JPEG for product ID=' + IntToStr(Product.getId()));
+
+      if FConverter.Convert(ImageData, ImageDir, NormalizedName) then
+        AddPath('/' + NormalizedName + '.webp')
+      else
+        LogError('TExportService', 'IMAGE_CONVERT_FAIL',
+          'Failed to convert image to WebP for product ID=' + IntToStr(Product.getId()) +
+          ' Error=' + FConverter.GetLastError());
+    end;
   finally
     DataImage.getQuery().Free;
   end;
@@ -289,7 +363,7 @@ begin
 end;
 
 function TExportService.SerializeProductList(Products: TList;
-  const ImagePaths: array of String): String;
+  const ImagePaths: array of TStringArray): String;
 var
   i: Integer;
   Product: TProduct;
@@ -304,7 +378,8 @@ begin
   for i := 0 to Products.Count - 1 do
   begin
     Product := TProduct(Products[i]);
-    Result := Result + '  ' + FSerializer.SerializeProduct(Product, ImagePaths[i]);
+    { Emit every image path so the web catalog shows a carousel. }
+    Result := Result + '  ' + FSerializer.SerializeProductImages(Product, ImagePaths[i]);
     if i < Products.Count - 1 then
       Result := Result + ',';
     Result := Result + LineEnding;
@@ -371,7 +446,9 @@ var
   i: Integer;
   Product: TProduct;
   ImagePath: String;
-  ProductImagePaths, ServiceImagePaths: array of String;
+  ImagePathsArr: TStringArray;
+  ProductImagePaths: array of TStringArray;
+  ServiceImagePaths: array of String;
   OutputDir: String;
   Both: Boolean;
   ProductWriteOk, ServiceWriteOk: Boolean;
@@ -431,9 +508,9 @@ begin
       for i := 0 to ProductList.Count - 1 do
       begin
         Product := TProduct(ProductList[i]);
-        ImagePath := ProcessImage(Product, Options.ImageOutputDir);
-        ProductImagePaths[i] := ImagePath;
-        if ImagePath = '' then
+        ImagePathsArr := ProcessImages(Product, Options.ImageOutputDir);
+        ProductImagePaths[i] := ImagePathsArr;
+        if Length(ImagePathsArr) = 0 then
         begin
           Inc(Result.ProductsWithoutImage);
           LogWarn('TExportService', 'PRODUCT_NO_IMAGE',

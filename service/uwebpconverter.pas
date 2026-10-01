@@ -39,6 +39,12 @@ type
                      const NormalizedName: String; Quality: Integer = 80): Boolean;
     function GetLastError(): String;
     class function NormalizeProductName(const Name: String): String;
+    { Deterministic per-image base name for a product with multiple images.
+      Index 0 keeps the plain normalized name (backward compatible with the
+      single-image file the catalog already serves); subsequent images get a
+      '-2', '-3', ... suffix. Used by export, DB materialization and the
+      publish item loader so all three agree on the public filenames. }
+    class function ImageVariantName(const NormalizedName: String; Index: Integer): String;
   end;
 
 implementation
@@ -71,6 +77,15 @@ begin
     else
       Result := Result + '-';
   end;
+end;
+
+class function TWebPConverter.ImageVariantName(const NormalizedName: String;
+  Index: Integer): String;
+begin
+  if Index <= 0 then
+    Result := NormalizedName
+  else
+    Result := NormalizedName + '-' + IntToStr(Index + 1);
 end;
 
 function TWebPConverter.Convert(const PngData: TBytes; const OutputDir: String;

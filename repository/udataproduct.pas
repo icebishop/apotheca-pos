@@ -7,7 +7,8 @@ interface
 
 
 uses
-  Classes, SysUtils, sqlite3conn, SqlDb, LazLogger, UProduct, UData, UDataBalance;
+  Classes, SysUtils, sqlite3conn, SqlDb, LazLogger, UProduct, UData, UDataBalance,
+  UDataImage;
 
   type
     TDataProducto = class(TData)
@@ -210,6 +211,9 @@ implementation
     var
        product:TProduct;
        dataBalance : TDataBalance;
+       dataImage : TDataImage;
+       imageIds : TList;
+       i : Integer;
        query: TSQLQuery;
     begin
       product := nil;
@@ -255,6 +259,27 @@ implementation
               if not query.FieldByName('google_product_category').IsNull then
                  product.setGoogleProductCategory(query.FieldByName('google_product_category').AsString);
               product.setBalance(dataBalance.get(product.getId()));
+
+              { Load the full set of image ids for this product (the images
+                table is authoritative for the array). Fall back to the legacy
+                scalar image_ref only when no image rows exist. }
+              dataImage := TDataImage.Create(Self.getConnection());
+              try
+                 imageIds := dataImage.GetIdsByProduct(product.getId());
+                 try
+                    if imageIds.Count > 0 then
+                    begin
+                       product.clearImageRefs();
+                       for i := 0 to imageIds.Count - 1 do
+                          product.addImageRef(Integer(PtrInt(imageIds[i])));
+                    end;
+                 finally
+                    imageIds.Free;
+                 end;
+              finally
+                 dataImage.getQuery().Free;
+              end;
+
               query.Next;
          end;
          query.close;

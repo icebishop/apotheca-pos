@@ -37,7 +37,10 @@ type
   TFormProduct = class(TForm)
     BitBtnOk: TBitBtn;
     BitBtnCancel: TBitBtn;
-    BtnSelectImage: TBitBtn;
+    BtnAddImage: TBitBtn;
+    BtnRemoveImage: TBitBtn;
+    GroupBoxImages: TGroupBox;
+    ListImages: TListBox;
     ChkIsService: TCheckBox;
     EditName: TEdit;
     EditMinStock: TEdit;
@@ -62,7 +65,9 @@ type
     ImagePreview: TImage;
     procedure BitBtnOkClick(Sender: TObject);
     procedure BitBtnCancelClick(Sender: TObject);
-    procedure BtnSelectImageClick(Sender: TObject);
+    procedure BtnAddImageClick(Sender: TObject);
+    procedure BtnRemoveImageClick(Sender: TObject);
+    procedure ListImagesClick(Sender: TObject);
     procedure EditMaxStockExit(Sender: TObject);
     procedure EditNameExit(Sender: TObject);
     procedure EditMinStockExit(Sender: TObject);
@@ -73,9 +78,17 @@ type
     flagOperacion: Integer;
     flagAction: Integer;
     productValidator: TProductValidator;
-    FPendingImageData: TBytes;
-    FHasPendingImage: Boolean;
+    { Working set of images for the product being edited. FImageData[i] holds
+      the PNG bytes for list entry i (loaded from DB for existing images, or
+      read from disk for newly added ones). Order follows ListImages. }
+    FImageData: array of TBytes;
     procedure LoadGoogleCategories;
+    procedure ClearImageWorkingSet;
+    procedure AddImageEntry(const PngData: TBytes; const EntryLabel: String);
+    procedure RemoveImageEntryAt(index: Integer);
+    procedure ShowImagePreview(index: Integer);
+    procedure UpdateImageStatus;
+    procedure SaveProductImages(dataProduct: TDataProducto);
   public
     function getProduct(): TProduct;
     procedure setProduct(newProduct: TProduct);
@@ -91,8 +104,6 @@ implementation
 procedure TFormProduct.BitBtnOkClick(Sender: TObject);
 var
   dataProduct: TDataProducto;
-  dataImage: TDataImage;
-  imageId: Integer;
 begin
   try
   product.setName(EditName.Text);
@@ -124,19 +135,9 @@ if not     dataProduct.getTransaction().Active then     dataProduct.getTransacti
     begin
       if dataProduct.new(product) > 0 then
       begin
-        // Store pending image if any
-        if FHasPendingImage and (Length(FPendingImageData) > 0) then
-        begin
-          dataImage := TDataImage.Create(DataModule1.SQLite3Connection1);
-          try
-            imageId := dataImage.Store(product.getId(), FPendingImageData);
-            if imageId > 0 then
-              product.setImageRef(imageId);
-            dataProduct.edit(product);
-          finally
-            dataImage.getQuery().Free;
-          end;
-        end;
+        { Persist all images (array) now that the product has an id. }
+        SaveProductImages(dataProduct);
+        dataProduct.edit(product);
         Application.MessageBox(PChar(RS_OBJECTSAVE), PChar(RS_MESSAGE), MB_OK);
       end
       else
@@ -144,23 +145,8 @@ if not     dataProduct.getTransaction().Active then     dataProduct.getTransacti
     end
     else
     begin
-      // Store pending image if any
-      if FHasPendingImage and (Length(FPendingImageData) > 0) then
-      begin
-        dataImage := TDataImage.Create(DataModule1.SQLite3Connection1);
-        try
-          if product.getImageRef() > 0 then
-            dataImage.Update(product.getImageRef(), FPendingImageData)
-          else
-          begin
-            imageId := dataImage.Store(product.getId(), FPendingImageData);
-            if imageId > 0 then
-              product.setImageRef(imageId);
-          end;
-        finally
-          dataImage.getQuery().Free;
-        end;
-      end;
+      { Rewrite the full image set so additions/removals/reorders persist. }
+      SaveProductImages(dataProduct);
 
       if dataProduct.edit(product) then
         Application.MessageBox(PChar(RS_OBJECTSAVE), PChar(RS_MESSAGE), MB_OK)
@@ -178,13 +164,106 @@ if not     dataProduct.getTransaction().Active then     dataProduct.getTransacti
   end;
 end;
 
-procedure TFormProduct.BtnSelectImageClick(Sender: TObject);
+procedure TFormProduct.ClearImageWorkingSet;
+begin
+  SetLength(FImageData, 0);
+  ListImages.Items.Clear;
+  ImagePreview.Picture.Clear;
+end;
+
+procedure TFormProduct.AddImageEntry(const PngData: TBytes; const EntryLabel: String);
+var
+  len: Integer;
+begin
+  len := Length(FImageData);
+  SetLength(FImageData, len + 1);
+  FImageData[len] := Copy(PngData, 0, Length(PngData));
+  ListImages.Items.Add(EntryLabel);
+end;
+
+procedure TFormProduct.RemoveImageEntryAt(index: Integer);
+var
+  i: Integer;
+begin
+  if (index < 0) or (index >= Length(FImageData)) then
+    Exit;
+  for i := index to High(FImageData) - 1 do
+    FImageData[i] := FImageData[i + 1];
+  SetLength(FImageData, Length(FImageData) - 1);
+  ListImages.Items.Delete(index);
+end;
+
+procedure TFormProduct.ShowImagePreview(index: Integer);
+var
+  Stream: TBytesStream;
+  Png: TPortableNetworkGraphic;
+begin
+  if (index < 0) or (index >= Length(FImageData)) or
+     (Length(FImageData[index]) = 0) then
+  begin
+    ImagePreview.Picture.Clear;
+    Exit;
+  end;
+  try
+    Stream := TBytesStream.Create(FImageData[index]);
+    try
+      Png := TPortableNetworkGraphic.Create;
+      try
+        Png.LoadFromStream(Stream);
+        ImagePreview.Picture.Graphic := Png;
+      finally
+        Png.Free;
+      end;
+    finally
+      Stream.Free;
+    end;
+  except
+    on E: Exception do
+    begin
+      LblImageStatus.Caption := Format(RS_PRODUCT_IMG_PREVIEW_ERROR, [E.Message]);
+      ImagePreview.Picture.Clear;
+    end;
+  end;
+end;
+
+procedure TFormProduct.UpdateImageStatus;
+begin
+  LblImageStatus.Caption := Format(RS_PRODUCT_IMG_COUNT, [Length(FImageData)]);
+end;
+
+procedure TFormProduct.SaveProductImages(dataProduct: TDataProducto);
+var
+  dataImage: TDataImage;
+  i, newId: Integer;
+begin
+  if product.getId() <= 0 then
+    Exit;
+  dataImage := TDataImage.Create(DataModule1.SQLite3Connection1);
+  try
+    { Simplest correct strategy: clear the product's images and re-store the
+      current working set in list order. Store() assigns incremental positions,
+      preserving the displayed order. }
+    dataImage.Delete(product.getId());
+    product.clearImageRefs();
+    for i := 0 to High(FImageData) do
+    begin
+      if Length(FImageData[i]) = 0 then
+        Continue;
+      newId := dataImage.Store(product.getId(), FImageData[i]);
+      if newId > 0 then
+        product.addImageRef(newId);
+    end;
+  finally
+    dataImage.getQuery().Free;
+  end;
+end;
+
+procedure TFormProduct.BtnAddImageClick(Sender: TObject);
 var
   Dlg: TOpenDialog;
   FS: TFileStream;
   ValidationError: String;
-  Stream: TBytesStream;
-  Png: TPortableNetworkGraphic;
+  PngData: TBytes;
 begin
   try
   Dlg := TOpenDialog.Create(Self);
@@ -197,9 +276,9 @@ begin
     try
       FS := TFileStream.Create(Dlg.FileName, fmOpenRead or fmShareDenyNone);
       try
-        SetLength(FPendingImageData, FS.Size);
+        SetLength(PngData, FS.Size);
         if FS.Size > 0 then
-          FS.Read(FPendingImageData[0], FS.Size);
+          FS.Read(PngData[0], FS.Size);
       finally
         FS.Free;
       end;
@@ -207,50 +286,56 @@ begin
       on E: Exception do
       begin
         LblImageStatus.Caption := Format(RS_PRODUCT_IMG_ERROR, [E.Message]);
-        ImagePreview.Picture.Clear;
         Exit;
       end;
     end;
 
-    ValidationError := TPngValidator.GetValidationError(FPendingImageData);
+    ValidationError := TPngValidator.GetValidationError(PngData);
     if ValidationError <> '' then
     begin
       LblImageStatus.Caption := ValidationError;
-      SetLength(FPendingImageData, 0);
-      FHasPendingImage := False;
-      ImagePreview.Picture.Clear;
       Exit;
     end;
 
-    FHasPendingImage := True;
-    LblImageStatus.Caption := Format(RS_PRODUCT_IMG_SELECTED, [ExtractFileName(Dlg.FileName)]);
-
-    try
-      Stream := TBytesStream.Create(FPendingImageData);
-      try
-        Png := TPortableNetworkGraphic.Create;
-        try
-          Png.LoadFromStream(Stream);
-          ImagePreview.Picture.Graphic := Png;
-        finally
-          Png.Free;
-        end;
-      finally
-        Stream.Free;
-      end;
-    except
-      on E: Exception do
-      begin
-        LblImageStatus.Caption := Format(RS_PRODUCT_IMG_PREVIEW_ERROR, [E.Message]);
-        ImagePreview.Picture.Clear;
-      end;
-    end;
+    AddImageEntry(PngData, Format(RS_PRODUCT_IMG_NEW, [ExtractFileName(Dlg.FileName)]));
+    ListImages.ItemIndex := ListImages.Items.Count - 1;
+    ShowImagePreview(ListImages.ItemIndex);
+    UpdateImageStatus;
   finally
     Dlg.Free;
   end;
   except
-    on E: Exception do DebugLn('[TFormProduct.BtnSelectImageClick] ERROR: ' + E.Message);
+    on E: Exception do DebugLn('[TFormProduct.BtnAddImageClick] ERROR: ' + E.Message);
   end;
+end;
+
+procedure TFormProduct.BtnRemoveImageClick(Sender: TObject);
+var
+  idx: Integer;
+begin
+  try
+    idx := ListImages.ItemIndex;
+    if idx < 0 then
+      Exit;
+    RemoveImageEntryAt(idx);
+    if ListImages.Items.Count > 0 then
+    begin
+      if idx >= ListImages.Items.Count then
+        idx := ListImages.Items.Count - 1;
+      ListImages.ItemIndex := idx;
+      ShowImagePreview(idx);
+    end
+    else
+      ImagePreview.Picture.Clear;
+    UpdateImageStatus;
+  except
+    on E: Exception do DebugLn('[TFormProduct.BtnRemoveImageClick] ERROR: ' + E.Message);
+  end;
+end;
+
+procedure TFormProduct.ListImagesClick(Sender: TObject);
+begin
+  ShowImagePreview(ListImages.ItemIndex);
 end;
 
 procedure TFormProduct.BitBtnCancelClick(Sender: TObject);
@@ -336,7 +421,9 @@ begin
   LabelGoogleCat.Caption := RS_PRODUCT_LBL_GOOGLE_CAT;
   LabelDescription.Caption := RS_LDESCRIPTION;
   ChkIsService.Caption := RS_PRODUCT_CHK_IS_SERVICE;
-  BtnSelectImage.Caption := RS_PRODUCT_BTN_SELECT_IMAGE;
+  GroupBoxImages.Caption := RS_PRODUCT_GROUP_IMAGES;
+  BtnAddImage.Caption := RS_PRODUCT_BTN_ADD_IMAGE;
+  BtnRemoveImage.Caption := RS_PRODUCT_BTN_REMOVE_IMAGE;
   GroupBoxPreview.Caption := RS_PRODUCT_GROUP_PREVIEW;
   Self.Caption := RS_LPRODUCTS;
 
@@ -344,9 +431,7 @@ begin
   LoadGoogleCategories;
 
   flagAction := 0;
-  FHasPendingImage := False;
-  SetLength(FPendingImageData, 0);
-  ImagePreview.Picture.Clear;
+  ClearImageWorkingSet;
   if product = nil then
     product := TProduct.Create;
   productValidator := TProductValidator.Create;
@@ -356,8 +441,7 @@ procedure TFormProduct.FormShow(Sender: TObject);
 var
   DataImage: TDataImage;
   ImageData: TBytes;
-  Stream: TBytesStream;
-  Png: TPortableNetworkGraphic;
+  i, imageId: Integer;
 begin
   try
   if product <> nil then
@@ -372,38 +456,33 @@ begin
     EditGoogleCat.Text := product.getGoogleProductCategory();
     MemoDescription.Lines.Text := product.getDescription();
     ChkIsService.Checked := product.getIsService();
-    if product.getImageRef() > 0 then
+
+    { Load every image of the product into the working list, in order. }
+    ClearImageWorkingSet;
+    if product.getImageRefCount() > 0 then
     begin
-      LblImageStatus.Caption := Format(RS_PRODUCT_IMG_ID, [product.getImageRef()]);
       DataImage := TDataImage.Create(DataModule1.SQLite3Connection1);
       try
-        ImageData := DataImage.Get(product.getImageRef());
-        if Length(ImageData) > 0 then
+        for i := 0 to product.getImageRefCount() - 1 do
         begin
-          Stream := TBytesStream.Create(ImageData);
-          try
-            Png := TPortableNetworkGraphic.Create;
-            try
-              Png.LoadFromStream(Stream);
-              ImagePreview.Picture.Graphic := Png;
-            finally
-              Png.Free;
-            end;
-          finally
-            Stream.Free;
-          end;
-        end
-        else
-          ImagePreview.Picture.Clear;
+          imageId := product.getImageRefAt(i);
+          if imageId <= 0 then
+            Continue;
+          ImageData := DataImage.Get(imageId);
+          if Length(ImageData) > 0 then
+            AddImageEntry(ImageData, Format(RS_PRODUCT_IMG_STORED, [imageId]));
+        end;
       finally
         DataImage.getQuery().Free;
       end;
-    end
-    else
-    begin
-      LblImageStatus.Caption := '';
-      ImagePreview.Picture.Clear;
     end;
+
+    if ListImages.Items.Count > 0 then
+    begin
+      ListImages.ItemIndex := 0;
+      ShowImagePreview(0);
+    end;
+    UpdateImageStatus;
   end;
   productValidator.setProduct(product);
   except

@@ -8,6 +8,8 @@ uses
 Classes, SysUtils, UBalance;
 
 type
+TImageRefArray = array of Integer;
+
 TProduct = class(TObject)
 private // self access only
 id : Integer;
@@ -16,6 +18,7 @@ minstock :Integer;
 maxstock :Integer;
 balance : TBalance;
 imageRef : Integer;
+imageRefs : TImageRefArray;
 originalPrice : Real;
 isService : Boolean;
 category : String;
@@ -41,6 +44,14 @@ function getMaxStock():Integer;
 function getBalance():TBalance;
 procedure setImageRef(newImageRef:Integer);
 function getImageRef():Integer;
+{ Image array support. The product can hold multiple image ids. imageRef is
+  kept as the "primary" image (the first one) for backward compatibility. }
+procedure addImageRef(imageId:Integer);
+procedure clearImageRefs();
+function getImageRefCount():Integer;
+function getImageRefAt(index:Integer):Integer;
+function getImageRefs():TImageRefArray;
+procedure setImageRefs(const newImageRefs:TImageRefArray);
 procedure setOriginalPrice(newOriginalPrice:Real);
 function getOriginalPrice():Real;
 procedure setIsService(newIsService:Boolean);
@@ -68,6 +79,7 @@ begin
 inherited;
 balance := TBalance.Create;
 imageRef := 0;
+SetLength(imageRefs, 0);
 originalPrice := 0.0;
 isService := False;
 category := '';
@@ -134,7 +146,62 @@ end;
 
 function TProduct.getImageRef():Integer;
 begin
-getImageRef := Self.imageRef;
+{ Prefer the first element of the array when present so callers that still
+  rely on a single reference get the primary image. }
+if Length(Self.imageRefs) > 0 then
+   getImageRef := Self.imageRefs[0]
+else
+   getImageRef := Self.imageRef;
+end;
+
+procedure TProduct.addImageRef(imageId:Integer);
+var
+   len : Integer;
+begin
+if imageId <= 0 then Exit;
+len := Length(Self.imageRefs);
+SetLength(Self.imageRefs, len + 1);
+Self.imageRefs[len] := imageId;
+{ Keep the scalar imageRef pointing at the primary (first) image. }
+if len = 0 then
+   Self.imageRef := imageId;
+end;
+
+procedure TProduct.clearImageRefs();
+begin
+SetLength(Self.imageRefs, 0);
+Self.imageRef := 0;
+end;
+
+function TProduct.getImageRefCount():Integer;
+begin
+getImageRefCount := Length(Self.imageRefs);
+end;
+
+function TProduct.getImageRefAt(index:Integer):Integer;
+begin
+if (index >= 0) and (index < Length(Self.imageRefs)) then
+   getImageRefAt := Self.imageRefs[index]
+else
+   getImageRefAt := 0;
+end;
+
+function TProduct.getImageRefs():TImageRefArray;
+begin
+getImageRefs := Self.imageRefs;
+end;
+
+procedure TProduct.setImageRefs(const newImageRefs:TImageRefArray);
+var
+   i : Integer;
+begin
+SetLength(Self.imageRefs, Length(newImageRefs));
+for i := 0 to High(newImageRefs) do
+   Self.imageRefs[i] := newImageRefs[i];
+if Length(Self.imageRefs) > 0 then
+   Self.imageRef := Self.imageRefs[0]
+else
+   Self.imageRef := 0;
 end;
 
 procedure TProduct.setOriginalPrice(newOriginalPrice:Real);

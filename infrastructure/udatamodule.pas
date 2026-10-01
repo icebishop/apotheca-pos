@@ -43,6 +43,7 @@ type
     procedure MigrateProductExportColumns;
     procedure MigrateProductIdColumn;
     procedure CreateImagesTable;
+    procedure MigrateImagePositionColumn;
     procedure CreatePublicationTable;
     procedure CreateParametersTable;
     procedure CreateGoogleCategoryTable;
@@ -555,6 +556,7 @@ begin
     Query.SQL.Text := 'CREATE TABLE IF NOT EXISTS images (' +
                       'id INTEGER PRIMARY KEY AUTOINCREMENT, ' +
                       'product_id INTEGER NOT NULL, ' +
+                      'position INTEGER DEFAULT 0, ' +
                       'data BLOB NOT NULL)';
     Query.ExecSQL;
 
@@ -568,6 +570,70 @@ begin
     begin
       if Trans.Active then Trans.Rollback;
       LogError('DataModule', 'CREATE_IMAGES_TABLE_FAILED', 'error=' + E.Message);
+    end;
+  end;
+  Query.Free;
+  Trans.Free;
+end;
+
+procedure TDataModule1.MigrateImagePositionColumn;
+var
+  Trans: TSQLTransaction;
+  Query: TSQLQuery;
+  HasPosition: Boolean;
+begin
+  { Products can hold multiple images (an array). The optional 'position'
+    column preserves the display order of a product's images. This migration
+    adds it to legacy 'images' tables that predate the array support, then
+    backfills a deterministic order based on existing ids. Idempotent. }
+  Trans := TSQLTransaction.Create(nil);
+  Query := TSQLQuery.Create(nil);
+  try
+    Trans.DataBase := SQLite3Connection1;
+    Query.DataBase := SQLite3Connection1;
+    Query.Transaction := Trans;
+    Trans.StartTransaction;
+
+    HasPosition := False;
+    Query.SQL.Text := 'PRAGMA table_info(images)';
+    Query.Open;
+    while not Query.EOF do
+    begin
+      if Query.FieldByName('name').AsString = 'position' then
+        HasPosition := True;
+      Query.Next;
+    end;
+    Query.Close;
+
+    if not HasPosition then
+    begin
+      Query.SQL.Text := 'ALTER TABLE images ADD COLUMN position INTEGER DEFAULT 0';
+      Query.ExecSQL;
+
+      { Backfill ordering per product so pre-existing images keep a stable,
+        0-based order (ordered by id within each product). }
+      Query.SQL.Text :=
+        'UPDATE images SET position = ('
+        + '  SELECT COUNT(*) FROM images AS older '
+        + '  WHERE older.product_id = images.product_id '
+        + '    AND older.id < images.id)';
+      Query.ExecSQL;
+
+      LogSecurity('DataModule', 'MIGRATE_IMAGE_POSITION_DONE',
+        'images.position column added and backfilled');
+    end;
+
+    Query.SQL.Text :=
+      'CREATE INDEX IF NOT EXISTS idx_images_product_pos ' +
+      'ON images(product_id, position)';
+    Query.ExecSQL;
+
+    Trans.Commit;
+  except
+    on E: Exception do
+    begin
+      if Trans.Active then Trans.Rollback;
+      LogError('DataModule', 'MIGRATE_IMAGE_POSITION_FAILED', 'error=' + E.Message);
     end;
   end;
   Query.Free;
@@ -914,6 +980,7 @@ begin
   MigrateProductExportColumns;
   MigrateProductIdColumn;
   CreateImagesTable;
+  MigrateImagePositionColumn;
   CreatePublicationTable;
   CreateParametersTable;
   CreateGoogleCategoryTable;

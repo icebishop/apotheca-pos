@@ -113,16 +113,16 @@ begin
   with GridItems.Columns.Add do
   begin
     Title.Caption := RS_PUBPREVIEW_COL_IMAGE;
-    Width := 110;
+    Width := 150;
     ReadOnly := True;
   end;
 end;
 
 procedure TFormPublishPreview.LoadItems(Items: TStrings);
 var
-  i: Integer;
+  i, imgCount: Integer;
   parts: TStringArray;
-  cid, itemName, hasImg: String;
+  cid, itemName, hasImg, imgCountStr: String;
   hasImage: Boolean;
 begin
   Caption := RS_PUBPREVIEW_TITLE;
@@ -137,21 +137,29 @@ begin
 
   for i := 0 to Items.Count - 1 do
   begin
-    { Line format: CatalogId<TAB>Name<TAB>HasImage ('1'/'0'). }
+    { Line format: CatalogId<TAB>Name<TAB>HasImage ('1'/'0')<TAB>ImageCount. }
     parts := Items[i].Split(#9);
     cid := '';
     itemName := '';
     hasImg := '1';
+    imgCountStr := '';
     if Length(parts) > 0 then cid := parts[0];
     if Length(parts) > 1 then itemName := parts[1];
     if Length(parts) > 2 then hasImg := parts[2];
+    if Length(parts) > 3 then imgCountStr := parts[3];
     hasImage := hasImg <> '0';
+    imgCount := StrToIntDef(imgCountStr, 0);
 
     GridItems.Cells[COL_ID, i + 1] := cid;
     GridItems.Cells[COL_NAME, i + 1] := itemName;
     if hasImage then
     begin
-      GridItems.Cells[COL_IMAGE, i + 1] := RS_PUBPREVIEW_IMG_OK;
+      { Show a carousel badge with the image count when there are 2+ images. }
+      if imgCount >= 2 then
+        GridItems.Cells[COL_IMAGE, i + 1] :=
+          Format(RS_PUBPREVIEW_IMG_CAROUSEL, [imgCount])
+      else
+        GridItems.Cells[COL_IMAGE, i + 1] := RS_PUBPREVIEW_IMG_OK;
       GridItems.Cells[COL_CHECK, i + 1] := CHECKED;  { checked by default }
     end
     else

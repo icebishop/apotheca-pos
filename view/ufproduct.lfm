@@ -1,11 +1,11 @@
 object FormProduct: TFormProduct
   Left = 456
-  Height = 580
-  Top = 200
+  Height = 700
+  Top = 120
   Width = 520
   ActiveControl = EditName
   Caption = 'Products'
-  ClientHeight = 580
+  ClientHeight = 700
   ClientWidth = 520
   Position = poMainFormCenter
   OnCreate = FormCreate
@@ -164,36 +164,85 @@ object FormProduct: TFormProduct
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 8
   end
-  object BtnSelectImage: TBitBtn
-    Left = 16
-    Height = 30
-    Top = 362
-    Width = 140
-    Caption = 'Select Image...'
-    OnClick = BtnSelectImageClick
-    TabOrder = 9
-  end
-  object LblImageStatus: TLabel
-    Left = 164
-    Height = 18
-    Top = 368
-    Width = 346
-    Anchors = [akTop, akLeft, akRight]
-    Caption = ''
-    ParentColor = False
-  end
   object ChkIsService: TCheckBox
     Left = 16
     Height = 23
-    Top = 400
+    Top = 362
     Width = 100
     Caption = 'Is Service'
+    TabOrder = 9
+  end
+  object GroupBoxImages: TGroupBox
+    Left = 16
+    Height = 230
+    Top = 392
+    Width = 494
+    Anchors = [akTop, akLeft, akRight]
+    Caption = 'Images'
+    ClientHeight = 210
+    ClientWidth = 490
     TabOrder = 10
+    object ListImages: TListBox
+      Left = 8
+      Height = 150
+      Top = 8
+      Width = 200
+      ItemHeight = 0
+      OnClick = ListImagesClick
+      TabOrder = 0
+    end
+    object BtnAddImage: TBitBtn
+      Left = 8
+      Height = 30
+      Top = 166
+      Width = 95
+      Caption = 'Add Image...'
+      OnClick = BtnAddImageClick
+      TabOrder = 1
+    end
+    object BtnRemoveImage: TBitBtn
+      Left = 113
+      Height = 30
+      Top = 166
+      Width = 95
+      Caption = 'Remove'
+      OnClick = BtnRemoveImageClick
+      TabOrder = 2
+    end
+    object GroupBoxPreview: TGroupBox
+      Left = 220
+      Height = 196
+      Top = 4
+      Width = 262
+      Caption = 'Preview'
+      ClientHeight = 176
+      ClientWidth = 258
+      TabOrder = 3
+      object ImagePreview: TImage
+        Left = 2
+        Height = 172
+        Top = 2
+        Width = 254
+        Align = alClient
+        Center = True
+        Proportional = True
+        Stretch = True
+      end
+    end
+  end
+  object LblImageStatus: TLabel
+    Left = 16
+    Height = 18
+    Top = 628
+    Width = 494
+    Anchors = [akLeft, akRight, akBottom]
+    Caption = ''
+    ParentColor = False
   end
   object BitBtnOk: TBitBtn
     Left = 348
     Height = 30
-    Top = 540
+    Top = 652
     Width = 80
     Anchors = [akRight, akBottom]
     Caption = '&Aceptar'
@@ -203,31 +252,11 @@ object FormProduct: TFormProduct
   object BitBtnCancel: TBitBtn
     Left = 432
     Height = 30
-    Top = 540
+    Top = 652
     Width = 80
     Anchors = [akRight, akBottom]
     Caption = '&Cancelar'
     OnClick = BitBtnCancelClick
     TabOrder = 12
-  end
-  object GroupBoxPreview: TGroupBox
-    Left = 140
-    Height = 130
-    Top = 400
-    Width = 130
-    Caption = 'Preview'
-    ClientHeight = 110
-    ClientWidth = 126
-    TabOrder = 13
-    object ImagePreview: TImage
-      Left = 2
-      Height = 106
-      Top = 2
-      Width = 122
-      Align = alClient
-      Center = True
-      Proportional = True
-      Stretch = True
-    end
   end
 end

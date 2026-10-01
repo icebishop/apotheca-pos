@@ -32,8 +32,12 @@ type
   public
     function SerializeProducts(Products: TList; const ImageDir: String): String;
     function SerializeServices(Services: TList; const ImageDir: String): String;
+    { Single-image overloads kept for backward compatibility. }
     function SerializeProduct(Product: TProduct; const ImagePath: String): String;
     function SerializeService(Product: TProduct; const ImagePath: String): String;
+    { Multi-image: emits every path into the "images" array so the web catalog
+      renders a carousel. }
+    function SerializeProductImages(Product: TProduct; const ImagePaths: array of String): String;
     function EscapeJsonString(const S: String): String;
     function RoundHalfUp(Value: Real): Integer;
     function FormatJsonObject(const Pairs: array of String): String;
@@ -85,10 +89,27 @@ end;
 
 function TJsonSerializer.SerializeProduct(Product: TProduct; const ImagePath: String): String;
 var
+  Paths: array of String;
+begin
+  { Backward-compatible single-image path -> delegate to the multi-image core. }
+  if ImagePath <> '' then
+  begin
+    SetLength(Paths, 1);
+    Paths[0] := ImagePath;
+  end
+  else
+    SetLength(Paths, 0);
+  Result := SerializeProductImages(Product, Paths);
+end;
+
+function TJsonSerializer.SerializeProductImages(Product: TProduct;
+  const ImagePaths: array of String): String;
+var
   balance: TBalance;
   idStr, nameStr, priceStr, originalPriceStr: String;
   descriptionStr, imagesStr, isVisibleStr, availabilityStr: String;
   categoryStr, brandStr, conditionStr, googleCatStr: String;
+  i, n: Integer;
 begin
   balance := Product.getBalance();
 
@@ -102,10 +123,30 @@ begin
   conditionStr := '"' + EscapeJsonString(Product.getProductCondition()) + '"';
   googleCatStr := '"' + EscapeJsonString(Product.getGoogleProductCategory()) + '"';
 
-  if ImagePath <> '' then
-    imagesStr := '[' + LineEnding + '      "' + EscapeJsonString(ImagePath) + '"' + LineEnding + '    ]'
+  { Build the images array, skipping empty paths. Every path becomes a carousel
+    slide on the web catalog. }
+  n := 0;
+  for i := 0 to High(ImagePaths) do
+    if ImagePaths[i] <> '' then
+      Inc(n);
+
+  if n = 0 then
+    imagesStr := '[]'
   else
-    imagesStr := '[]';
+  begin
+    imagesStr := '[' + LineEnding;
+    for i := 0 to High(ImagePaths) do
+    begin
+      if ImagePaths[i] = '' then
+        Continue;
+      imagesStr := imagesStr + '      "' + EscapeJsonString(ImagePaths[i]) + '"';
+      Dec(n);
+      if n > 0 then
+        imagesStr := imagesStr + ',';
+      imagesStr := imagesStr + LineEnding;
+    end;
+    imagesStr := imagesStr + '    ]';
+  end;
 
   if balance.getStock() > 0 then
   begin

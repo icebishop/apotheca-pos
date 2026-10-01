@@ -15,7 +15,15 @@ type
     function Update(imageId: Integer; const PngData: TBytes): Boolean;
     function Get(imageId: Integer): TBytes;
     function GetByProduct(productId: Integer): TBytes;
+    { Returns the ids of every image belonging to a product, ordered by their
+      stored position (then id). Caller owns the returned list. }
+    function GetIdsByProduct(productId: Integer): TList;
+    { Deletes a single image by its id. }
+    function DeleteImage(imageId: Integer): Boolean;
     function Delete(productId: Integer): Boolean;
+  private
+    { Next free position for a product (max(position)+1, starting at 0). }
+    function NextPosition(productId: Integer): Integer;
   end;
 
 implementation
@@ -23,6 +31,32 @@ implementation
 constructor TDataImage.Create(Connection: TSQLite3Connection);
 begin
   inherited Create(Connection);
+end;
+
+function TDataImage.NextPosition(productId: Integer): Integer;
+var
+  query: TSQLQuery;
+begin
+  Result := 0;
+  try
+    query := TSQLQuery.Create(nil);
+    try
+      query.DataBase := Self.getConnection();
+      query.Transaction := Self.getConnection().Transaction;
+      query.SQL.Text :=
+        'SELECT COALESCE(MAX(position), -1) + 1 AS nextpos ' +
+        'FROM images WHERE product_id = :product_id';
+      query.Params.ParamByName('product_id').AsInteger := productId;
+      query.Open;
+      if not query.EOF then
+        Result := query.FieldByName('nextpos').AsInteger;
+      query.Close;
+    finally
+      query.Free;
+    end;
+  except
+    Result := 0;
+  end;
 end;
 
 function TDataImage.Store(productId: Integer; const PngData: TBytes): Integer;
@@ -33,8 +67,10 @@ begin
     stream := TBytesStream.Create(PngData);
     try
       Self.getQuery().SQL.Text :=
-        'INSERT INTO images (product_id, data) VALUES (:product_id, :data)';
+        'INSERT INTO images (product_id, position, data) ' +
+        'VALUES (:product_id, :position, :data)';
       Self.getQuery().Params.ParamByName('product_id').AsInteger := productId;
+      Self.getQuery().Params.ParamByName('position').AsInteger := NextPosition(productId);
       Self.getQuery().Params.ParamByName('data').LoadFromStream(stream, ftBlob);
       Self.getQuery().ExecSQL;
 
@@ -120,7 +156,8 @@ begin
     query := TSQLQuery.Create(nil);
     try
       query.DataBase := Self.getConnection();
-      query.SQL.Text := 'SELECT data FROM images WHERE product_id = :product_id';
+      query.SQL.Text := 'SELECT data FROM images WHERE product_id = :product_id ' +
+                        'ORDER BY position, id';
       query.Params.ParamByName('product_id').AsInteger := productId;
       query.Open;
 
@@ -146,6 +183,49 @@ begin
     end;
   except
     Result := nil;
+  end;
+end;
+
+function TDataImage.GetIdsByProduct(productId: Integer): TList;
+var
+  query: TSQLQuery;
+  ids: TList;
+begin
+  ids := TList.Create;
+  try
+    query := TSQLQuery.Create(nil);
+    try
+      query.DataBase := Self.getConnection();
+      query.Transaction := Self.getConnection().Transaction;
+      query.SQL.Text := 'SELECT id FROM images WHERE product_id = :product_id ' +
+                        'ORDER BY position, id';
+      query.Params.ParamByName('product_id').AsInteger := productId;
+      query.Open;
+      while not query.EOF do
+      begin
+        { Store the id as a pointer-sized integer in the list. }
+        ids.Add(Pointer(PtrInt(query.FieldByName('id').AsInteger)));
+        query.Next;
+      end;
+      query.Close;
+    finally
+      query.Free;
+    end;
+  except
+    { Return whatever was gathered (possibly empty) on error. }
+  end;
+  Result := ids;
+end;
+
+function TDataImage.DeleteImage(imageId: Integer): Boolean;
+begin
+  try
+    Self.getQuery().SQL.Text := 'DELETE FROM images WHERE id = :id';
+    Self.getQuery().Params.ParamByName('id').AsInteger := imageId;
+    Self.getQuery().ExecSQL;
+    Result := True;
+  except
+    Result := False;
   end;
 end;
 
