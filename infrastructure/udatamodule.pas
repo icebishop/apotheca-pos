@@ -796,15 +796,22 @@ end;
 
 procedure TDataModule1.EnableForeignKeys;
 var
+  Trans: TSQLTransaction;
   Query: TSQLQuery;
 begin
-  { Ensure a transaction is initialized on SQLite3Connection1 before querying }
-  EnsureTransaction;
+  { Verify the FK pragma using a self-contained transaction that is committed
+    (and therefore closed) immediately, so it does not interfere with the
+    migration procedures that follow — each of which creates its own
+    TSQLTransaction and would fail with 'cannot start a transaction within a
+    transaction' if one were left open here. }
+  Trans := TSQLTransaction.Create(nil);
   Query := TSQLQuery.Create(nil);
   try
     try
+      Trans.DataBase := SQLite3Connection1;
       Query.DataBase := SQLite3Connection1;
-      Query.Transaction := SQLite3Connection1.Transaction;
+      Query.Transaction := Trans;
+      Trans.StartTransaction;
       Query.SQL.Text := 'PRAGMA foreign_keys;';
       Query.Open;
       if (not Query.EOF) and (Query.Fields[0].AsInteger = 1) then
@@ -812,12 +819,17 @@ begin
       else
         LogWarn('DataModule', 'FK_ENFORCEMENT', 'foreign_keys still OFF (check connection Params)');
       Query.Close;
+      Trans.Commit;  { close the transaction so migrations can open theirs }
     except
       on E: Exception do
+      begin
+        if Trans.Active then Trans.Rollback;
         LogError('DataModule', 'FK_ENFORCEMENT_FAILED', 'error=' + E.Message);
+      end;
     end;
   finally
     Query.Free;
+    Trans.Free;
   end;
 end;
 
