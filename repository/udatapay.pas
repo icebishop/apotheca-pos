@@ -97,6 +97,10 @@ implementation
               pay := TPay.Create;
               pay.setId(Self.getQuery().FieldByName('id').AsInteger);
               pay.setValue(Self.getQuery().FieldByName('val').Asfloat);
+              { pay.date is declared DATE, so the sqldb driver maps it to a
+                TDateField and converts the stored Julian Day to a TDateTime
+                automatically. Read it with AsDateTime. (operation.date is a REAL
+                column, which is why TDataTransaction uses AsFloat - offset.) }
               pay.setDate(Self.getQuery().FieldByName('date').AsDateTime);
               Self.getQuery().Next;
          end;

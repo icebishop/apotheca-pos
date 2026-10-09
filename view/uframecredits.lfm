@@ -192,7 +192,7 @@ object FrameCredits: TFrameCredits
             OKCaption = 'OK'
             CancelCaption = 'Cancel'
             DefaultToday = True
-            DateOrder = doNone
+            DateOrder = doYMD
             ButtonWidth = 23
             NumGlyphs = 0
             TabOrder = 1

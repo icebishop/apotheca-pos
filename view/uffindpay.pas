@@ -127,7 +127,7 @@ var
      for i:=0 to payList.Count-1 do
      begin
          pay := TPay(payList[i]);
-         StringGridPay.Cells[0,i+1] := DateToStr(pay.getDate());
+         StringGridPay.Cells[0,i+1] := FormatDateTime('yyyy-mm-dd', pay.getDate());
          StringGridPay.Cells[1,i+1] := FloatToStr(pay.getValue());
      end;
 end;

@@ -40,6 +40,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 function TFormFindSale.getFlagAction():Integer;
 begin
      getFlagAction := flagAction;
@@ -99,13 +101,10 @@ var
      for i:=0 to saleList.Count-1 do
      begin
          sale := TSale(saleList[i]);
-         StringGrid1.Cells[0,i+1] := DateToStr(sale.getDate());
+         StringGrid1.Cells[0,i+1] := FormatDateTime('yyyy-mm-dd', sale.getDate());
          StringGrid1.Cells[1,i+1] := FloatToStr(sale.getSum());
      end;
 end;
-
-initialization
-  {$I uffindpay.lrs}
 
 end.
 

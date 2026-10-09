@@ -238,6 +238,11 @@ begin
   if section = stCredits then
     FFrameCredits.RefreshData;
 
+  { Always reload the export config params when clicking the Export button so
+    changes made in Settings are reflected without restarting }
+  if section = stExport then
+    FFrameExport.RefreshConfig;
+
   { No-op if already on the requested frame (after refresh above) }
   if FActiveFrame = targetFrame then
   begin

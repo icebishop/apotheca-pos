@@ -24,7 +24,7 @@ LazarusResources.Add('TFormTransaction','FORMDATA',[
   +'idth'#2'A'#7'Caption'#6#1'0'#8'TabOrder'#2#2#0#0#9'TDateEdit'#8'DateEdit'#4
   +'Left'#3#128#1#6'Height'#2#27#3'Top'#2#16#5'Width'#3#152#0#23'CalendarDispla'
   +'ySettings'#11#14'dsShowHeadings'#14'dsShowDayNames'#0#9'OKCaption'#6#2'OK'
-  +#13'CancelCaption'#6#6'Cancel'#12'DefaultToday'#9#9'DateOrder'#7#6'doNone'#11
+  +#13'CancelCaption'#6#6'Cancel'#12'DefaultToday'#9#9'DateOrder'#7#5'doYMD'#11
   +'ButtonWidth'#2#23#10'Glyph.Data'#10':'#4#0#0'6'#4#0#0'BM6'#4#0#0#0#0#0#0'6'
   +#0#0#0'('#0#0#0#16#0#0#0#16#0#0#0#1#0' '#0#0#0#0#0#0#4#0#0'd'#0#0#0'd'#0#0#0
   +#0#0#0#0#0#0#0#0#255#255#255#0#255#255#255#0#255#255#255#0#255#255#255#0#255

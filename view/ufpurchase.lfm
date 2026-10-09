@@ -108,7 +108,7 @@ object Formpurchase: TFormpurchase
     OKCaption = 'OK'
     CancelCaption = 'Cancel'
     DefaultToday = True
-    DateOrder = doNone
+    DateOrder = doYMD
     ButtonWidth = 23
     Glyph.Data = {
       36040000424D3604000000000000360000002800000010000000100000000100

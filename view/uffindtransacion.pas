@@ -127,7 +127,7 @@ var
      for i:=0 to transactionList.Count-1 do
      begin
          transaction := TTransaction(transactionList[i]);
-         StringGridTransaction.Cells[0,i+1] := DateToStr(transaction.getDate());
+         StringGridTransaction.Cells[0,i+1] := FormatDateTime('yyyy-mm-dd', transaction.getDate());
          StringGridTransaction.Cells[1,i+1] := IntToStr(transaction.getId());
      end;
 end;

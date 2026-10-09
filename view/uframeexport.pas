@@ -36,6 +36,10 @@ type
     procedure PublishProgress(Current, Total: Integer; const Msg: String);
   public
     constructor Create(AOwner: TComponent); override;
+    { Reloads the file/dir fields from the export parameters (settings table).
+      Called when the frame is shown so edits made in Settings take effect
+      without restarting the application. }
+    procedure RefreshConfig;
   end;
 
 implementation
@@ -44,11 +48,46 @@ implementation
 
 { TFrameExport }
 
+procedure TFrameExport.RefreshConfig;
+var
+  Svc: TSettingsService;
+  ResBase, DefProducts, DefPublic: String;
+begin
+  { Prefill the file/dir fields from the export parameters (same source the
+    Instagram publish flow reads), falling back to the previous app-dir
+    defaults when the parameters are absent. }
+  DefProducts := GetAppDir + 'export.json';
+  DefPublic := GetAppDir;
+  try
+    DataModule1.EnsureTransaction;
+    Svc := TSettingsService.Create(DataModule1.SQLite3Connection1);
+    try
+      ResBase := GetAppDir + '..' + PathDelim + 'don-pilido-app' + PathDelim +
+                 'src' + PathDelim + 'res' + PathDelim;
+      edtFilePath.Text := Svc.GetValue(PARAM_EXPORT_PRODUCTS_PATH,
+        ResBase + 'products.json');
+      edtImageDir.Text := Svc.GetValue(PARAM_EXPORT_PUBLIC_FOLDER,
+        GetAppDir + '..' + PathDelim + 'don-pilido-app' + PathDelim + 'public');
+    finally
+      Svc.Free;
+    end;
+  except
+    on E: Exception do
+    begin
+      DebugLn('[TFrameExport.RefreshConfig] settings read failed: ' + E.Message);
+      edtFilePath.Text := DefProducts;
+      edtImageDir.Text := DefPublic;
+    end;
+  end;
+end;
+
 constructor TFrameExport.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  edtFilePath.Text := GetAppDir + 'export.json';
-  edtImageDir.Text := GetAppDir;
+
+  { Load the config-driven paths once at creation; refreshed again whenever the
+    frame is shown (see TFormPrincipal.NavigateTo). }
+  RefreshConfig;
   { Captions from resource strings (localizable). }
   chkProducts.Caption := RS_EXPORT_PRODUCTS;
   chkServices.Caption := RS_EXPORT_SERVICES;

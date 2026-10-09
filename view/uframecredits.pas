@@ -233,7 +233,7 @@ begin
     for i := 0 to FCreditSalesList.Count - 1 do
     begin
       saleInfo := TCreditSaleInfo(FCreditSalesList[i]);
-      GridCreditSales.Cells[0, i + 1] := DateToStr(saleInfo.Date);
+      GridCreditSales.Cells[0, i + 1] := FormatDateTime('yyyy-mm-dd', saleInfo.Date);
       GridCreditSales.Cells[1, i + 1] := FormatFloat('0.00', saleInfo.SaleTotal);
       GridCreditSales.Cells[2, i + 1] := FormatFloat('0.00', saleInfo.Debt);
     end;
@@ -274,7 +274,7 @@ begin
     for i := 0 to FPaymentsList.Count - 1 do
     begin
       pay := TPay(FPaymentsList[i]);
-      GridPayments.Cells[0, i + 1] := DateToStr(pay.getDate());
+      GridPayments.Cells[0, i + 1] := FormatDateTime('yyyy-mm-dd', pay.getDate());
       GridPayments.Cells[1, i + 1] := FormatFloat('0.00', pay.getValue());
       GridPayments.Cells[2, i + 1] := IntToStr(FSelectedOperationId);
     end;

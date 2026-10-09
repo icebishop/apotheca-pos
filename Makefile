@@ -7,7 +7,7 @@ BINARY = $(PROJECT)
 TEST_DIR = tests
 SERVICE_DIR = service
 PACKAGE_NAME = apotheca-dist
-VERSION = 2.6.0
+VERSION = 2.6.2
 
 # Lazarus build tool
 LAZBUILD = lazbuild
@@ -29,7 +29,7 @@ IG_TEST_RUNNERS = run_caption_publish_test run_detector_publish_test \
 # Database / transaction test runners (compiled with fpc directly)
 DB_TEST_RUNNERS = run_db_test
 
-.PHONY: all build test test-instagram test-db run clean package release help
+.PHONY: all build test test-instagram test-db run clean clear package release help
 
 # Release settings
 TAG = v$(VERSION)
@@ -120,9 +120,13 @@ run: build
 	@echo "Starting $(PROJECT)..."
 	./$(BINARY)
 
+## Alias for clean (common typo)
+clear: clean
+
 ## Remove all build artifacts
 clean:
 	@echo "Cleaning build artifacts..."
+	rm -rf lib
 	rm -f *.o *.ppu *.rsj *.compiled *.or *.res
 	rm -f $(BINARY)
 	rm -f link*.res ppas.sh

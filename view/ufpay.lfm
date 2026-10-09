@@ -71,7 +71,7 @@ object FormPay: TFormPay
     OKCaption = 'OK'
     CancelCaption = 'Cancel'
     DefaultToday = True
-    DateOrder = doNone
+    DateOrder = doYMD
     ButtonWidth = 23
     DirectInput = False
     Glyph.Data = {

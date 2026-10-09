@@ -84,7 +84,7 @@ object FrameReturns: TFrameReturns
     OKCaption = 'OK'
     CancelCaption = 'Cancel'
     DefaultToday = True
-    DateOrder = doNone
+    DateOrder = doYMD
     ButtonWidth = 23
     NumGlyphs = 0
     OnChange = DateEditChange

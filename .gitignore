@@ -8,14 +8,12 @@
 link*.res
 ppas.sh
 
+# Compiler output directory (all .o/.ppu/.lfm/.lrs artifacts live here now)
+lib/
+
 # Binary output
 apotheca
 apotheca.exe
-
-# Lazarus generated form resources (from {$R *.lfm} in output dir)
-/uframe*.lfm
-/uformsplash.lfm
-/ufpublishpreview.lfm
 # Logs
 *.log
 logs/

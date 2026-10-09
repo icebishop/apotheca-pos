@@ -447,7 +447,11 @@ begin
       pay := TPay.Create;
       pay.setId(Query.FieldByName('id').AsInteger);
       pay.setValue(Query.FieldByName('val').AsFloat);
-      pay.setDate(Query.FieldByName('date').AsFloat - JULIAN_TDATETIME_OFFSET);
+      { pay.date is declared DATE, so the sqldb driver maps it to a TDateField
+        and converts the stored Julian Day to a TDateTime automatically. Read it
+        with AsDateTime. (The operation table uses a REAL column with no
+        conversion, which is why that one needs AsFloat - offset instead.) }
+      pay.setDate(Query.FieldByName('date').AsDateTime);
       person := TPerson.Create;
       person.setId(Query.FieldByName('person').AsInteger);
       pay.setPerson(person);
@@ -518,7 +522,12 @@ begin
       'INSERT INTO pay (person, val, date, operation) VALUES (:person, :val, :paydate, :operation)';
     Query.Params.ParamByName('person').AsInteger := personId;
     Query.Params.ParamByName('val').AsFloat := amount;
-    Query.Params.ParamByName('paydate').AsFloat := Double(payDate);
+    { Write the date as a SQLite Julian Day via AsDate, matching how operations
+      and payments are stored elsewhere (TDataPay/TDataTransaction) and how this
+      service reads them back (storedJulianDay - JULIAN_TDATETIME_OFFSET). Using
+      AsFloat := Double(payDate) stored a raw TDateTime, which read back as a
+      date ~6500 years in the past. }
+    Query.Params.ParamByName('paydate').AsDate := payDate;
     Query.Params.ParamByName('operation').AsInteger := operationId;
     Query.ExecSQL;
 
