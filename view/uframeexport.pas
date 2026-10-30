@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, StdCtrls, Buttons, Dialogs, ComCtrls,
-  UExportService, UPublishOrchestrator, USettingsService, UFPublishPreview,
-  UDataModule, UResourceString, LazLogger;
+  UExportService, UMerchantFeedService, UPublishOrchestrator, USettingsService,
+  UFPublishPreview, UDataModule, UResourceString, LazLogger;
 
 type
 
@@ -22,6 +22,9 @@ type
     btnBrowseDir: TBitBtn;
     btnExport: TBitBtn;
     btnPublishInstagram: TBitBtn;
+    edtMerchantPath: TEdit;
+    btnBrowseMerchant: TBitBtn;
+    btnGenerateMerchant: TBitBtn;
     lblStatus: TLabel;
     ProgressBar: TProgressBar;
     MemoLog: TMemo;
@@ -29,6 +32,8 @@ type
     procedure btnBrowseDirClick(Sender: TObject);
     procedure btnExportClick(Sender: TObject);
     procedure btnPublishInstagramClick(Sender: TObject);
+    procedure btnBrowseMerchantClick(Sender: TObject);
+    procedure btnGenerateMerchantClick(Sender: TObject);
   private
     function GetAppDir: String;
     procedure LogLine(const S: String);
@@ -68,6 +73,9 @@ begin
         ResBase + 'products.json');
       edtImageDir.Text := Svc.GetValue(PARAM_EXPORT_PUBLIC_FOLDER,
         GetAppDir + '..' + PathDelim + 'don-pilido-app' + PathDelim + 'public');
+      edtMerchantPath.Text := Svc.GetValue(PARAM_MERCHANT_FEED_PATH,
+        GetAppDir + '..' + PathDelim + 'don-pilido-app' + PathDelim + 'public' +
+        PathDelim + 'merchant_feed.txt');
     finally
       Svc.Free;
     end;
@@ -77,6 +85,7 @@ begin
       DebugLn('[TFrameExport.RefreshConfig] settings read failed: ' + E.Message);
       edtFilePath.Text := DefProducts;
       edtImageDir.Text := DefPublic;
+      edtMerchantPath.Text := DefPublic + PathDelim + 'merchant_feed.txt';
     end;
   end;
 end;
@@ -95,6 +104,8 @@ begin
   btnBrowseDir.Caption := RS_EXPORT_BROWSE;
   btnExport.Caption := RS_EXPORT_UPDATE_CATALOG;
   btnPublishInstagram.Caption := RS_EXPORT_PUBLISH_INSTAGRAM;
+  btnBrowseMerchant.Caption := RS_EXPORT_BROWSE;
+  btnGenerateMerchant.Caption := RS_MERCHANT_GENERATE;
 end;
 
 function TFrameExport.GetAppDir: String;
@@ -177,6 +188,87 @@ begin
   end;
   except
     on E: Exception do DebugLn('[TFrameExport.btnBrowseDirClick] ERROR: ' + E.Message);
+  end;
+end;
+
+procedure TFrameExport.btnBrowseMerchantClick(Sender: TObject);
+var
+  Dlg: TSaveDialog;
+begin
+  try
+  Dlg := TSaveDialog.Create(Self);
+  try
+    Dlg.Title := RS_MERCHANT_DLG_TITLE;
+    Dlg.Filter := RS_MERCHANT_DLG_FILTER;
+    Dlg.DefaultExt := 'txt';
+    Dlg.FileName := edtMerchantPath.Text;
+    if Dlg.Execute then
+      edtMerchantPath.Text := Dlg.FileName;
+    // On cancel, retain current path
+  finally
+    Dlg.Free;
+  end;
+  except
+    on E: Exception do DebugLn('[TFrameExport.btnBrowseMerchantClick] ERROR: ' + E.Message);
+  end;
+end;
+
+procedure TFrameExport.btnGenerateMerchantClick(Sender: TObject);
+var
+  Options: TMerchantFeedOptions;
+  FeedResult: TMerchantFeedResult;
+  FeedSvc: TMerchantFeedService;
+  Svc: TSettingsService;
+  Msg: String;
+begin
+  try
+  { Build options: output path from the field, base URL from settings. }
+  Options.OutputFilePath := edtMerchantPath.Text;
+  Options.Currency := 'COP';
+  Options.OnProgress := @ExportProgress;
+
+  DataModule1.EnsureTransaction;
+  Svc := TSettingsService.Create(DataModule1.SQLite3Connection1);
+  try
+    Options.BaseUrl := Svc.GetValue(PARAM_IG_IMAGE_BASE_URL, 'https://donpulido.com');
+  finally
+    Svc.Free;
+  end;
+
+  MemoLog.Clear;
+  LogLine(RS_MERCHANT_GENERATING);
+  ProgressBar.Position := 0;
+  ProgressBar.Visible := True;
+  Application.ProcessMessages;
+
+  DataModule1.EnsureTransaction;
+  FeedSvc := TMerchantFeedService.Create(DataModule1.SQLite3Connection1);
+  try
+    FeedResult := FeedSvc.Execute(Options);
+  finally
+    FeedSvc.Free;
+  end;
+
+  if FeedResult.Success then
+  begin
+    Msg := Format(RS_MERCHANT_COMPLETE,
+      [FeedResult.ProductCount, FeedResult.OutputFile]);
+    lblStatus.Caption := Msg;
+    LogLine(Msg);
+    ProgressBar.Position := ProgressBar.Max;
+  end
+  else
+  begin
+    lblStatus.Caption := Format(RS_MERCHANT_ERR_PREFIX, [FeedResult.ErrorMessage]);
+    LogLine('ERROR: ' + FeedResult.ErrorMessage);
+  end;
+  except
+    on E: Exception do
+    begin
+      DebugLn('[TFrameExport.btnGenerateMerchantClick] ERROR: ' + E.Message);
+      lblStatus.Caption := Format(RS_MERCHANT_ERR_PREFIX, [E.Message]);
+      LogLine('ERROR: ' + E.Message);
+    end;
   end;
 end;
 

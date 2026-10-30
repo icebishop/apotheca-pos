@@ -67,6 +67,7 @@ const
   PARAM_EXPORT_PRODUCTS_PATH   = 'export.products.path';
   PARAM_EXPORT_SERVICES_PATH   = 'export.services.path';
   PARAM_EXPORT_PUBLIC_FOLDER   = 'export.public.folder';
+  PARAM_MERCHANT_FEED_PATH     = 'export.merchant.feed.path';
   PARAM_IG_ACCESS_TOKEN        = 'instagram.access_token';
   PARAM_IG_BUSINESS_ACCOUNT_ID = 'instagram.business_account_id';
   PARAM_IG_IMAGE_BASE_URL      = 'instagram.image_base_url';
@@ -199,6 +200,8 @@ begin
     'Services JSON export file (Update Web Catalog)');
   SeedIfAbsent(PARAM_EXPORT_PUBLIC_FOLDER, PublicFolder, False,
     'Public image folder for Instagram Publication');
+  SeedIfAbsent(PARAM_MERCHANT_FEED_PATH, PublicFolder + PathDelim + 'merchant_feed.txt',
+    False, 'Google Merchant Center product feed file (tab-delimited)');
   SeedIfAbsent(PARAM_IG_ACCESS_TOKEN, '', True,
     'Instagram Graph API access token (credential)');
   SeedIfAbsent(PARAM_IG_BUSINESS_ACCOUNT_ID, '', False,

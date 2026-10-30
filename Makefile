@@ -7,7 +7,7 @@ BINARY = $(PROJECT)
 TEST_DIR = tests
 SERVICE_DIR = service
 PACKAGE_NAME = apotheca-dist
-VERSION = 2.6.2
+VERSION = 2.6.3
 
 # Lazarus build tool
 LAZBUILD = lazbuild

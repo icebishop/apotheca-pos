@@ -84,10 +84,38 @@ object FrameExport: TFrameExport
     OnClick = btnPublishInstagramClick
     TabOrder = 7
   end
+  object edtMerchantPath: TEdit
+    Left = 16
+    Height = 27
+    Top = 224
+    Width = 480
+    Anchors = [akTop, akLeft, akRight]
+    ReadOnly = True
+    TabOrder = 8
+  end
+  object btnBrowseMerchant: TBitBtn
+    Left = 504
+    Height = 30
+    Top = 222
+    Width = 120
+    Anchors = [akTop, akRight]
+    Caption = 'Browse...'
+    OnClick = btnBrowseMerchantClick
+    TabOrder = 9
+  end
+  object btnGenerateMerchant: TBitBtn
+    Left = 16
+    Height = 35
+    Top = 258
+    Width = 260
+    Caption = 'Generate Merchant Feed'
+    OnClick = btnGenerateMerchantClick
+    TabOrder = 10
+  end
   object lblStatus: TLabel
     Left = 16
     Height = 20
-    Top = 228
+    Top = 304
     Width = 608
     Anchors = [akTop, akLeft, akRight]
     Caption = ''
@@ -95,23 +123,23 @@ object FrameExport: TFrameExport
   object ProgressBar: TProgressBar
     Left = 16
     Height = 20
-    Top = 256
+    Top = 332
     Width = 608
     Anchors = [akTop, akLeft, akRight]
     Min = 0
     Max = 100
     Position = 0
-    TabOrder = 8
+    TabOrder = 11
     Visible = False
   end
   object MemoLog: TMemo
     Left = 16
-    Height = 180
-    Top = 288
+    Height = 112
+    Top = 364
     Width = 608
     Anchors = [akTop, akLeft, akRight, akBottom]
     ReadOnly = True
     ScrollBars = ssAutoVertical
-    TabOrder = 9
+    TabOrder = 12
   end
 end

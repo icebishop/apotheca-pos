@@ -349,6 +349,14 @@ RS_EXPORT_DLG_MISSING_TITLE = 'Missing images';
 RS_EXPORT_DLG_MISSING_MSG = 'Export finished, but %d product(s) and %d service(s) were exported without an image.' + sLineBreak + sLineBreak + 'Assign images to these items (Products screen) for a complete catalog.';
 RS_EXPORT_ERR_PREFIX = 'Error: %s';
 
+// Google Merchant Center product feed
+RS_MERCHANT_GENERATE = 'Generate Merchant Feed';
+RS_MERCHANT_DLG_TITLE = 'Select Merchant Center feed file';
+RS_MERCHANT_DLG_FILTER = 'Tab-delimited (*.txt;*.tsv)|*.txt;*.tsv|All files (*.*)|*.*';
+RS_MERCHANT_GENERATING = 'Generating Google Merchant Center feed...';
+RS_MERCHANT_COMPLETE = 'Merchant feed generated: %d products -> %s';
+RS_MERCHANT_ERR_PREFIX = 'Merchant feed error: %s';
+
 // Instagram Publication (frame + flow)
 RS_PUB_ERR_SELECT_OPTION = 'Error: Select at least one option (Products or Services).';
 RS_PUB_NOTHING = 'Nothing to publish: no new products or services.';
