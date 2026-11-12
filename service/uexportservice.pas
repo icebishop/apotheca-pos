@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils, sqlite3conn, FPimage, FPReadPNG, FPWriteJPEG,
   UProduct, UJsonSerializer, UWebPConverter,
-  UPngValidator, UDataProduct, UDataImage, ULogger;
+  UPngValidator, UDataProduct, UDataImage, ULogger, USettingsService;
 
 type
   TExportResult = record
@@ -58,6 +58,7 @@ type
   TExportService = class(TObject)
   private
     FConnection: TSQLite3Connection;
+    FImageSourceDir: String;  { local directory where product images are stored }
     FSerializer: TJsonSerializer;
     FConverter: TWebPConverter;
     function DeriveFilePaths(const BasePath: String; Both: Boolean): TStringArray;
@@ -82,11 +83,22 @@ type
 implementation
 
 constructor TExportService.Create(AConnection: TSQLite3Connection);
+var
+  Svc: TSettingsService;
 begin
   inherited Create;
   FConnection := AConnection;
   FSerializer := TJsonSerializer.Create;
-  FConverter := TWebPConverter.Create;
+  FConverter  := TWebPConverter.Create;
+  { Read the image source directory from settings; fall back to an 'images'
+    folder beside the executable if the parameter has not been seeded yet. }
+  Svc := TSettingsService.Create(AConnection);
+  try
+    FImageSourceDir := Svc.GetValue(PARAM_IMAGE_DIR,
+                         ExtractFilePath(ParamStr(0)) + 'images');
+  finally
+    Svc.Free;
+  end;
 end;
 
 destructor TExportService.Destroy;
@@ -238,7 +250,7 @@ begin
         imageId := Product.getImageRefAt(i);
         if imageId <= 0 then
           Continue;
-        ImageData := DataImage.Get(imageId);
+        ImageData := DataImage.Get(imageId, FImageSourceDir);
         if (ImageData = nil) or (Length(ImageData) = 0) then
         begin
           LogWarn('TExportService', 'PROCESS_IMAGE_FAIL',
@@ -264,7 +276,7 @@ begin
     else
     begin
       { Legacy fallback: scalar image_ref only, no image rows. }
-      ImageData := DataImage.Get(Product.getImageRef());
+      ImageData := DataImage.Get(Product.getImageRef(), FImageSourceDir);
       if (ImageData = nil) or (Length(ImageData) = 0) then
       begin
         LogError('TExportService', 'PROCESS_IMAGE_FAIL',

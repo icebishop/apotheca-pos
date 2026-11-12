@@ -28,7 +28,8 @@ uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, StdCtrls, Buttons, Uproduct, UDataProduct, UDataImage,
   UDataGoogleCategory, UPngValidator, LCLType,
-  UDataModule, SqlDb, UProductValidator, UResourceString, LazLogger;
+  UDataModule, SqlDb, UProductValidator, UResourceString, LazLogger,
+  USettingsService;
 
 type
 
@@ -89,6 +90,8 @@ type
     procedure ShowImagePreview(index: Integer);
     procedure UpdateImageStatus;
     procedure SaveProductImages(dataProduct: TDataProducto);
+    { Returns the configured image directory (from parameters table). }
+    function GetImageDir: String;
   public
     function getProduct(): TProduct;
     procedure setProduct(newProduct: TProduct);
@@ -231,25 +234,41 @@ begin
   LblImageStatus.Caption := Format(RS_PRODUCT_IMG_COUNT, [Length(FImageData)]);
 end;
 
+function TFormProduct.GetImageDir: String;
+var
+  Svc: TSettingsService;
+begin
+  Svc := TSettingsService.Create(DataModule1.SQLite3Connection1);
+  try
+    Result := Svc.GetValue(PARAM_IMAGE_DIR,
+                ExtractFilePath(ParamStr(0)) + 'images');
+    DebugLn('[TFormProduct.GetImageDir] resolved to: ' + Result);
+  finally
+    Svc.Free;
+  end;
+end;
+
 procedure TFormProduct.SaveProductImages(dataProduct: TDataProducto);
 var
   dataImage: TDataImage;
   i, newId: Integer;
+  imgDir: String;
 begin
   if product.getId() <= 0 then
     Exit;
+  imgDir := GetImageDir;
   dataImage := TDataImage.Create(DataModule1.SQLite3Connection1);
   try
-    { Simplest correct strategy: clear the product's images and re-store the
-      current working set in list order. Store() assigns incremental positions,
-      preserving the displayed order. }
+    { Clear the product's image rows then re-store the current working set
+      in list order. Store() writes each file to disk and assigns incremental
+      positions, preserving the displayed order. }
     dataImage.Delete(product.getId());
     product.clearImageRefs();
     for i := 0 to High(FImageData) do
     begin
       if Length(FImageData[i]) = 0 then
         Continue;
-      newId := dataImage.Store(product.getId(), FImageData[i]);
+      newId := dataImage.Store(product.getId(), FImageData[i], imgDir);
       if newId > 0 then
         product.addImageRef(newId);
     end;
@@ -468,7 +487,7 @@ begin
           imageId := product.getImageRefAt(i);
           if imageId <= 0 then
             Continue;
-          ImageData := DataImage.Get(imageId);
+          ImageData := DataImage.Get(imageId, GetImageDir);
           if Length(ImageData) > 0 then
             AddImageEntry(ImageData, Format(RS_PRODUCT_IMG_STORED, [imageId]));
         end;

@@ -44,6 +44,7 @@ type
     procedure MigrateProductIdColumn;
     procedure CreateImagesTable;
     procedure MigrateImagePositionColumn;
+    procedure MigrateImageFilenameColumn;
     procedure CreatePublicationTable;
     procedure CreateParametersTable;
     procedure CreateGoogleCategoryTable;
@@ -557,7 +558,8 @@ begin
                       'id INTEGER PRIMARY KEY AUTOINCREMENT, ' +
                       'product_id INTEGER NOT NULL, ' +
                       'position INTEGER DEFAULT 0, ' +
-                      'data BLOB NOT NULL)';
+                      'data BLOB, ' +
+                      'filename TEXT DEFAULT '''')';
     Query.ExecSQL;
 
     Query.SQL.Text := 'CREATE INDEX IF NOT EXISTS idx_images_product ON images(product_id)';
@@ -639,6 +641,112 @@ begin
   Query.Free;
   Trans.Free;
 end;
+
+procedure TDataModule1.MigrateImageFilenameColumn;
+{ Adds the `filename` column to the images table (if absent) and backfills it
+  with the pattern <product_id>_<position>.png for any rows that have a BLOB
+  but no filename yet. Also relaxes the data BLOB NOT NULL constraint by
+  rebuilding the table when needed, so new rows can be inserted without a BLOB. }
+var
+  Trans: TSQLTransaction;
+  Query: TSQLQuery;
+  HasFilename, DataIsNotNull: Boolean;
+begin
+  Trans := TSQLTransaction.Create(nil);
+  Query := TSQLQuery.Create(nil);
+  try
+    Trans.DataBase := SQLite3Connection1;
+    Query.DataBase := SQLite3Connection1;
+    Query.Transaction := Trans;
+    Trans.StartTransaction;
+
+    { --- Check which columns / constraints already exist --- }
+    HasFilename   := False;
+    DataIsNotNull := False;
+    Query.SQL.Text := 'PRAGMA table_info(images)';
+    Query.Open;
+    while not Query.EOF do
+    begin
+      if Query.FieldByName('name').AsString = 'filename' then
+        HasFilename := True;
+      if (Query.FieldByName('name').AsString = 'data') and
+         (Query.FieldByName('notnull').AsInteger = 1) then
+        DataIsNotNull := True;
+      Query.Next;
+    end;
+    Query.Close;
+
+    { --- Add filename column if missing --- }
+    if not HasFilename then
+    begin
+      Query.SQL.Text :=
+        'ALTER TABLE images ADD COLUMN filename TEXT DEFAULT ''''';
+      Query.ExecSQL;
+      LogSecurity('DataModule', 'MIGRATE_IMAGE_FILENAME_ADDED',
+        'images.filename column added');
+    end;
+
+    { --- Backfill filename for rows that have a BLOB but no filename yet --- }
+    Query.SQL.Text :=
+      'UPDATE images ' +
+      'SET filename = CAST(product_id AS TEXT) || ''_'' || ' +
+                     'CAST(position  AS TEXT) || ''.png'' ' +
+      'WHERE (filename IS NULL OR filename = '''') ' +
+      '  AND data IS NOT NULL';
+    Query.ExecSQL;
+
+    Trans.Commit;
+
+    { --- Rebuild the table when data BLOB has NOT NULL (separate transaction) ---
+      SQLite does not support DROP COLUMN, so we do a table rebuild to remove
+      the NOT NULL constraint, allowing new filesystem-only rows. }
+    if DataIsNotNull then
+    begin
+      Trans.StartTransaction;
+      Query.SQL.Text :=
+        'CREATE TABLE IF NOT EXISTS images_new (' +
+        'id INTEGER PRIMARY KEY AUTOINCREMENT, ' +
+        'product_id INTEGER NOT NULL, ' +
+        'position INTEGER DEFAULT 0, ' +
+        'data BLOB, ' +
+        'filename TEXT DEFAULT '''')';
+      Query.ExecSQL;
+
+      Query.SQL.Text :=
+        'INSERT INTO images_new (id, product_id, position, data, filename) ' +
+        'SELECT id, product_id, position, data, filename FROM images';
+      Query.ExecSQL;
+
+      Query.SQL.Text := 'DROP TABLE images';
+      Query.ExecSQL;
+
+      Query.SQL.Text := 'ALTER TABLE images_new RENAME TO images';
+      Query.ExecSQL;
+
+      Query.SQL.Text :=
+        'CREATE INDEX IF NOT EXISTS idx_images_product ON images(product_id)';
+      Query.ExecSQL;
+      Query.SQL.Text :=
+        'CREATE INDEX IF NOT EXISTS idx_images_product_pos ' +
+        'ON images(product_id, position)';
+      Query.ExecSQL;
+
+      Trans.Commit;
+      LogSecurity('DataModule', 'MIGRATE_IMAGE_DATA_NULLABLE',
+        'images.data NOT NULL constraint removed');
+    end;
+
+  except
+    on E: Exception do
+    begin
+      if Trans.Active then Trans.Rollback;
+      LogError('DataModule', 'MIGRATE_IMAGE_FILENAME_FAILED', 'error=' + E.Message);
+    end;
+  end;
+  Query.Free;
+  Trans.Free;
+end;
+
 
 procedure TDataModule1.CreatePublicationTable;
 var
@@ -837,7 +945,8 @@ begin
         DbPath,
         ResBase + 'products.json',
         ResBase + 'services.json',
-        AppDir + '..' + PathDelim + 'don-pilido-app' + PathDelim + 'public');
+        AppDir + '..' + PathDelim + 'don-pilido-app' + PathDelim + 'public',
+        AppDir + 'images');
     finally
       Svc.Free;
     end;
@@ -981,6 +1090,7 @@ begin
   MigrateProductIdColumn;
   CreateImagesTable;
   MigrateImagePositionColumn;
+  MigrateImageFilenameColumn;
   CreatePublicationTable;
   CreateParametersTable;
   CreateGoogleCategoryTable;

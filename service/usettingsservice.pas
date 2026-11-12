@@ -58,7 +58,7 @@ type
     function GetViews(): TParameterViewList;
     { Seeds the default parameter set if the keys are absent. }
     procedure SeedDefaults(const DbFilePath, ProductsPath, ServicesPath,
-      PublicFolder: String);
+      PublicFolder, ImageDir: String);
   end;
 
 const
@@ -71,6 +71,7 @@ const
   PARAM_IG_ACCESS_TOKEN        = 'instagram.access_token';
   PARAM_IG_BUSINESS_ACCOUNT_ID = 'instagram.business_account_id';
   PARAM_IG_IMAGE_BASE_URL      = 'instagram.image_base_url';
+  PARAM_IMAGE_DIR              = 'images.dir';
 
   MASK_TEXT = '********';
 
@@ -180,7 +181,7 @@ begin
 end;
 
 procedure TSettingsService.SeedDefaults(const DbFilePath, ProductsPath,
-  ServicesPath, PublicFolder: String);
+  ServicesPath, PublicFolder, ImageDir: String);
 
   procedure SeedIfAbsent(const Key, Value: String; IsCred: Boolean;
     const Desc: String);
@@ -208,6 +209,8 @@ begin
     'Instagram business account id');
   SeedIfAbsent(PARAM_IG_IMAGE_BASE_URL, 'https://donpulido.com', False,
     'Public base URL for served images');
+  SeedIfAbsent(PARAM_IMAGE_DIR, ImageDir, False,
+    'Local directory where product images are stored on disk');
 end;
 
 end.

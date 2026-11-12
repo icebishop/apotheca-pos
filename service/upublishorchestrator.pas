@@ -19,7 +19,8 @@ uses
   Classes, SysUtils, contnrs, sqlite3conn, FPimage, FPReadPNG, FPWriteJPEG,
   URegistryItem, UPublishConfig, UProductRegistry, UPublicationTracker,
   UCaptionBuilder, UPublishImageResolver, UInstagramApiClient, UDataPublication,
-  UProduct, UBalance, UDataProduct, UDataImage, UWebPConverter, ULogger;
+  UProduct, UBalance, UDataProduct, UDataImage, UWebPConverter, ULogger,
+  USettingsService;
 
 type
   { Progress callback: Current/Total items processed, plus a status/error line. }
@@ -62,6 +63,7 @@ type
   TPublishOrchestrator = class(TObject)
   private
     FConnection: TSQLite3Connection;
+    FImageSourceDir: String;  { local directory where product images are stored }
     function IsNew(Item: TRegistryItem; PublishedIds: TStrings): Boolean;
     { Whether the item has a usable image. In database mode this is authoritative
       from the DB (the item has an image reference); in JSON mode it checks that
@@ -99,9 +101,18 @@ type
 implementation
 
 constructor TPublishOrchestrator.Create(AConnection: TSQLite3Connection);
+var
+  Svc: TSettingsService;
 begin
   inherited Create;
   FConnection := AConnection;
+  Svc := TSettingsService.Create(AConnection);
+  try
+    FImageSourceDir := Svc.GetValue(PARAM_IMAGE_DIR,
+                         ExtractFilePath(ParamStr(0)) + 'images');
+  finally
+    Svc.Free;
+  end;
 end;
 
 function TPublishOrchestrator.IsNew(Item: TRegistryItem;
@@ -343,7 +354,7 @@ begin
         imageId := Item.ImageRefItem[i];
         if imageId <= 0 then
           Continue;
-        ImageData := DataImage.Get(imageId);
+        ImageData := DataImage.Get(imageId, FImageSourceDir);
         if (ImageData = nil) or (Length(ImageData) = 0) then
         begin
           LogWarn('PublishOrchestrator', 'IMG_BLOB_EMPTY',
@@ -359,7 +370,7 @@ begin
     else if Item.ImageRef > 0 then
     begin
       { Legacy fallback: scalar image_ref only. }
-      ImageData := DataImage.Get(Item.ImageRef);
+      ImageData := DataImage.Get(Item.ImageRef, FImageSourceDir);
       if (ImageData = nil) or (Length(ImageData) = 0) then
       begin
         LogWarn('PublishOrchestrator', 'IMG_BLOB_EMPTY',
